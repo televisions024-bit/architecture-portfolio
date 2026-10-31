@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  PROJECT PAGE TEMPLATE — reusable (PROJECT.md section 6).
+  This page is empty on purpose: ALL content comes from
+  projects/library.json (change data-project to switch projects).
+  The six sections: hero, brief, concept, drawings, gallery,
+  closing image + next link. Built by script.js.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project — Mohammed Huzefa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MOHAMMED <span>H.</span></a>
+      <nav class="site-nav">
+        <!-- About / Contact pages come later (see TODO.md); links stay here already -->
+        <a href="#" onclick="return false" title="coming later">About</a>
+        <a href="index.html">Projects</a>
+        <a href="#" onclick="return false" title="coming later">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Everything inside is built from projects/library.json by script.js -->
+  <main id="project-root" data-project="library"></main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO 2024-27</span>
+      <span><a href="index.html">Projects</a></span>
+    </div>
+  </footer>
+
+  <!-- data-project below = which JSON file to load (projects/library.json) -->
+  <script src="script.js" data-project="library"></script>
+</body>
+</html>

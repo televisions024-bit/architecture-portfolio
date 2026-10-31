@@ -1,6 +1,7 @@
 # TODO.md — remaining work
 
 ## NOW — Library project page
+- [x] Template page built and filled from `projects/library.json` (2026-10-31, placeholders intact)
 - [ ] I (Mohammed) fill in all TODO fields in `projects/library.json` (title, location, program, year, concept text, captions)
 - [ ] I drop the real images in (see `ASSETS.md` for exact filenames, sizes and format)
 - [ ] Decide exact fonts (PROJECT.md section 5 still says TODO); currently system serif/sans in `styles.css`
