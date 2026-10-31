@@ -1,45 +1,82 @@
 /* ============================================================
-   script.js — the only JavaScript on the site. Two small jobs:
-   1) On the project page: load content from projects/<name>.json
-      and build the page from it (content is NOT hard-coded in HTML).
-   2) The gallery lightbox: click image to open, click or Esc to close.
+   script.js — the only JavaScript on the site. Three small jobs:
+   1) On the project page: load content from projects/<p>.json
+      where <p> comes from the URL, e.g. project.html?p=library.
+      Missing parameter or missing file -> friendly "not found".
+   2) On projects.html: build the index cards from projects/index.json.
+   3) The gallery lightbox: click image to open, click or Esc to close.
    Written simply on purpose. No libraries, no build step.
 ============================================================ */
 
-/* The page tells us which JSON file to use via:
-   <script src="script.js" data-project="library">
-     -> projects/library.json                                     */
-const projectName = document.querySelector('[data-project]')?.dataset.project;
+/* Which page are we on? project page uses #project-root,
+   the projects index uses #index-root.                           */
+const projectRoot = document.getElementById('project-root');
+const indexRoot = document.getElementById('index-root');
 
 /* ============================================================
-   PROJECT PAGE — build the SIX sections from JSON
+   PROJECT PAGE (?p=slug) — build the SIX sections from JSON
    (PROJECT.md section 6: hero, brief, concept, drawings,
-   gallery with lightbox, closing image + next link)
+   gallery with lightbox, closing image + next/back links)
 ============================================================ */
-if (projectName) {
-  fetch('projects/' + projectName + '.json')
-    .then(r => {
-      if (!r.ok) throw new Error(r.status);
-      return r.json();
-    })
-    .then(data => {
-      buildProjectPage(document, data);
-      initLightbox(document);
-      initFades(document);
-    })
-    .catch(err => {
-      /* Beginner-friendly error: content does not load over
-         file:// — easy local servers are explained in README.md  */
-      const root = document.getElementById('project-root');
-      if (root) root.innerHTML =
-        '<p style="padding:48px">Could not load projects/' + projectName +
-        '.json (' + err.message + '). Run a small local server and open ' +
-        'this page through it — see README.md for how.</p>';
-    });
+if (projectRoot) {
+  /* the slug arrives in the URL: project.html?p=library.
+     Only letters, numbers and dashes are allowed, so nobody can
+     poke at other files through the URL.                          */
+  const slug = (new URLSearchParams(location.search).get('p') || '')
+    .trim().replace(/[^\w-]/g, '');
+
+  if (!slug) {
+    showProjectNotFound(projectRoot, 'No project was given in the link.');
+  } else {
+    /* fetch() only works over a small local server (see README.md) */
+    fetch('projects/' + slug + '.json')
+      .then(r => {
+        if (!r.ok) throw new Error('not-found');       // file missing
+        return r.json();
+      })
+      .then(data => {
+        /* also load projects/index.json so the footer knows the
+           next project and this project's place in the list      */
+        return fetch('projects/index.json')
+          .then(r => r.ok ? r.json() : { projects: [] })
+          .then(ix => {
+            buildProjectPage(document, data, slug, ix.projects || []);
+            initLightbox(document);
+            initFades(document);
+          });
+      })
+      .catch(err => {
+        if (err.message === 'not-found') {
+          showProjectNotFound(projectRoot,
+            'There is no project called "' + slug + '" yet.');
+        } else {
+          /* Beginner-friendly error: content does not load over
+             file:// — easy local servers are explained in README.md */
+          projectRoot.innerHTML =
+            '<p style="padding:48px">Could not load projects/' + slug +
+            '.json (' + err.message + '). Run a small local server and open ' +
+            'this page through it — see README.md for how.</p>';
+        }
+      });
+  }
+}
+
+/* friendly stub for a missing p= parameter or a missing JSON file */
+function showProjectNotFound(root, why) {
+  document.title = 'Project not found — Mohammed Huzefa';
+  root.innerHTML =
+    '<section class="section"><div class="wrap">' +
+    '  <p class="label">404</p>' +
+    '  <h1 style="font-family:var(--font-heading);font-weight:normal;' +
+    '      font-size:clamp(28px,4vw,44px);margin-bottom:14px;">Project not found</h1>' +
+    '  <p style="max-width:62ch;color:var(--grey);margin-bottom:28px;">' + why +
+    '    It may not exist yet, or the link may be out of date.</p>' +
+    '  <a class="cover-link" href="projects.html">Back to all projects</a>' +
+    '</div></section>';
 }
 
 /* Build the whole page from the data object ------------------ */
-function buildProjectPage(doc, data) {
+function buildProjectPage(doc, data, slug, ixProjects) {
   const root = doc.getElementById('project-root');
   root.innerHTML = '';
   doc.title = data.title + ' — Mohammed Huzefa';
@@ -160,14 +197,96 @@ function buildProjectPage(doc, data) {
     grid.appendChild(figure(g.src, g.alt, null, g.caption)));
   gw.appendChild(grid);
 
-  /* ---- 6 — CLOSING image + next project / back to index --- */
+  /* ---- 6 — CLOSING image + next/back links ----------------- */
+  /* The links are built from projects/index.json, not from the
+     project's own JSON, so they stay correct for every project.   */
   const lw = section('END');
   lw.appendChild(figure(data.closing.src, data.closing.alt, null, data.closing.caption));
-  const next = el('a', 'cover-link fade', data.closing.next.label);
-  next.href = data.closing.next.href;
-  next.style.display = 'inline-block';
-  next.style.marginTop = '32px';
-  lw.appendChild(next);
+
+  const where = ixProjects.findIndex(p => p.slug === slug);
+  const nextEntry = ixProjects[where + 1];           // undefined at the end
+
+  const back = el('a', 'cover-link fade', 'Back to all projects');
+  back.href = 'projects.html';
+  back.style.display = 'inline-block';
+  back.style.marginTop = '32px';
+  lw.appendChild(back);
+
+  if (nextEntry) {                                   // hidden on the last project
+    const next = el('a', 'cover-link fade', 'Next project');
+    next.href = 'project.html?p=' + nextEntry.slug;
+    next.style.display = 'inline-block';
+    next.style.marginTop = '32px';
+    next.style.marginLeft = '24px';
+    lw.appendChild(next);
+  }
+}
+
+/* ============================================================
+   PROJECTS INDEX (projects.html) — one clean card per project,
+   from projects/index.json. 2-column grid, hairline borders,
+   same design tokens as everything else.
+============================================================ */
+if (indexRoot) {
+  document.title = 'Projects — Mohammed Huzefa';
+  fetch('projects/index.json')
+    .then(r => {
+      if (!r.ok) throw new Error('not-found');
+      return r.json();
+    })
+    .then(ix => {
+      indexRoot.innerHTML = '';
+      const w = document.createElement('div');
+      w.className = 'wrap';
+
+      w.appendChild(Object.assign(document.createElement('p'),
+        { className: 'label', textContent: 'PROJECTS' }));
+      w.appendChild(Object.assign(document.createElement('h2'),
+        { className: 'index-title', textContent: 'All projects' }));
+
+      const grid = document.createElement('div');
+      grid.className = 'cards';
+      (ix.projects || []).forEach(p => {
+        /* the whole card is one link; hairline border, no shadows */
+        const card = document.createElement('a');
+        card.className = 'card fade';
+        card.href = 'project.html?p=' + encodeURIComponent(p.slug);
+
+        const fig = document.createElement('figure');
+        const img = document.createElement('img');
+        img.src = p.thumbnail;
+        img.alt = p.title + ' — thumbnail';
+        img.setAttribute('loading', 'lazy');
+        /* same IMAGE TODO block as the project page if the file is missing */
+        const ph = document.createElement('div');
+        ph.className = 'ph';
+        ph.innerHTML = '<span>THUMBNAIL TODO:<br><span>' + p.thumbnail + '</span></span>';
+        img.addEventListener('error', () => img.replaceWith(ph));
+        fig.appendChild(img);
+        card.appendChild(fig);
+
+        const t = document.createElement('h3');
+        t.className = 'card-title';
+        t.textContent = p.title;
+        card.appendChild(t);
+
+        const meta = document.createElement('p');
+        meta.className = 'card-meta';
+        meta.textContent = (p.year || '') + (p.year && p.type ? ' — ' : '') + (p.type || '');
+        card.appendChild(meta);
+
+        grid.appendChild(card);
+      });
+      w.appendChild(grid);
+      indexRoot.appendChild(w);
+      initFades(document);
+    })
+    .catch(err => {
+      indexRoot.innerHTML =
+        '<section class="section"><div class="wrap"><p style="padding:48px">' +
+        'Could not load projects/index.json (' + err.message + ').' +
+        ' Run a small local server — see README.md for how.</p></div></section>';
+    });
 }
 
 /* ============================================================

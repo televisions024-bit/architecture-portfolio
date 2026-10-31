@@ -86,3 +86,7 @@ Writing rules: short paragraphs, meaningful captions, no filler words.
 - Library is the first project page; template must be reusable
 - Cover rebuilt from the approved final version of the "Plan Internship Portfolio Cover" chat; text lines per approval. Hero PNG is a placeholder at /images/cover/hero.png until supplied (see ASSETS.md)
 - Interim fonts: system serif (Georgia) for headings, system sans (Segoe UI / Arial) for body and labels. Exact fonts still TODO in first session, swap in styles.css
+- Multiple projects: each project is a `projects/<slug>.json` loaded by `project.html?p=<slug>`; no per-project HTML copies
+- `projects/index.json` is the single source for the projects index (`projects.html` cards) AND for the "Next project" links at the bottom of each project page
+- Cover's "Projects" link points to projects.html (the project index); the cover design itself is untouched
+- "Next project" is hidden on the last entry of index.json; "Back to all projects" always shows

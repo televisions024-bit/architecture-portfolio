@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <!-- ============================================================
   PROJECT PAGE TEMPLATE — reusable (PROJECT.md section 6).
-  This page is empty on purpose: ALL content comes from
-  projects/library.json (change data-project to switch projects).
+  This page is empty on purpose: ALL content comes from JSON.
+  The URL decides which project: project.html?p=library loads
+  projects/library.json. Missing project -> friendly not-found.
   The six sections: hero, brief, concept, drawings, gallery,
-  closing image + next link. Built by script.js.
+  closing image + next/back links. Built by script.js.
 ============================================================ -->
 <html lang="en">
 <head>
@@ -21,23 +22,27 @@
       <nav class="site-nav">
         <!-- About / Contact pages come later (see TODO.md); links stay here already -->
         <a href="#" onclick="return false" title="coming later">About</a>
-        <a href="index.html">Projects</a>
+        <a href="projects.html">Projects</a>
         <a href="#" onclick="return false" title="coming later">Contact</a>
       </nav>
     </div>
   </header>
 
-  <!-- Everything inside is built from projects/library.json by script.js -->
-  <main id="project-root" data-project="library"></main>
+  <!-- Everything inside is built from JSON by script.js.
+       Which project? The URL decides: project.html?p=library
+       loads projects/library.json. The footer links ("Next
+       project", "Back to all projects") come from projects/index.json. -->
+  <main id="project-root"></main>
 
   <footer class="site-footer">
     <div class="wrap">
       <span>MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO 2024-27</span>
-      <span><a href="index.html">Projects</a></span>
+      <span><a href="projects.html">Projects</a></span>
     </div>
   </footer>
 
-  <!-- data-project below = which JSON file to load (projects/library.json) -->
-  <script src="script.js" data-project="library"></script>
+  <!-- All logic (loading the project, not-found handling,
+       footer links) lives in script.js -->
+  <script src="script.js"></script>
 </body>
 </html>

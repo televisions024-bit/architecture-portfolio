@@ -67,6 +67,6 @@
     "src": "images/library/renders/01-hero-exterior.webp",
     "alt": "TODO",
     "caption": "TODO: closing image caption",
-    "next": { "href": "index.html", "label": "Back to index" }
+    "_": "'Next project' and 'Back to all projects' links are generated from projects/index.json — no need for a link here."
   }
 }

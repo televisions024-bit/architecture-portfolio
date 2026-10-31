@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  PROJECTS INDEX — one card per project, from projects/index.json.
+  Cards are built by script.js (section "PROJECTS INDEX").
+  To add a project: see the new project's .json + index.json —
+  never hard-code anything here.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Mohammed Huzefa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MOHAMMED <span>H.</span></a>
+      <nav class="site-nav">
+        <!-- About / Contact pages come later (see TODO.md); links stay here already -->
+        <a href="#" onclick="return false" title="coming later">About</a>
+        <a href="projects.html">Projects</a>
+        <a href="#" onclick="return false" title="coming later">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Cards are built from projects/index.json by script.js -->
+  <main id="index-root"></main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO 2024-27</span>
+      <span><a href="index.html">Cover</a></span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "_": "One entry per project, newest work last. This file drives BOTH projects.html (the index cards) and the 'Next project' links at the bottom of every project page, so add every new project here. Thumbnail is shown as-is; missing files render as an IMAGE TODO block.",
+
+  "projects": [
+    {
+      "slug": "library",
+      "title": "TODO: Library Proposal — final title",
+      "year": "TODO",
+      "type": "TODO: e.g. Institutional proposal",
+      "thumbnail": "images/library/renders/01-hero-exterior.webp"
+    }
+  ]
+}

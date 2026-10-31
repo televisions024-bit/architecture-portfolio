@@ -9,7 +9,7 @@
 
 ## LATER — rest of the site
 - [ ] About / skills / contents page (`about.html`, uses the same `styles.css`)
-- [ ] Project index (list of projects; index lives where "next project / back to index" links point)
-- [ ] Second project page (copy `projects/library.json` → `projects/<slug>.json`, copy `project.html`, point data-file attribute at it)
+- [ ] Second project page (add `projects/<slug>.json` + one entry in `projects/index.json` + images in `images/<slug>/` — see README; no new HTML needed)
+- [ ] Fill `projects/index.json` year/type title fields for the Library once Mohammed decides them
 - [ ] Contact page
 - [ ] Deployment: GitHub Pages or Netlify, free (README has the steps)
