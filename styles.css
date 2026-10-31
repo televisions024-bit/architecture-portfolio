@@ -280,10 +280,11 @@ figure { margin: 0; }
 }
 .ph span { word-break: break-all; padding: 10px; }
 
-/* ---------- Projects index (projects.html) ---------- */
-/* One card per project, driven by projects/index.json.
-   2-column grid on desktop, single column on the phone.
-   Hairline borders only: no rounded corners, no drop shadows.   */
+/* ---------- Projects index as a DRAWING REGISTER (Direction A) ----------
+   Rows like a sheet list, not cards: code | title | type | year | thumb.
+   Driven by projects/index.json; 'sheet' gives the drawing code.
+   Hover highlights the row (burgundy). On the phone each row stacks:
+   code + title on top, type/year under it, thumbnail at the right.   */
 .index-title {
   font-family: var(--font-heading);
   font-weight: normal;
@@ -292,40 +293,61 @@ figure { margin: 0; }
 }
 @media (max-width: 719px) { .index-title { font-size: 24px; } }
 
-.cards {
+.register { margin-top: 32px; border-top: 1px solid var(--rule); }
+.reg-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 32px;
-}
-@media (max-width: 719px) {
-  .cards { grid-template-columns: 1fr; }   /* single column on phone */
-}
-
-.card {
-  display: block;
-  border: 1px solid var(--rule);            /* the hairline */
+  grid-template-columns: 88px 1fr 220px 90px 112px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule-soft);
   text-decoration: none;
   color: var(--ink);
-  transition: border-color 0.2s ease;       /* hover = burgundy hairline */
 }
-.card:hover { border-color: var(--accent); }
-.card figure { margin: 0; }
-.card img { width: 100%; height: 280px; object-fit: cover; }
-@media (max-width: 719px) { .card img { height: auto; } }
-.card-title {
+/* hover = the burgundy drawing-pencil highlight */
+.reg-row:hover { background: rgba(122, 31, 43, 0.045); }
+.reg-row:hover .reg-title,
+.reg-row:hover .reg-code { color: var(--accent); }
+
+.reg-code {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);            /* sheet codes: the sparing burgundy */
+}
+.reg-title {
   font-family: var(--font-heading);
   font-weight: normal;
-  font-size: 19px;
-  margin: 16px 16px 4px;                    /* inside the hairline frame */
+  font-size: 17px;
 }
-.card:hover .card-title { color: var(--accent); }
-.card-meta {
+.reg-type,
+.reg-year {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--grey);
-  margin: 0 16px 16px;
+}
+/* on desktop the wrapper disappears and type/year get their own columns */
+.reg-meta { display: contents; }
+.reg-thumb {
+  width: 112px; height: 64px;
+  object-fit: cover;
+  border: 1px solid var(--rule);   /* framed like a small print */
+}
+@media (max-width: 719px) {
+  .reg-row {
+    grid-template-columns: auto 1fr 88px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "code title thumb"
+      "code meta  thumb";
+    gap: 4px 12px;
+    padding: 12px 0;
+  }
+  .reg-code  { grid-area: code; align-self: start; padding-top: 3px; }
+  .reg-title { grid-area: title; font-size: 16px; }
+  .reg-meta  { display: flex; gap: 10px; grid-area: meta; }
+  .reg-thumb { grid-area: thumb; width: 88px; height: 56px; }
 }
 
 /* ---------- About page (about.html) ---------- */

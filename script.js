@@ -233,10 +233,11 @@ function buildProjectPage(doc, data, slug, ixProjects) {
 }
 
 /* ============================================================
-   PROJECTS INDEX (projects.html) — one clean card per project,
-   from projects/index.json. 2-column grid, hairline borders,
-   same design tokens as everything else.
-============================================================ */
+   PROJECTS INDEX (projects.html) — a DRAWING REGISTER (Direction A):
+   one thin row per project — sheet code | title | type | year | thumb
+   — straight from projects/index.json. The whole row is the link;
+   hover highlights it in burgundy. Stacks on the phone.
+============================================================ ═*/
 if (indexRoot) {
   document.title = 'Projects — Mohammed Huzefa';
   fetch('projects/index.json')
@@ -250,44 +251,56 @@ if (indexRoot) {
       w.className = 'wrap';
 
       w.appendChild(Object.assign(document.createElement('p'),
-        { className: 'label', textContent: 'PROJECTS' }));
+        { className: 'label', textContent: 'DRAWING REGISTER' }));
       w.appendChild(Object.assign(document.createElement('h2'),
         { className: 'index-title', textContent: 'All projects' }));
 
-      const grid = document.createElement('div');
-      grid.className = 'cards';
+      const list = document.createElement('div');
+      list.className = 'register';
       (ix.projects || []).forEach(p => {
-        /* the whole card is one link; hairline border, no shadows */
-        const card = document.createElement('a');
-        card.className = 'card fade';
-        card.href = 'project.html?p=' + encodeURIComponent(p.slug);
+        /* the whole row is one link, like a line in a sheet list */
+        const row = document.createElement('a');
+        row.className = 'reg-row fade';
+        row.href = 'project.html?p=' + encodeURIComponent(p.slug);
 
-        const fig = document.createElement('figure');
+        const code = document.createElement('span');
+        code.className = 'reg-code';
+        code.textContent = p.sheet || '—';        // drawing code, e.g. A-01
+        row.appendChild(code);
+
+        const title = document.createElement('h3');
+        title.className = 'reg-title';
+        title.textContent = p.title;
+        row.appendChild(title);
+
+        /* type + year: separate columns on desktop, one line on phone */
+        const meta = document.createElement('span');
+        meta.className = 'reg-meta';
+        const type = document.createElement('span');
+        type.className = 'reg-type';
+        type.textContent = p.type || '—';
+        const year = document.createElement('span');
+        year.className = 'reg-year';
+        year.textContent = p.year || '';
+        meta.appendChild(type);
+        meta.appendChild(year);
+        row.appendChild(meta);
+
+        /* small framed thumbnail; missing file -> IMAGE TODO block */
         const img = document.createElement('img');
+        img.className = 'reg-thumb';
         img.src = p.thumbnail;
         img.alt = p.title + ' — thumbnail';
         img.setAttribute('loading', 'lazy');
-        /* same IMAGE TODO block as the project page if the file is missing */
         const ph = document.createElement('div');
         ph.className = 'ph';
-        ph.innerHTML = '<span>THUMBNAIL TODO:<br><span>' + p.thumbnail + '</span></span>';
+        ph.innerHTML = '<span>THUMB TODO:<br><span>' + p.thumbnail + '</span></span>';
         img.addEventListener('error', () => img.replaceWith(ph));
-        fig.appendChild(img);
-        card.appendChild(fig);
+        row.appendChild(img);
 
-        const t = document.createElement('h3');
-        t.className = 'card-title';
-        t.textContent = p.title;
-        card.appendChild(t);
-
-        const meta = document.createElement('p');
-        meta.className = 'card-meta';
-        meta.textContent = (p.year || '') + (p.year && p.type ? ' — ' : '') + (p.type || '');
-        card.appendChild(meta);
-
-        grid.appendChild(card);
+        list.appendChild(row);
       });
-      w.appendChild(grid);
+      w.appendChild(list);
       indexRoot.appendChild(w);
       initFades(document);
     })
