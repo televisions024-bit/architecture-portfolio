@@ -350,6 +350,80 @@ figure { margin: 0; }
   .reg-thumb { grid-area: thumb; width: 88px; height: 56px; }
 }
 
+/* ---------- Caption rows + construction lines (Direction A) ---------- */
+/* Every image gets ONE hairline caption row: sheet no. | short title
+   | scale note. Tiny vertical ticks sit at both ends of the rule —
+   these dimension marks are the page's only decoration.            */
+.cap-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  position: relative;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  font-size: 12.5px;
+  color: var(--grey);
+}
+/* the two dimension ticks at the ends of the hairline */
+.cap-row::before,
+.cap-row::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 6px;
+  background: rgba(26, 26, 26, 0.4);
+}
+.cap-row::before { left: 0; }
+.cap-row::after  { right: 0; }
+.cap-code {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cap-title { flex: 1 1 auto; }
+.cap-note {
+  margin-left: auto;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* thin construction line with end ticks, used above the project title */
+.dim-line {
+  position: relative;
+  height: 1px;
+  background: rgba(26, 26, 26, 0.25);
+  margin-bottom: 22px;
+}
+.dim-line::before,
+.dim-line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: rgba(26, 26, 26, 0.45);
+}
+.dim-line::before { left: 0; }
+.dim-line::after  { right: 0; }
+
+/* ---------- Print: pages print as clean sheets (Direction A) ---------- */
+@media print {
+  .site-header, .site-footer, .titleblock, .lightbox, .reg-thumb { display: none !important; }
+  body.tb { padding-bottom: 0 !important; }
+  body { background: #fff; }
+  .section { padding-top: 24px !important; }
+  .rule { margin-top: 24px !important; }
+  .fade { opacity: 1 !important; transform: none !important; }  /* print even un-scrolled items */
+  figure, .metadata, .stage-row, .reg-row { break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+  h2 { font-size: 20px !important; }
+}
+
 /* ---------- About page (about.html) ---------- */
 /* Compact version of the section rhythm (the brief asked for
    a tight page, not the airy 96px project-page spacing).       */

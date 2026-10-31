@@ -114,22 +114,31 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     return img;
   }
 
-  /* one figure: image + optional small burgundy label + caption.
-     Every drawing is captioned (PROJECT.md section 6, section 4).   */
-  function figure(src, alt, label, caption, captionClass) {
+  /* one figure: image + the caption ROW (Direction A with B's pattern):
+     a hairline row under the image showing sheet no. | short title |
+     scale note. Codes are auto-numbered per section (SK-01, D-02,
+     R-03, ...) so new projects are numbered without any extra work.
+     cap = { code: 'D-01', note: 'PLAN — LEVEL 01' } or omitted.
+     Every drawing is captioned (PROJECT.md section 6, section 4). */
+  function figure(src, alt, caption, cap) {
     const f = el('figure', 'fade');
     if (src) f.appendChild(image(src, alt));
-    if (label) f.appendChild(el('p', 'label', label));
-    if (caption) {
-      const c = el('figcaption', captionClass || 'figure-caption', caption);
-      f.appendChild(c);
+    if (caption || cap) {
+      const row = el('div', 'cap-row');
+      if (cap && cap.code) row.appendChild(el('span', 'cap-code', cap.code));
+      if (caption) row.appendChild(el('span', 'cap-title', caption));
+      if (cap && cap.note) row.appendChild(el('span', 'cap-note', cap.note));
+      f.appendChild(row);
     }
     return f;
   }
 
-  /* a section: thin rule feel, small label, big serif title  */
-  function section(label, title) {
+  /* a section: thin rule feel, small label, big serif title.
+     part = the sheet-part name shown in the title-block code.
+     (Returns the inner .wrap, as before, so callers append into it.) */
+  function section(label, title, part) {
     const s = el('section', 'section');
+    if (part || label) s.dataset.part = part || label;
     const w = el('div', 'wrap');
     if (label) w.appendChild(el('p', 'label', label));
     if (title) w.appendChild(el('h2', '', title));
@@ -140,8 +149,10 @@ function buildProjectPage(doc, data, slug, ixProjects) {
 
   /* ---- 1 — HERO: full-width render + title + one-liner ---- */
   const hero = el('section', 'section');
+  hero.dataset.part = 'TITLE';
   hero.style.paddingTop = '48px';
   const hw = el('div', 'wrap');
+  hw.appendChild(el('div', 'dim-line'));   // hairline + ticks: the only decoration
   const t1 = el('h1', 'proj-title', data.title);
   t1.style.cssText =
     'font-family:var(--font-heading);font-weight:normal;' +
@@ -169,7 +180,7 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   bw.appendChild(briefTxt);
 
   /* ---- 3 — CONCEPT: short text + 1-2 diagrams ------------- */
-  const cw = section('CONCEPT', 'Concept');
+  const cw = section('CONCEPT', 'Concept', 'CONCEPT');
   data.concept.paragraphs.forEach((t, i) => {
     const p = el('p', 'measure fade', t);
     p.style.cssText = 'max-width:62ch;' + (i ? 'margin-top:14px;' : 'margin-top:8px;');
@@ -178,30 +189,37 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   if (data.concept.diagrams.length) {
     const dg = el('div', 'two-col fade');
     dg.style.marginTop = '40px';
-    data.concept.diagrams.forEach(d =>
-      dg.appendChild(figure(d.src, d.alt, null, d.caption)));
+    data.concept.diagrams.forEach((d, i) =>
+      dg.appendChild(figure(d.src, d.alt, d.caption,
+        { code: 'SK-0' + (i + 1), note: d.scale || '' })));
     cw.appendChild(dg);
   }
 
-  /* ---- 4 — DRAWINGS: captioned black-line, two columns ---- */
-  const dw = section('DRAWINGS', 'Drawings');
+  /* ---- 4 — DRAWINGS: the plan -> section -> render flow.
+     The JSON lists drawings in that order (plans first, then
+     sections, then elevations); each gets a caption row.      */
+  const dw = section('DRAWINGS · PLAN → SECTION → ELEVATION', 'Drawings', 'DRAWINGS');
   const drg = el('div', 'two-col fade');
   drg.style.marginTop = '8px';
-  data.drawings.forEach(d => drg.appendChild(figure(d.src, d.alt, d.label, d.caption)));
+  data.drawings.forEach((d, i) =>
+    drg.appendChild(figure(d.src, d.alt, d.caption,
+      { code: 'D-0' + (i + 1), note: d.label || '' })));
   dw.appendChild(drg);
 
   /* ---- 5 — GALLERY: 2-col grid, click opens the lightbox -- */
-  const gw = section('RENDER GALLERY', 'Renders');
+  const gw = section('RENDERS', 'Renders', 'RENDERS');
   const grid = el('div', 'gallery fade');
-  data.gallery.forEach(g =>
-    grid.appendChild(figure(g.src, g.alt, null, g.caption)));
+  data.gallery.forEach((g, i) =>
+    grid.appendChild(figure(g.src, g.alt, g.caption,
+      { code: 'R-0' + (i + 1), note: g.scale || '' })));
   gw.appendChild(grid);
 
   /* ---- 6 — CLOSING image + next/back links ----------------- */
   /* The links are built from projects/index.json, not from the
      project's own JSON, so they stay correct for every project.   */
-  const lw = section('END');
-  lw.appendChild(figure(data.closing.src, data.closing.alt, null, data.closing.caption));
+  const lw = section('END', null, 'END');
+  lw.appendChild(figure(data.closing.src, data.closing.alt,
+    data.closing.caption, { code: 'E-01', note: data.closing.scale || '' }));
 
   const where = ixProjects.findIndex(p => p.slug === slug);
   const nextEntry = ixProjects[where + 1];           // undefined at the end
@@ -214,6 +232,42 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   if (tbName && thisEntry) tbName.textContent = thisEntry.title;
   if (tbCode && thisEntry && thisEntry.sheet) {
     tbCode.textContent = 'SHEET ' + thisEntry.sheet;
+  }
+
+  /* Signature interaction (Direction A): as you scroll, the sheet code
+     in the strip shows which part of the sheet is being read —
+     SHEET A-01 · BRIEF, · DRAWINGS, ... One IntersectionObserver,
+     one text swap each time, no animation, no libraries. The update
+     is instant text, so reduced-motion visitors lose nothing.       */
+  if (tbCode && 'IntersectionObserver' in window) {
+    const base = tbCode.textContent;                  // "SHEET A-01"
+    const parts = root.querySelectorAll('section[data-part]');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          tbCode.textContent = base + ' · ' + en.target.dataset.part;
+        }
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });          // watches the middle band
+    parts.forEach(s => io.observe(s));
+  }
+
+  /* Open Graph (Direction A extra): share-link title/description/image
+     straight from the project JSON, so future projects are covered.  */
+  function setOG(prop, val) {
+    let m = doc.head.querySelector('meta[property="' + prop + '"]');
+    if (!m) {
+      m = doc.createElement('meta');
+      m.setAttribute('property', prop);
+      doc.head.appendChild(m);
+    }
+    m.setAttribute('content', val);
+  }
+  setOG('og:title', data.title + ' — Mohammed Huzefa');
+  if (data.hero && data.hero.lead) setOG('og:description', data.hero.lead);
+  if (data.hero && data.hero.src) {
+    /* absolute URL, built from wherever the site is hosted */
+    setOG('og:image', new URL(data.hero.src, location.href).href);
   }
 
   const back = el('a', 'cover-link fade', 'Back to all projects');
@@ -313,8 +367,10 @@ if (indexRoot) {
 }
 
 /* ============================================================
-   LIGHTBOX — click a gallery image to open it big; click
-   anywhere (or press Esc) to close. One element, reused.
+   LIGHTBOX — click a gallery image to open it big; click (or
+   press Esc) to close; arrow keys ←/→ step through the images.
+   A small "3 / 8" counter sits in front of the caption.
+   One element, reused. No libraries.
 ============================================================ */
 function initLightbox(doc) {
   const box = doc.createElement('div');
@@ -326,11 +382,19 @@ function initLightbox(doc) {
 
   const img = box.querySelector('img');
   const cap = box.querySelector('figcaption');
+  const figs = Array.from(doc.querySelectorAll('.gallery figure'));
+  let idx = -1;                      // which gallery image is open
 
-  function open(src, alt, caption) {
-    img.src = src;
-    img.alt = alt || '';
-    cap.textContent = caption || '';
+  function show() {
+    const f = figs[idx];
+    if (!f) return;
+    const im = f.querySelector('img');   // re-read: placeholders may have swapped in
+    const fc = f.querySelector('figcaption');
+    if (!im) return;
+    img.src = im.currentSrc || im.src;
+    img.alt = im.alt || '';
+    const where = figs.length > 1 ? (idx + 1) + ' / ' + figs.length + ' — ' : '';
+    cap.textContent = where + (fc ? fc.textContent : '');
     box.classList.add('is-open');
   }
   function close() {
@@ -339,16 +403,19 @@ function initLightbox(doc) {
   }
 
   box.addEventListener('click', close);
-  doc.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+  doc.addEventListener('keydown', e => {
+    if (!box.classList.contains('is-open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight' && idx < figs.length - 1) { idx++; show(); }
+    if (e.key === 'ArrowLeft' && idx > 0) { idx--; show(); }
+  });
 
-  // every gallery figure is clickable (frames re-read the <img> so it
-  // still works if placeholder blocks swap in later)
-  doc.querySelectorAll('.gallery figure').forEach(fig => {
+  /* every gallery figure is clickable; the fixture list keeps its
+     position, so ←/→ know where they are                       */
+  figs.forEach((fig, i) => {
     fig.addEventListener('click', () => {
-      const im = fig.querySelector('img');
-      if (!im) return;
-      const fc = fig.querySelector('figcaption');
-      open(im.currentSrc || im.src, im.alt, fc ? fc.textContent : '');
+      if (!fig.querySelector('img')) return;    // still an IMAGE TODO block
+      idx = i; show();
     });
   });
 }

@@ -7,7 +7,7 @@
     "lead": "TODO: one-line description of the project shown under the title"
   },
 
-  "_": "Fill every TODO below. Values starting with TODO are open; delete TODO: and write the real content. Add or remove images inside the lists following the same shape.",
+  "_": "Fill every TODO below. Values starting with TODO are open; delete TODO: and write the real content. Add or remove images inside the lists following the same shape. Optional \"scale\": \"1:200\" on any drawing/render/diagram becomes the note on its caption row.",
 
   "meta": [
     { "key": "Location", "value": "TODO: city / site" },
