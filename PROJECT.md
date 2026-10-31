@@ -90,3 +90,5 @@ Writing rules: short paragraphs, meaningful captions, no filler words.
 - `projects/index.json` is the single source for the projects index (`projects.html` cards) AND for the "Next project" links at the bottom of each project page
 - Cover's "Projects" link points to projects.html (the project index); the cover design itself is untouched
 - "Next project" is hidden on the last entry of index.json; "Back to all projects" always shows
+- About page (`about.html`) driven by `projects/about.json`; any value still marked TODO is hidden, not printed; compact spacing (44-48px) instead of the project page's 96px rhythm
+- The library study item on the about page links to project.html?p=library; about JSON is filled in Mohammed's exact wording, never paraphrased

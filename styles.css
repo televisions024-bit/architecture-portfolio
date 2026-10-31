@@ -277,6 +277,30 @@ figure { margin: 0; }
   margin: 0 16px 16px;
 }
 
+/* ---------- About page (about.html) ---------- */
+/* Compact version of the section rhythm (the brief asked for
+   a tight page, not the airy 96px project-page spacing).       */
+.section-tight { padding-top: 48px; }
+.stage-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 16px;
+  border-top: 1px solid var(--rule-soft);
+  padding: 10px 0;
+}
+.stage-label { padding-top: 2px; }
+.stage-items {
+  list-style: none;
+  font-size: 15px;
+}
+.stage-items li { padding: 1px 0; }
+.stage-items li a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.stage-items li a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+@media (max-width: 719px) {
+  .stage-row { grid-template-columns: 1fr; gap: 4px; }  /* stacks on the phone */
+}
+.about .cover-link { margin-top: 28px; }                 /* PDF link spacing */
+
 /* ---------- Footer ---------- */
 .site-footer {
   margin-top: var(--space-section);

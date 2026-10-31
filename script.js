@@ -331,6 +331,116 @@ function initLightbox(doc) {
 }
 
 /* ============================================================
+   ABOUT PAGE (about.html) — content comes from projects/about.json
+   Compact layout: intro, looking for, education, skills,
+   study year-by-year list, contact details, portfolio PDF.
+   Any value still marked TODO is hidden, not shown.
+============================================================ */
+const aboutRoot = document.getElementById('about-root');
+if (aboutRoot) {
+  document.title = 'About — Mohammed Huzefa';
+  fetch('projects/about.json')
+    .then(r => {
+      if (!r.ok) throw new Error('not-found');
+      return r.json();
+    })
+    .then(d => {
+      aboutRoot.innerHTML = '';
+      const main = document.createElement('div');
+      main.className = 'wrap';
+
+      /* little local helpers (same ideas as the project page) */
+      const el = (tag, cls, text) => {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text !== undefined) n.textContent = text;
+        return n;
+      };
+      const sec = (label) => {
+        const s = el('section', 'section section-tight fade');
+        s.appendChild(el('p', 'label', label));
+        main.appendChild(s);
+        return s;
+      };
+      /* a value is "still a TODO" -> its line is hidden entirely */
+      const isTodo = (v) => !v || String(v).trim().split('=')[0].toUpperCase().startsWith('TODO');
+
+      /* header + intro paragraphs */
+      const h = el('h1', 'index-title', 'About');
+      main.appendChild(h);
+      d.intro.forEach(t => main.appendChild(el('p', 'measure', t)));
+
+      /* looking for — its own short section */
+      sec('LOOKING FOR').appendChild(el('p', 'measure', d.looking_for));
+
+      /* education */
+      const edu = sec('EDUCATION');
+      d.education.forEach(t => edu.appendChild(el('p', 'measure', t)));
+
+      /* skills: one compact line, comma separated */
+      const sk = sec('SKILLS');
+      const skp = el('p', 'measure', d.skills.join('  ·  '));
+      skp.style.color = 'var(--ink)';
+      sk.appendChild(skp);
+
+      /* study and projects: small stage label on the left, items right */
+      const sp = sec('STUDY AND PROJECTS');
+      d.study_and_projects.forEach(row => {
+        const line = el('div', 'stage-row');
+        line.appendChild(el('p', 'label stage-label', row.stage));
+        const items = el('ul', 'stage-items');
+        row.items.forEach(t => {
+          const li = document.createElement('li');
+          /* the library item links straight into the project page */
+          if (t.startsWith('Public library proposal')) {
+            const a = document.createElement('a');
+            a.href = 'project.html?p=library';
+            a.textContent = t;
+            li.appendChild(a);
+          } else {
+            li.textContent = t;
+          }
+          items.appendChild(li);
+        });
+        line.appendChild(items);
+        sp.appendChild(line);
+      });
+
+      /* contact details: only the lines that are filled in */
+      const ct = sec('CONTACT');
+      const rows = [
+        ['EMAIL', d.contact.email, 'mailto:data'],
+        ['PHONE', d.contact.phone, null],
+        ['CITY', d.contact.city, null],
+        ['LINKEDIN', d.contact.linkedin, null],
+      ];
+      rows.forEach(([key, val]) => {
+        if (isTodo(val)) return;                 // TODO -> hide the line
+        const line = el('div', 'stage-row');
+        line.appendChild(el('p', 'label stage-label', key));
+        line.appendChild(el('p', 'stage-items', val));
+        ct.appendChild(line);
+      });
+
+      /* portfolio PDF link, only once the url is real */
+      if (!isTodo(d.pdf_url)) {
+        const a = el('a', 'cover-link', 'Portfolio PDF');
+        a.href = d.pdf_url;
+        main.appendChild(a);
+      }
+
+      aboutRoot.appendChild(main);
+      initFades(document);
+    })
+    .catch(err => {
+      aboutRoot.innerHTML =
+        '<div class="wrap"><p style="padding:48px">Could not load ' +
+        'projects/about.json (' + err.message + '). Run a small ' +
+        'local server — see README.md for how.</p></div>';
+    });
+}
+
+/* ============================================================
    GENTLE FADE-IN on scroll — the only allowed motion
    (PROJECT.md section 5). Off when the visitor prefers
    reduced motion (handled in styles.css).

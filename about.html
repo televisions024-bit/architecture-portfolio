@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  ABOUT PAGE — personal info / skills (PROJECT.md section 4, item 2).
+  Empty on purpose: all content comes from projects/about.json
+  (still values marked TODO are hidden by script.js).
+  Compact spacing at his request, not the airy project-page one.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — Mohammed Huzefa</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="about">
+  <!-- Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MOHAMMED <span>H.</span></a>
+      <nav class="site-nav">
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <!-- Contact page comes later (see TODO.md); link stays here already -->
+        <a href="#" onclick="return false" title="coming later">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Built from projects/about.json by script.js -->
+  <main id="about-root"></main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO 2024-27</span>
+      <span><a href="index.html">Cover</a> · <a href="projects.html">Projects</a></span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
