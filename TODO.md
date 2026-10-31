@@ -6,7 +6,7 @@
 - [ ] I (Mohammed) fill in all TODO fields in `projects/library.json` (title, location, program, year, concept text, captions)
 - [ ] I (Mohammed) send the contact details to replace the TODOs in `projects/about.json` (email, phone, city, LinkedIn) and the finished portfolio PDF URL — the about page shows those lines automatically once they are real
 - [ ] I drop the real images in (see `ASSETS.md` for exact filenames, sizes and format)
-- [ ] Decide exact fonts (PROJECT.md section 5 still says TODO); currently system serif/sans in `styles.css`
+- [x] Fonts decided (2026-10-31): Fraunces + Inter from Google Fonts, `display=swap`, system fallbacks; cover keeps system fonts (untouched)
 - [ ] Review the filled page for the first time and approve it (then it becomes marked DONE in PROJECT.md section 2)
 
 ## LATER — rest of the site

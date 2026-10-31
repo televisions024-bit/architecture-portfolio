@@ -15,10 +15,11 @@
   --rule: rgba(26, 26, 26, 0.18);
   --rule-soft: rgba(26, 26, 26, 0.09);
 
-  /* Type: two fonts max. Exact fonts are still TODO (see TODO.md).
-     Interim: system serif for headings, clean system sans for body. */
-  --font-heading: Georgia, 'Times New Roman', serif;
-  --font-body: 'Segoe UI', Arial, -apple-system, Helvetica, sans-serif;
+  /* Type: exactly two fonts (decided): Fraunces for headings, Inter for body.
+     Both load from Google Fonts with display=swap in the three inner pages
+     (the cover is DONE and untouched, it keeps these system fallbacks). */
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
 
   /* Layout */
   --max-w: 1200px;           /* max content width */

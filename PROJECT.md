@@ -35,7 +35,7 @@ Navigation: only **About, Projects, Contact**.
 - Accent (used sparingly, e.g. small labels, hover, thin rules): burgundy `#7A1F2B`
 - Secondary grey: `#8A8A8A`
 - Lines: 1px hairline rules in `#1A1A1A` at low opacity to show the grid
-- Type: two fonts max. One serif or light sans for headings, one clean sans for body. Small uppercase letter-spaced labels (e.g. "PLAN", "SECTION") for metadata. (Exact fonts: TODO, decide in first session.)
+- Type: two fonts max. One serif or light sans for headings, one clean sans for body. Small uppercase letter-spaced labels (e.g. "PLAN", "SECTION") for metadata. (Decided: Fraunces for headings, Inter for body — Google Fonts, `display=swap`, system serif/sans fallbacks. Cover keeps system fonts, it is DONE.)
 - Max content width about 1200px, generous margins, section spacing about 96px on desktop
 - Images: full-width or two-column only. No rounded corners, no drop shadows, no decorative icons
 - Motion: none, or a very gentle fade-in on scroll. No parallax, no sliders that autoplay
@@ -91,4 +91,6 @@ Writing rules: short paragraphs, meaningful captions, no filler words.
 - Cover's "Projects" link points to projects.html (the project index); the cover design itself is untouched
 - "Next project" is hidden on the last entry of index.json; "Back to all projects" always shows
 - About page (`about.html`) driven by `projects/about.json`; any value still marked TODO is hidden, not printed; compact spacing (44-48px) instead of the project page's 96px rhythm
+- Fonts final: Fraunces (headings) + Inter (body) loaded from Google Fonts with `display=swap` and system fallbacks in `styles.css`; loaded on the three inner pages only, never on the immutable cover
+- Direction A "Drawing Sheet" (from DESIGN-IDEAS.md) implemented with only the caption-row pattern imported from Direction B: title-block strip, projects index as a drawing register, thin construction-lines / dimension ticks as the only decoration, scroll-tracked sheet code. Burgundy stays sparing (codes, hover, small markers)
 - The library study item on the about page links to project.html?p=library; about JSON is filled in Mohammed's exact wording, never paraphrased
