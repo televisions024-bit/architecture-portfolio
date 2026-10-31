@@ -206,6 +206,16 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   const where = ixProjects.findIndex(p => p.slug === slug);
   const nextEntry = ixProjects[where + 1];           // undefined at the end
 
+  /* Title block strip (Direction A): project name + its register sheet
+     code, both straight from index.json so new projects come free.   */
+  const thisEntry = ixProjects.find(p => p.slug === slug);
+  const tbName = doc.getElementById('tb-name');
+  const tbCode = doc.getElementById('tb-code');
+  if (tbName && thisEntry) tbName.textContent = thisEntry.title;
+  if (tbCode && thisEntry && thisEntry.sheet) {
+    tbCode.textContent = 'SHEET ' + thisEntry.sheet;
+  }
+
   const back = el('a', 'cover-link fade', 'Back to all projects');
   back.href = 'projects.html';
   back.style.display = 'inline-block';
@@ -431,6 +441,19 @@ if (aboutRoot) {
 
       aboutRoot.appendChild(main);
       initFades(document);
+
+      /* Title block strip (Direction A): About's sheet code is ALWAYS the
+         sheet after the last project in the register (1 project -> A-02).
+         Loading index.json failing is harmless: the default text stays.  */
+      fetch('projects/index.json')
+        .then(r => (r.ok ? r.json() : { projects: [] }))
+        .then(ix => {
+          const n = (ix.projects || []).length;
+          const code = document.getElementById('tb-code');
+          if (code) code.textContent =
+            'SHEET A-' + String(n + 2).padStart(2, '0') + ' · ABOUT';
+        })
+        .catch(() => { /* keep the default code */ });
     })
     .catch(err => {
       aboutRoot.innerHTML =

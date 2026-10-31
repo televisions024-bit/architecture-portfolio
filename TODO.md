@@ -8,6 +8,7 @@
 - [ ] I drop the real images in (see `ASSETS.md` for exact filenames, sizes and format)
 - [x] Fonts decided (2026-10-31): Fraunces + Inter from Google Fonts, `display=swap`, system fallbacks; cover keeps system fonts (untouched)
 - [ ] Review the filled page for the first time and approve it (then it becomes marked DONE in PROJECT.md section 2)
+- [ ] “Direction A” strip uses placeholder sheet furniture: scale text “SCALE 1:200 · OCT 2026”. Mohammed can give real scale/date values (or per-project ones in the project JSON)
 
 ## LATER — rest of the site
 - [ ] Contact page (link is already in the nav)

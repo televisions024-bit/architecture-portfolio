@@ -92,6 +92,56 @@ img { max-width: 100%; display: block; }
 }
 .site-nav a:hover { border-bottom-color: var(--accent); color: var(--accent); }
 
+/* ---------- Title block strip (Direction A "Drawing Sheet") ---------- */
+/* Slim fixed strip at the bottom of every page EXCEPT the cover:
+   page name | sheet code | scale + date. Hairline rule on top.
+   The sheet code is filled by script.js from projects/index.json,
+   so new projects get their code automatically.                 */
+body.tb { padding-bottom: 72px; }   /* room so the strip never covers text */
+.titleblock {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+  z-index: 20;
+}
+.tb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 44px;
+  overflow: hidden;
+}
+.tb-name {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;      /* long titles shorten, never wrap */
+}
+.tb-code {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.tb-side {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  white-space: nowrap;
+}
+@media (max-width: 719px) {
+  body.tb { padding-bottom: 56px; }
+  .tb-row { height: 40px; }            /* max 40px tall on the phone */
+  .tb-side { display: none; }          /* phone: name + sheet code only */
+  .tb-code { font-size: 10px; }
+}
+
 /* ---------- Small uppercase letter-spaced labels ---------- */
 /* e.g. "PLAN", "SECTION", metadata keys */
 .label {
