@@ -393,6 +393,14 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   object-fit: cover;
   border: 1px solid var(--rule);   /* framed like a small print */
 }
+/* pending thumbnails: the generic 220px IMAGE TODO block must behave
+   like the slot it replaces (112x64) or every register row renders
+   as a tall broken grey strip (a Finding from the audit) (audit fix)   */
+.reg-row .ph {
+  min-height: 0;
+  height: 64px;
+  overflow: hidden;
+}
 @media (max-width: 719px) {
   .reg-row {
     grid-template-columns: auto 1fr 88px;
@@ -407,6 +415,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   .reg-title { grid-area: title; font-size: 16px; }
   .reg-meta  { display: flex; gap: 10px; grid-area: meta; }
   .reg-thumb { grid-area: thumb; width: 88px; height: 56px; }
+  .reg-row .ph { height: 56px; }
 }
 
 /* ---------- Caption rows + construction lines (Direction A) ---------- */
