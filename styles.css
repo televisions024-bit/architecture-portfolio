@@ -46,6 +46,47 @@ body {
 
 img { max-width: 100%; display: block; }
 
+/* ---------- Decorative page backgrounds (added 2026-11-01) ----------
+   Fixed full-viewport pseudo-elements: never background-attachment:
+   fixed (that janks and breaks on phones). backgrounds.js supplies
+   the URLs and opacities from backgrounds.json; without JS these
+   layers show nothing, so the pages stay exactly as designed.
+   Cover: image full + flat off-white veil (text >= 4.5:1).
+   Inner pages: 6-10% visibility, behind all content.             */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;                                  /* image, below the veil */
+  background-image: var(--bg-image-phone, none);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--bg-opacity, 0.08);
+  filter: grayscale(1);                         /* decorative = desaturated */
+  pointer-events: none;
+}
+@media (min-width: 720px) {
+  body::before { background-image: var(--bg-image, none); }
+}
+body::after {                                  /* flat veil: cover page only */
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
+  opacity: var(--bg-veil, 0);
+  pointer-events: none;
+}
+/* backgrounds.json can allow one colored background (grayscale: false) */
+body.bg-colorize::before { filter: none; }
+/* data-saver visitors get the plain page */
+@media (prefers-reduced-data: reduce) {
+  body::before, body::after { display: none; }
+}
+@media print {
+  body::before, body::after { display: none; }   /* never print decorations */
+}
+
 /* Content width ruler + the hairline "grid" feel */
 .wrap {
   max-width: var(--max-w);
