@@ -15,7 +15,7 @@ Already done: #10 About sheet code, #11 dead CSS, #2 double-centring.
 - [x] #12 Bump placeholder and note font sizes to 11px (DESIGN-AUDIT.md #12). Approved.
 - [x] #13 Gallery thumbs natural height so portrait photos are not cropped (DESIGN-AUDIT.md #13). Approved. After the change, check the project page at desktop and phone widths and tell me in one line what changed.
 - [x] #14 Lightbox open fade, 180ms (DESIGN-AUDIT.md #14). Approved ONLY if it is fully disabled under prefers-reduced-motion. If it cannot be done that way, skip it and tell me.
-- [ ] Final: update TODO.md and PROJECT.md section 10, run node check-placeholders.js, report the result (placeholders are expected for now). Max 10 lines.
+- [x] Final: update TODO.md and PROJECT.md section 10, run node check-placeholders.js, report the result (placeholders are expected for now). Max 10 lines.
 
 ## Content still needed from me (do not invent anything)
 - TODO fields in projects/library.json, projects/index.json, projects/about.json
