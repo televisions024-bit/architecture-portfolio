@@ -9,7 +9,8 @@
   --bg:      #F5F3EF;   /* off-white background */
   --ink:     #1A1A1A;   /* near-black text and lines */
   --accent:  #7A1F2B;   /* burgundy — sparingly: labels, hover, thin rules */
-  --grey:    #8A8A8A;   /* secondary grey */
+  --grey:    #5E5E5E;   /* secondary grey — darkened from #8A8A8A on 2026-11-01
+                           so every grey text passes AA (>=4.5:1) on cream */
 
   /* 1px hairline rules showing the grid */
   --rule: rgba(26, 26, 26, 0.18);
