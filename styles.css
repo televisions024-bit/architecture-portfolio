@@ -308,8 +308,10 @@ figure { margin: 0; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 220px;
-  height: 100%;
+  min-height: 220px;     /* was also height:100% — that made the placeholder
+                            fill the whole figure and push the caption row
+                            over the row below (Direction A bug, fixed
+                            2026-11-01). min-height alone is correct.   */
   border: 1px solid var(--rule);
   border-left: 2px solid var(--accent);
   color: var(--grey);
