@@ -476,6 +476,7 @@ function initLightbox(doc) {
   }
   function close() {
     box.classList.remove('is-open');
+    box.style.opacity = '0';
     img.removeAttribute('src');      // (src = '' would re-request the page)
     if (lastFocus) { lastFocus.focus(); lastFocus = null; }
   }

@@ -274,8 +274,10 @@ figure { margin: 0; }
   background: rgba(245, 243, 239, 0.96);
   display: none;               /* shown by JS */
   z-index: 100;
+  opacity: 0;
+  transition: opacity 180ms ease;
 }
-.lightbox.is-open { display: flex; align-items: center; justify-content: center; }
+.lightbox.is-open { display: flex; align-items: center; justify-content: center; opacity: 1; }
 .lightbox figure { max-width: 92vw; max-height: 88vh; text-align: center; }
 .lightbox img {
   max-width: 92vw;
