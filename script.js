@@ -656,7 +656,7 @@ if (aboutRoot) {
           const n = (ix.projects || []).length;
           const code = document.getElementById('tb-code');
           if (code) code.textContent =
-            'SHEET A-' + String(n + 2).padStart(2, '0') + ' · ABOUT';
+            'SHEET A-' + String(n + 1).padStart(2, '0') + ' · ABOUT';
         })
         .catch(() => { /* keep the default code */ });
     })
