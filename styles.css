@@ -29,7 +29,7 @@
 }
 
 @media (min-width: 720px) {
-  :root { --side: calc((100vw - var(--max-w)) / 2 + 24px); }
+  :root { --side: 24px; }
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
