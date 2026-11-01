@@ -77,6 +77,27 @@ All from the same SketchUp model into D5 Render; export ~1920 px wide, then conv
   under 400 KB, background `#F5F3EF`.
 - No rounded corners, no borders baked into files (the site supplies its hairlines).
 
+## Replacing a page BACKGROUND with my own image (backgrounds, since 2026-11-01)
+
+Backgrounds are decorative only — they never enter project image slots. Three ways
+(no code edits in any of them):
+
+1. **My own photo:** name the file after the slot and drop it in
+   `images/backgrounds/cover.webp` (also `projects.webp`, `project.webp`, `about.webp`).
+   That file wins over everything, at both sizes. Tip: keep it wide, ~1920 px, and
+   expect the desaturation treatment; if you want your photo in color set
+   `"grayscale": false` for that slot in `backgrounds.json`.
+2. **Pick one of the 14 stock candidates:** open `backgrounds-preview.html`
+   (local server) and change `"selected"` in `backgrounds.json` to the candidate name.
+3. **Add a new candidate:** save `mypick-1920.webp` + `mypick-900.webp` (900 = phone)
+   into `images/backgrounds/`, add the name to `candidates` in `backgrounds.json`,
+   and add a credit line in `images/BACKGROUNDS.md` AND the `credits` block in
+   `backgrounds.json` (the about-page Credits section reads from it).
+
+Overlay strength: `"overlay"` per slot — cover 0.85 (flat veil, keeps text >= 4.5:1),
+inner pages 0.08 ("very low visibility"). Credits for the current picks ALSO appear
+in the about page's Credits section — keep the two files in step.
+
 ## Trimming note (important if you stop at the MVS)
 
 `projects/library.json` lists every file above. If a file was not produced, DELETE that object from the
