@@ -1,18 +1,27 @@
 # TODO.md — remaining work
 
-## NOW — Library project page
+## NOW — first target: produce the minimum viable set (see ASSETS.md, marked FIRST TARGET)
+- [ ] Long section `images/library/drawings/section-a-a.svg`
+- [ ] Ground-floor plan `images/library/drawings/plan-level-01.svg`
+- [ ] Circulation diagram `images/library/diagrams/concept-diagram-01.svg`
+- [ ] Hero render `images/library/renders/01-hero-exterior.webp`
+- [ ] Entrance `.../02-entrance-approach.webp` · Reading room `.../03-reading-room.webp`
+- [ ] Dusk view `.../06-dusk-view.webp` · Detail `.../07-detail.webp`
+- [ ] If stopping at the MVS: trim `projects/library.json` to only the files produced (ASSETS.md trimming note)
 - [x] Template page built and filled from `projects/library.json` (2026-10-31, placeholders intact)
 - [x] About page built on `about.html`, content filled from `projects/about.json` in Mohammed's wording (2026-10-31)
-- [ ] I (Mohammed) fill in all TODO fields in `projects/library.json` (title, location, program, year, concept text, captions)
-- [ ] I (Mohammed) send the contact details to replace the TODOs in `projects/about.json` (email, phone, city, LinkedIn) and the finished portfolio PDF URL — the about page shows those lines automatically once they are real
-- [ ] I drop the real images in (see `ASSETS.md` for exact filenames, sizes and format)
 - [x] Fonts decided (2026-10-31): Fraunces + Inter from Google Fonts, `display=swap`, system fallbacks; cover keeps system fonts (untouched)
-- [ ] Review the filled page for the first time and approve it (then it becomes marked DONE in PROJECT.md section 2)
-- [ ] “Direction A” strip uses placeholder sheet furniture: scale text “SCALE 1:200 · OCT 2026”. Mohammed can give real scale/date values (or per-project ones in the project JSON)
+
+## NEXT — text
+- [ ] Fill all TODO fields in `projects/library.json` (title, location, program, year, concept text, captions)
+- [ ] Fill `projects/index.json` title/year/type for the Library once Mohammed decides them
+- [ ] Send contact details for `projects/about.json` (email, phone, city, LinkedIn) + the finished portfolio PDF URL — the about page shows those lines automatically once real
+- [ ] Review the filled page and approve it (then it becomes DONE in PROJECT.md section 2)
 
 ## LATER — rest of the site
+- [ ] Second project page (add `projects/<slug>.json` + one entry in `projects/index.json` + images in `images/<slug>/`; no new HTML needed)
+- [ ] About photos: one sketch or physical-model photo for the about page (ideas in REFERENCES.md section 4)
+- [ ] Optional extras beyond the MVS: upper plan, cross section, elevations, 2nd interior/cutaway renders, massing diagram (ASSETS.md "Full target")
 - [ ] Contact page (link is already in the nav)
-- [ ] Second project page (add `projects/<slug>.json` + one entry in `projects/index.json` + images in `images/<slug>/` — see README; no new HTML needed)
-- [ ] Fill `projects/index.json` year/type title fields for the Library once Mohammed decides them
-- [ ] Contact page
-- [ ] Deployment: GitHub Pages or Netlify, free (README has the steps)
+- [ ] Deployment: GitHub Pages or Netlify, free (README has the steps). Note: OG image links resolve fully only after deploy
+- [ ] "Direction A" strip uses placeholder sheet text "SCALE 1:200 · OCT 2026" — give real scale/date values if wanted

@@ -103,3 +103,11 @@ JSON entries you don't fill (empty gallery entries break the register's counts).
 - Library of Congress (historic reading rooms, mostly "no known restrictions"): https://www.loc.gov/free-to-use/
 
 **None of these are to be embedded or downloaded into `images/` — they are for looking at, only.**
+
+---
+
+## Production status (2026-11-01)
+
+The drawing-idea table above became the production checklist in **ASSETS.md** ("FIRST TARGET =
+minimum viable set": long section → ground-floor plan → circulation diagram → hero render →
+entrance, reading room, dusk, detail). TODO.md's NOW block tracks those first.
