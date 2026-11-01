@@ -9,6 +9,9 @@
 7. Keep HTML/CSS/JS simple and commented; a beginner must be able to edit it.
 
 ## Skills
-- `PROJECT.md` always wins over any skill's own palette, fonts or style suggestions.
-- Use `design-taste-frontend` (taste-skill) and `ui-ux-pro-max` only for design/UI tasks Mohammed explicitly asks for.
+- PRECEDENCE: `PROJECT.md` first, then `DESIGN-IDEAS.md` Direction A (drawing sheet), then any skill. If a skill conflicts with those (palette, fonts, thin rules, decoration), ignore that skill rule and say so.
+- Use `emil-design-eng` for motion, hover/transition behavior, micro-interactions and UI polish. Use `find-animation-opportunities` BEFORE adding any motion; only add what it recommends and Direction A allows (low-motion site). Run `review-animations` after any motion change. Always respect `prefers-reduced-motion`.
+- Use impeccable `/audit`, `/critique` and `/polish` after a design task; use `/distill` when a page feels busy. Never let it add gradients, glassmorphism, icon rows or other decoration Direction A rules out.
+- Use `design-taste-frontend` and `ui-ux-pro-max` only for design/UI tasks Mohammed explicitly asks for.
 - Ponytail should be set to `lite` while doing creative design work.
+- At the start of every design/UI reply, state which skills you are using (e.g. "Skills: emil-design-eng, impeccable audit").
