@@ -440,12 +440,21 @@ function initLightbox(doc) {
     const f = figs[idx];
     if (!f) return;
     const im = f.querySelector('img');   // re-read: placeholders may have swapped in
-    const fc = f.querySelector('figcaption');
     if (!im) return;
     img.src = im.currentSrc || im.src;
     img.alt = im.alt || '';
+    /* Direction A captions live in .cap-row spans (code | title |
+       note), never in a figcaption - read those instead; the plain
+       figcaption stays as a fallback (audit fix: the old figcaption
+       lookup found nothing, so captions only showed "3 / 8 — ")   */
+    const row = f.querySelector('.cap-row');
+    const fallback = f.querySelector('figcaption');
+    const text = row
+      ? Array.from(row.querySelectorAll('.cap-code, .cap-title, .cap-note'))
+          .map(n => n.textContent).filter(Boolean).join(' ')
+      : (fallback ? fallback.textContent : '');
     const where = figs.length > 1 ? (idx + 1) + ' / ' + figs.length + ' — ' : '';
-    cap.textContent = where + (fc ? fc.textContent : '');
+    cap.textContent = where + text;
     box.classList.add('is-open');
   }
   function close() {
