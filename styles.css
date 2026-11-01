@@ -442,7 +442,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 .cap-row::before { left: 0; }
 .cap-row::after  { right: 0; }
 .cap-code {
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent);
@@ -450,7 +450,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 .cap-title { flex: 1 1 auto; }
 .cap-note {
   margin-left: auto;
-  font-size: 10.5px;
+  font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
