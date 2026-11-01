@@ -280,6 +280,22 @@ figure { margin: 0; }
 }
 .ph span { word-break: break-all; padding: 10px; }
 
+/* ---------- Stand-in stock photos (TEMP, see images/PLACEHOLDERS.md) ----------
+   script.js swaps these in while a real render file is missing.        */
+figure.has-ph { position: relative; }           /* anchor for the corner tag */
+.ph-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);                         /* burgundy, like every label */
+  background: var(--bg);
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+}
+
 /* ---------- Projects index as a DRAWING REGISTER (Direction A) ----------
    Rows like a sheet list, not cards: code | title | type | year | thumb.
    Driven by projects/index.json; 'sheet' gives the drawing code.

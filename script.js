@@ -98,9 +98,37 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     return n;
   }
 
+  /* TEMPORARY stand-in photos: if a real render file is missing, show a
+     free-license stock photo instead of the IMAGE TODO block, with a
+     warning tag on the image and a photo credit on the caption row.
+     If the real render exists, the stand-in is never used.
+     Full credits live in images/PLACEHOLDERS.md.
+     When all real renders exist, delete this map + the check script.  */
+  const PLACEHOLDERS = {
+    'images/library/renders/01-hero-exterior.webp':
+      { file: 'images/placeholders/placeholder-01-hero.webp',
+        credit: 'Galla_ph, Pexels' },
+    'images/library/renders/02-entrance-approach.webp':
+      { file: 'images/placeholders/placeholder-02-entrance.webp',
+        credit: 'Agung Pandit Wiguna, Pexels' },
+    'images/library/renders/03-reading-room.webp':
+      { file: 'images/placeholders/placeholder-03-reading-room.webp',
+        credit: 'Polina Zimmerman, Pexels' },
+    'images/library/renders/06-dusk-view.webp':
+      { file: 'images/placeholders/placeholder-04-dusk.webp',
+        credit: 'iramezatil, Pexels' },
+    'images/library/renders/07-detail.webp':
+      { file: 'images/placeholders/placeholder-05-detail.webp',
+        credit: 'Ricky Esquivel, Pexels' }
+  };
+
   /* an <img>, lazy-loaded; if the file does not exist yet, swap in
-     a clean "IMAGE TODO" block showing the exact filename to drop in */
-  function image(src, alt, eager) {
+     the stock stand-in (tagged "PLACEHOLDER - NOT MY WORK") for the
+     five renders above, or a clean "IMAGE TODO" block for everything
+     else, showing the exact filename to drop in.
+     capRow = the figure's caption row, so the credit line can be
+     appended to its end when a stand-in is used (hero gets a new row). */
+  function image(src, alt, eager, capRow) {
     if (!src) return elHTML('div', 'ph', '<span>IMAGE TODO</span>');
 
     const img = doc.createElement('img');
@@ -110,7 +138,28 @@ function buildProjectPage(doc, data, slug, ixProjects) {
 
     const ph = elHTML('div', 'ph',
       '<span>IMAGE TODO:<br><span>' + src + '</span></span>');
-    img.addEventListener('error', () => img.replaceWith(ph));
+    img.addEventListener('error', function onErr() {
+      img.removeEventListener('error', onErr);   // fire once: real -> stand-in -> TODO
+      const std = PLACEHOLDERS[src];
+      if (!std) { img.replaceWith(ph); return; }
+
+      /* stand-in: swap the file in and mark it clearly */
+      img.src = std.file;
+      const fig = img.parentElement;             // the hero/gallery figure
+      if (fig) {
+        fig.classList.add('has-ph');             // gives the tag a positioning anchor
+        fig.appendChild(el('span', 'ph-tag', 'PLACEHOLDER - NOT MY WORK'));
+      }
+      const credit = el('span', 'cap-note', 'Photo: ' + std.credit);
+      if (capRow) capRow.appendChild(credit);
+      else {                                     // hero has no caption row — add one
+        const row = el('div', 'cap-row');
+        row.appendChild(credit);
+        if (fig) fig.appendChild(row);
+      }
+      /* if the stand-in file is missing too, fall back to the TODO block */
+      img.addEventListener('error', () => img.replaceWith(ph));
+    });
     return img;
   }
 
@@ -122,14 +171,16 @@ function buildProjectPage(doc, data, slug, ixProjects) {
      Every drawing is captioned (PROJECT.md section 6, section 4). */
   function figure(src, alt, caption, cap) {
     const f = el('figure', 'fade');
-    if (src) f.appendChild(image(src, alt));
-    if (caption || cap) {
-      const row = el('div', 'cap-row');
+    /* the caption row is built first so image() can append a photo
+       credit to its end when a stand-in photo is used            */
+    const row = (caption || cap) ? el('div', 'cap-row') : null;
+    if (row) {
       if (cap && cap.code) row.appendChild(el('span', 'cap-code', cap.code));
       if (caption) row.appendChild(el('span', 'cap-title', caption));
       if (cap && cap.note) row.appendChild(el('span', 'cap-note', cap.note));
-      f.appendChild(row);
     }
+    if (src) f.appendChild(image(src, alt, false, row));
+    if (row) f.appendChild(row);
     return f;
   }
 

@@ -1,6 +1,7 @@
 # TODO.md — remaining work
 
 ## NOW — first target: produce the minimum viable set (see ASSETS.md, marked FIRST TARGET)
+- [x] Five temporary stand-in photos added + auto-swap + "PLACEHOLDER - NOT MY WORK" tag + photo credits; `node check-placeholders.js` guards publishing (2026-11-01, credits in images/PLACEHOLDERS.md). Drop a real render at its exact expected path and the stand-in disappears by itself
 - [ ] Long section `images/library/drawings/section-a-a.svg`
 - [ ] Ground-floor plan `images/library/drawings/plan-level-01.svg`
 - [ ] Circulation diagram `images/library/diagrams/concept-diagram-01.svg`
