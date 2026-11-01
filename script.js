@@ -433,8 +433,19 @@ function initLightbox(doc) {
 
   const img = box.querySelector('img');
   const cap = box.querySelector('figcaption');
+  const closeBtn = box.querySelector('.lightbox-close');
   const figs = Array.from(doc.querySelectorAll('.gallery figure'));
   let idx = -1;                      // which gallery image is open
+  let lastFocus = null;              // element to return focus to on close
+
+  /* screen-reader/keyboard contract (audit fix): a full-screen dialog
+     announces itself and hands focus in and out                    */
+  box.setAttribute('role', 'dialog');
+  box.setAttribute('aria-modal', 'true');
+  box.setAttribute('aria-label', 'Large image view');
+  box.addEventListener('keydown', e => {
+    if (e.key === 'Tab') e.preventDefault();   // one focusable inside: keep it
+  });
 
   function show() {
     const f = figs[idx];
@@ -457,9 +468,16 @@ function initLightbox(doc) {
     cap.textContent = where + text;
     box.classList.add('is-open');
   }
+  function openAt(i) {
+    lastFocus = doc.activeElement;   // remember the thumbnail that opened it
+    idx = i;
+    show();
+    closeBtn.focus();                // keyboard users land inside the dialog
+  }
   function close() {
     box.classList.remove('is-open');
-    img.src = '';                       // reset, frees memory
+    img.removeAttribute('src');      // (src = '' would re-request the page)
+    if (lastFocus) { lastFocus.focus(); lastFocus = null; }
   }
 
   box.addEventListener('click', close);
@@ -470,12 +488,19 @@ function initLightbox(doc) {
     if (e.key === 'ArrowLeft' && idx > 0) { idx--; show(); }
   });
 
-  /* every gallery figure is clickable; the fixture list keeps its
-     position, so ←/→ know where they are                       */
+  /* every gallery figure is clickable AND keyboard-operable now
+     (tab to a thumbnail, press Enter/Space); the fixture list keeps
+     its position, so ←/→ know where they are                       */
   figs.forEach((fig, i) => {
-    fig.addEventListener('click', () => {
+    fig.setAttribute('tabindex', '0');
+    fig.setAttribute('role', 'button');
+    const openOr = () => {
       if (!fig.querySelector('img')) return;    // still an IMAGE TODO block
-      idx = i; show();
+      openAt(i);
+    };
+    fig.addEventListener('click', openOr);
+    fig.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openOr(); }
     });
   });
 }
