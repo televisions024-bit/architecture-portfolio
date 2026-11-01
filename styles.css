@@ -34,7 +34,11 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/* smooth scrolling only for people who have not asked for reduced
+   motion (audit fix: the view jump from e.g. footer"Credits" counts) */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 
 body {
   font-family: var(--font-body);
