@@ -516,6 +516,26 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 }
 .about .cover-link { margin-top: 28px; }                 /* PDF link spacing */
 
+/* ---------- Shared cover-link styles (audit fix) ----------
+   The cover defines .cover-link in its own inline <style> (and keeps
+   doing so), but project END links and the about PDF link reuse the
+   class — without these shared rules they render as browser-blue
+   links and break the ink/burgundy language. Same values, minus the
+   cover-only margin-top.                                        */
+.cover-link {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 3px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.cover-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
 /* ---------- Footer ---------- */
 .site-footer {
   margin-top: var(--space-section);
