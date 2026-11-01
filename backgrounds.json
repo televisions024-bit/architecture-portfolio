@@ -1,0 +1,48 @@
+{
+  "_": "BACKGROUND SETTINGS — edit this file to swap any page background, no code changes needed. How it works: \"selected\" names a candidate that exists as images/backgrounds/<name>-1920.webp (desktop) and <name>-900.webp (phone). Add your own image: drop a file at images/backgrounds/<slot>.webp (e.g. cover.webp) — it then wins over \"selected\" and is used at both sizes. \"overlay\" = flat veil opacity on the COVER (0.85 keeps text well above 4.5:1 contrast) — on the three inner pages the same number is the background's overall visibility (department suggestion: 0.06-0.10). \"grayscale\": true keeps every background desaturated. Credits for every file: images/BACKGROUNDS.md. Preview: open backgrounds-preview.html on the local server.",
+
+  "slots": {
+    "cover": {
+      "candidates": [
+        "cover-01-lines",
+        "cover-02-facade",
+        "cover-03-stair-light",
+        "cover-04-brutalist",
+        "cover-05-courtyard"
+      ],
+      "selected": "cover-04-brutalist",
+      "overlay": 0.85,
+      "grayscale": true
+    },
+    "projects": {
+      "candidates": [
+        "projects-01-grid",
+        "projects-02-repeat",
+        "projects-03-blocks"
+      ],
+      "selected": "projects-01-grid",
+      "overlay": 0.08,
+      "grayscale": true
+    },
+    "project": {
+      "candidates": [
+        "project-01-stairs",
+        "project-02-shadow-stair",
+        "project-03-shadow-pattern"
+      ],
+      "selected": "project-02-shadow-stair",
+      "overlay": 0.08,
+      "grayscale": true
+    },
+    "about": {
+      "candidates": [
+        "about-01-minimal",
+        "about-02-wall",
+        "about-03-afternoon"
+      ],
+      "selected": "about-02-wall",
+      "overlay": 0.08,
+      "grayscale": true
+    }
+  }
+}
