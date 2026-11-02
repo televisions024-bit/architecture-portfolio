@@ -94,7 +94,7 @@ Backgrounds are decorative only — they never enter project image slots. Three 
    and add a credit line in `images/BACKGROUNDS.md` AND the `credits` block in
    `backgrounds-config.js` (the about-page Credits section reads from it).
 
-Overlay strength: `"overlay"` per slot — cover 0.85 (flat veil, keeps text >= 4.5:1),
+Overlay strength: `"overlay"` per slot — cover 0.6 (flat veil, ink text >= 4.5:1),
 inner pages 0.08 ("very low visibility"). Credits for the current picks ALSO appear
 in the about page's Credits section — keep the two files in step.
 

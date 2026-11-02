@@ -10,7 +10,9 @@
    - Add your own image: drop a file at
      images/backgrounds/<slot>.webp (e.g. cover.webp) - it then
      wins over "selected" and is used at both sizes.
-   - "overlay" = flat veil opacity on the COVER; on the three
+   - "overlay" = flat veil opacity on the COVER (0.6 = lowest value
+     that keeps the ink text >= 4.5:1 over the image; note the grey
+     kicker needs ~0.90 for its own 4.5:1); on the three
      inner pages the same number is the background's overall
      visibility (suggestion: 0.06-0.10).
    - "grayscale": true keeps every background desaturated.
@@ -48,7 +50,7 @@ window.BG_CONFIG = {
         "cover-05-courtyard"
       ],
       "selected": "cover-04-brutalist",
-      "overlay": 0.85,
+      "overlay": 0.6,
       "grayscale": true
     },
     "projects": {
