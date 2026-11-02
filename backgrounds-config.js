@@ -1,6 +1,26 @@
-{
-  "_": "BACKGROUND SETTINGS - edit this file to swap any page background, no code changes needed. How it works: \"selected\" names a candidate that exists as images/backgrounds/<name>-1920.webp (desktop) and <name>-900.webp (phone); swap it by changing the name. Add your own image: drop a file at images/backgrounds/<slot>.webp (e.g. cover.webp) - it then wins over \"selected\" and is used at both sizes. \"overlay\" = flat veil opacity on the COVER (0.85 keeps text well above 4.5:1 contrast); on the three inner pages the same number is the background's overall visibility (suggestion: 0.06-0.10). \"grayscale\": true keeps every background desaturated. \"credits\" feeds the Credits section on the about page - keep it in step with images/BACKGROUNDS.md when you add files. Preview: open backgrounds-preview.html on the local server.",
+/* ============================================================
+   backgrounds-config.js — BACKGROUND SETTINGS (the old
+   backgrounds.json, now a plain .js file so it also works when
+   you open the site directly (file://), not just on a server).
 
+   How it works — no code changes needed:
+   - "selected" names a candidate that exists as
+     images/backgrounds/<name>-1920.webp (desktop) and
+     <name>-900.webp (phone); swap it by changing the name.
+   - Add your own image: drop a file at
+     images/backgrounds/<slot>.webp (e.g. cover.webp) - it then
+     wins over "selected" and is used at both sizes.
+   - "overlay" = flat veil opacity on the COVER; on the three
+     inner pages the same number is the background's overall
+     visibility (suggestion: 0.06-0.10).
+   - "grayscale": true keeps every background desaturated.
+   - "credits" feeds the Credits section on the about page -
+     keep it in step with images/BACKGROUNDS.md when you add
+     files.
+
+   Preview: open backgrounds-preview.html on the local server.
+   ============================================================ */
+window.BG_CONFIG = {
   "credits": {
     "cover-01-lines":          { "author": "Dirar",                  "source": "https://www.pexels.com/photo/black-and-white-modern-architectural-structure-32035884/", "license": "Pexels License", "licenseUrl": "https://www.pexels.com/license/" },
     "cover-02-facade":         { "author": "Jan van der Wolf",       "source": "https://www.pexels.com/photo/abstract-architecture-view-of-modern-building-29158426/", "license": "Pexels License", "licenseUrl": "https://www.pexels.com/license/" },
@@ -62,4 +82,4 @@
       "grayscale": true
     }
   }
-}
+};

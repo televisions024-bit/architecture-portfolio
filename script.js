@@ -608,42 +608,39 @@ if (aboutRoot) {
       /* ---------- CREDITS (id=credits, footer links point here) ----------
          Page backgrounds are decorative stock photos, never Mohammed's
          work. Every SELECTED background is listed: photographer, source,
-         license - straight out of backgrounds.json ("credits" block), so
-         swapping a background updates the list with zero code changes.
-         If backgrounds.json is missing, the section drops itself away. */
+         license - straight out of backgrounds-config.js ("credits" block),
+         so swapping a background updates the list with zero code changes.
+         If backgrounds-config.js is missing, the section drops away. */
       const cr = sec('CREDITS');
       cr.id = 'credits';
       cr.appendChild(el('p', 'measure',
         'Background images are decorative stock photography, not my work. ' +
         'All drawings and renders are my own.'));
-      fetch('backgrounds.json')
-        .then(r => (r.ok ? r.json() : Promise.resolve(null)))
-        .then(bg => {
-          if (!bg || !bg.credits || !bg.slots) { cr.remove(); return; }
-          Object.keys(bg.slots).forEach(slot => {
-            const name = bg.slots[slot].selected;      // the file actually used
-            const c = bg.credits[name];
-            if (!c) return;                            // unknown file: not shown
-            const line = el('div', 'stage-row');
-            line.appendChild(el('p', 'label stage-label', slot));
-            const p = el('p', 'stage-items');
-            p.appendChild(el('span', '', c.author + ', ' + c.license + ' — '));
-            const a = document.createElement('a');
-            a.href = c.source;
-            a.textContent = 'photo page';
-            p.appendChild(a);
-            const l = document.createElement('a');
-            l.href = c.licenseUrl || c.source;
-            l.textContent = c.license;
-            p.appendChild(el('span', '', ' · '));
-            p.appendChild(l);
-            line.appendChild(p);
-            cr.appendChild(line);
-          });
-        })
-        .catch(() => {                                 // no config: hide section
-          cr.remove();
+      const bg = window.BG_CONFIG;   /* loaded by backgrounds-config.js */
+      if (!bg || !bg.credits || !bg.slots) {
+        cr.remove();
+      } else {
+        Object.keys(bg.slots).forEach(slot => {
+          const name = bg.slots[slot].selected;      // the file actually used
+          const c = bg.credits[name];
+          if (!c) return;                            // unknown file: not shown
+          const line = el('div', 'stage-row');
+          line.appendChild(el('p', 'label stage-label', slot));
+          const p = el('p', 'stage-items');
+          p.appendChild(el('span', '', c.author + ', ' + c.license + ' — '));
+          const a = document.createElement('a');
+          a.href = c.source;
+          a.textContent = 'photo page';
+          p.appendChild(a);
+          const l = document.createElement('a');
+          l.href = c.licenseUrl || c.source;
+          l.textContent = c.license;
+          p.appendChild(el('span', '', ' · '));
+          p.appendChild(l);
+          line.appendChild(p);
+          cr.appendChild(line);
         });
+      }
 
       aboutRoot.appendChild(main);
       initFades(document);

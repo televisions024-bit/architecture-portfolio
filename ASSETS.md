@@ -86,13 +86,13 @@ Backgrounds are decorative only — they never enter project image slots. Three 
    `images/backgrounds/cover.webp` (also `projects.webp`, `project.webp`, `about.webp`).
    That file wins over everything, at both sizes. Tip: keep it wide, ~1920 px, and
    expect the desaturation treatment; if you want your photo in color set
-   `"grayscale": false` for that slot in `backgrounds.json`.
+   `"grayscale": false` for that slot in `backgrounds-config.js`.
 2. **Pick one of the 14 stock candidates:** open `backgrounds-preview.html`
-   (local server) and change `"selected"` in `backgrounds.json` to the candidate name.
+   (local server) and change `"selected"` in `backgrounds-config.js` to the candidate name.
 3. **Add a new candidate:** save `mypick-1920.webp` + `mypick-900.webp` (900 = phone)
-   into `images/backgrounds/`, add the name to `candidates` in `backgrounds.json`,
+   into `images/backgrounds/`, add the name to `candidates` in `backgrounds-config.js`,
    and add a credit line in `images/BACKGROUNDS.md` AND the `credits` block in
-   `backgrounds.json` (the about-page Credits section reads from it).
+   `backgrounds-config.js` (the about-page Credits section reads from it).
 
 Overlay strength: `"overlay"` per slot — cover 0.85 (flat veil, keeps text >= 4.5:1),
 inner pages 0.08 ("very low visibility"). Credits for the current picks ALSO appear

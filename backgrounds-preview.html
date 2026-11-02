@@ -5,8 +5,8 @@
    python -m http.server 8000  →  http://localhost:8000/backgrounds-preview.html
    Shows every candidate for every slot side by side with its name
    (desaturated versions, same files the site uses). To pick one,
-   edit "selected" in backgrounds.json. Reads backgrounds.json and
-   images/backgrounds/*.{-1920,-900}.webp only — needs the server.
+   edit "selected" in backgrounds-config.js. Reads backgrounds-config.js
+   and images/backgrounds/*.{-1920,-900}.webp only.
    ============================================================ -->
 <html lang="en">
 <head>
@@ -33,14 +33,19 @@
   <h1>Backgrounds preview</h1>
   <p class="hint">Every candidate per slot, desaturated versions exactly as the site will show them.
      The border marks the current <b>selected</b>. To change: edit <b>selected</b> in <b>backgrounds.json</b> (or drop your own file at images/backgrounds/<slot>.webp). Credits: images/BACKGROUNDS.md.</p>
-  <div id="root">Loading backgrounds.json… (use the local server, not file://)</div>
+  <div id="root">Loading backgrounds-config.js…</div>
 
+<script src="backgrounds-config.js"></script>
 <script>
-fetch('backgrounds.json')
-  .then(r => r.json())
-  .then(cfg => {
-    const root = document.getElementById('root');
-    Object.keys(cfg.slots).forEach(slot => {
+(function () {
+  const cfg = window.BG_CONFIG;
+  const root = document.getElementById('root');
+  if (!cfg) {
+    root.innerHTML =
+      '<p style="color:#7A1F2B">Could not read BG_CONFIG — is backgrounds-config.js present?</p>';
+    return;
+  }
+  Object.keys(cfg.slots).forEach(slot => {
       const s = cfg.slots[slot];
       const h2 = document.createElement('h2');
       h2.textContent = slot + ' — selected: ' + s.selected + ' — overlay ' + s.overlay + (s.grayscale ? ' — grayscale' : '');
@@ -68,12 +73,7 @@ fetch('backgrounds.json')
       });
       root.appendChild(h2); root.appendChild(grid);
     });
-  })
-  .catch(err => {
-    document.getElementById('root').innerHTML =
-      '<p style="color:#7A1F2B">Could not load backgrounds.json (' + err.message + '). ' +
-      'Run the local server first: python -m http.server 8000</p>';
-  });
+})();
 </script>
 </body>
 </html>
