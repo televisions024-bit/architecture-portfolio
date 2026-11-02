@@ -36,6 +36,15 @@ then 4-5 more renders (entrance, TWO interiors: 03 + 04, dusk, detail), then ext
 | `images/library/drawings/elevation-north.svg` / `-south.svg` | Elevations | 4 DRAWINGS |
 | `images/library/diagrams/concept-diagram-02.svg` | Massing evolution (3-4 steps, same camera) | 3 CONCEPT |
 
+## Cover drawing (images/cover/hero.png)
+
+- The real cover drawing must be **black line on an off-white (or transparent) background** —
+  the cover page sets `mix-blend-mode: multiply` on this image so the page's decorative
+  background shows through the paper; black lines multiply with anything and stay black.
+  A fully opaque hero would simply hide the background, and mid-tone or white-on-black
+  art would go wrong under multiply.
+- Text, sizes and positions on the cover stay exactly as approved.
+
 ## Black-line style — every drawing/diagram, per REFERENCES.md
 
 - Ground `#F5F3EF` (same as the site background), lines near-black `#1A1A1A`, no shadows/gradient fills.
