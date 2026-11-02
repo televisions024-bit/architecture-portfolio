@@ -1,1 +1,2 @@
+2026-11-02: Cover-background fixes: config = backgrounds-config.js (file:// works, backgrounds.json deleted), cover hero mix-blend multiply, veil 0.85→0.6, ASSETS cover-art note [backgrounds-config.js, backgrounds.js, script.js, styles tags in 4 pages, index.html, ASSETS.md, backgrounds-preview.html]
 2026-11-01: Lightbox open fade, 180ms (#14) [styles.css, script.js]
