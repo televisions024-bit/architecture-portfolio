@@ -25,7 +25,12 @@
     }
     /* The hero PNG: full-bleed, drawing sits visually in the right
        half. object-position keeps it anchored to the right edge on
-       wide screens. Eager load — it is the whole page. */
+       wide screens. Eager load — it is the whole page.
+       mix-blend-mode: multiply lets the page's background image
+       show through the drawing's off-white paper; the black lines
+       multiply to black, so they stay black. The pseudo-element
+       layers sit at negative z-index directly under this image in
+       the root stacking context, so the blend target is them. */
     .cover img {
       position: absolute;
       inset: 0;
@@ -34,6 +39,7 @@
       object-fit: cover;
       object-position: center right;
       min-height: 100%;
+      mix-blend-mode: multiply;
     }
     /* Text sits in the empty left half, mid-height. */
     .cover-text {
