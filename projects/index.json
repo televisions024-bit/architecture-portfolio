@@ -1,0 +1,14 @@
+{
+  "_": "One entry per project, newest work last. This file drives BOTH projects.html (the drawing register) and the 'Next project' links at the bottom of every project page, so add every new project here. Thumbnail is shown as-is; missing files render as an IMAGE TODO block. The 'sheet' number is the drawing code shown in the title-block strip and the register - continue the sequence (A-01, A-02, ...) for every new project; the About page is always the sheet AFTER the last one.",
+
+  "projects": [
+    {
+      "slug": "library",
+      "title": "TODO: Library Proposal — final title",
+      "year": "TODO",
+      "type": "TODO: e.g. Institutional proposal",
+      "thumbnail": "images/library/renders/01-hero-exterior.webp",
+      "sheet": "A-01"
+    }
+  ]
+}
