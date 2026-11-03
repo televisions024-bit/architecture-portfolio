@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  ABOUT PAGE — personal info / skills (PROJECT.md section 4, item 2).
+  Empty on purpose: all content comes from projects/about.json
+  (still values marked TODO are hidden by script.js).
+  Compact spacing at his request, not the airy project-page one.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — Mohammed Huzefa</title>
+  <!-- Open Graph: how the link looks when shared by reviewers -->
+  <meta property="og:title" content="About — Mohammed Huzefa">
+  <meta property="og:description" content="Architecture student Mohammed Huzefa — internship portfolio 2024-27.">
+  <meta property="og:type" content="website">
+  <!-- Fonts (decided): Fraunces headings / Inter body, display=swap, system fallbacks in styles.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="about tb">
+  <!-- Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MOHAMMED <span>H.</span></a>
+      <nav class="site-nav">
+        <a href="about.html" aria-current="page">About</a>
+        <a href="projects.html">Projects</a>
+        <!-- Contact page comes later (see TODO.md); link stays here already -->
+        <a href="#" aria-disabled="true" onclick="return false" title="coming later">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Built from projects/about.json by script.js -->
+  <main id="about-root"></main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO 2024-27</span>
+      <span><a href="about.html#credits">Credits</a> <a href="index.html">Cover</a> · <a href="projects.html">Projects</a></span>
+    </div>
+  </footer>
+
+  <!-- Title block strip (Direction A): About's code is always one sheet
+       after the LAST project in projects/index.json (script.js counts) -->
+  <div class="titleblock">
+    <div class="wrap tb-row">
+      <span class="tb-name" id="tb-name">About</span>
+      <span class="tb-code" id="tb-code">SHEET — · ABOUT</span>
+      <span class="tb-side">SCALE 1:200 · OCT 2026</span>
+    </div>
+  </div>
+
+  <script src="backgrounds-config.js"></script><!-- background settings, must load first -->
+  <script src="script.js"></script>
+<script src="backgrounds.js" defer></script>
+</body>
+</html>

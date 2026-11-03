@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- ============================================================
+   backgrounds-preview.html — CHOOSE-BY-EYE page for Mohammed.
+   NOT linked from the site; open it locally on a server:
+   python -m http.server 8000  →  http://localhost:8000/backgrounds-preview.html
+   Shows every candidate for every slot side by side with its name
+   (desaturated versions, same files the site uses). To pick one,
+   edit "selected" in backgrounds-config.js. Reads backgrounds-config.js
+   and images/backgrounds/*.{-1920,-900}.webp only.
+   ============================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backgrounds preview — Mohammed Huzefa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #F5F3EF; color: #1A1A1A; padding: 32px 20px 64px; }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-weight: normal; font-size: 28px; margin-bottom: 4px; }
+  p.hint { color: #8A8A8A; font-size: 13px; margin-bottom: 40px; }
+  h2 { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: #7A1F2B; margin: 40px 0 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; }
+  figure { border: 1px solid rgba(26,26,26,0.18); background: #fff; }
+  figure.selected { border: 2px solid #7A1F2B; }
+  figure img { width: 100%; height: 200px; object-fit: cover; display: block; }
+  figcaption { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 10px; font-size: 12px; }
+  figcaption .name { font-weight: 600; }
+  .badge { color: #7A1F2B; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .err { color: #7A1F2B; padding: 8px 10px; font-size: 12px; }
+</style>
+</head>
+<body>
+  <h1>Backgrounds preview</h1>
+  <p class="hint">Every candidate per slot, desaturated versions exactly as the site will show them.
+     The border marks the current <b>selected</b>. To change: edit <b>selected</b> in <b>backgrounds.json</b> (or drop your own file at images/backgrounds/<slot>.webp). Credits: images/BACKGROUNDS.md.</p>
+  <div id="root">Loading backgrounds-config.js…</div>
+
+<script src="backgrounds-config.js"></script>
+<script>
+(function () {
+  const cfg = window.BG_CONFIG;
+  const root = document.getElementById('root');
+  if (!cfg) {
+    root.innerHTML =
+      '<p style="color:#7A1F2B">Could not read BG_CONFIG — is backgrounds-config.js present?</p>';
+    return;
+  }
+  Object.keys(cfg.slots).forEach(slot => {
+      const s = cfg.slots[slot];
+      const h2 = document.createElement('h2');
+      h2.textContent = slot + ' — selected: ' + s.selected + ' — overlay ' + s.overlay + (s.grayscale ? ' — grayscale' : '');
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      s.candidates.forEach(name => {
+        const fig = document.createElement('figure');
+        if (name === s.selected) fig.className = 'selected';
+        const img = document.createElement('img');
+        img.src = 'images/backgrounds/' + name + '-1920.webp';   // the real file the site uses
+        img.alt = name;
+        img.setAttribute('loading', 'lazy');
+        const cap = document.createElement('figcaption');
+        const n = document.createElement('span'); n.className = 'name'; n.textContent = name;
+        const b = document.createElement('span');
+        if (name === s.selected) { b.className = 'badge'; b.textContent = 'SELECTED'; }
+        cap.appendChild(n); cap.appendChild(b);
+        img.addEventListener('error', () => {
+          const e = document.createElement('div'); e.className = 'err';
+          e.textContent = 'file missing: images/backgrounds/' + name + '-1920.webp';
+          fig.replaceChild(e, img);
+        });
+        fig.appendChild(img); fig.appendChild(cap);
+        grid.appendChild(fig);
+      });
+      root.appendChild(h2); root.appendChild(grid);
+    });
+})();
+</script>
+</body>
+</html>

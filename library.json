@@ -1,0 +1,72 @@
+{
+  "slug": "library",
+  "title": "TODO: Library Proposal — final title",
+  "hero": {
+    "src": "images/library/renders/01-hero-exterior.webp",
+    "alt": "TODO: describe the hero exterior render in one line",
+    "lead": "TODO: one-line description of the project shown under the title"
+  },
+
+  "_": "Fill every TODO below. Values starting with TODO are open; delete TODO: and write the real content. Add or remove images inside the lists following the same shape. Optional \"scale\": \"1:200\" on any drawing/render/diagram becomes the note on its caption row.",
+
+  "meta": [
+    { "key": "Location", "value": "TODO: city / site" },
+    { "key": "Program",  "value": "Public library — TODO: floors, key spaces" },
+    { "key": "Year",     "value": "TODO" },
+    { "key": "Type",     "value": "TODO: e.g. Institutional / Academic proposal" },
+    { "key": "Tools",    "value": "D5 Render, AutoCAD, SketchUp, Photoshop" }
+  ],
+
+  "brief": "TODO: 2-3 short factual sentences about the project. No filler words.",
+
+  "concept": {
+    "paragraphs": [
+      "TODO: concept paragraph 1 (2-3 sentences).",
+      "TODO: concept paragraph 2 (2-3 sentences).",
+      "TODO: concept paragraph 3, only if truly needed."
+    ],
+    "diagrams": [
+      { "src": "images/library/diagrams/concept-diagram-01.svg",
+        "alt": "TODO: diagram 1 description", "caption": "TODO: caption for diagram 1" },
+      { "src": "images/library/diagrams/concept-diagram-02.svg",
+        "alt": "TODO: diagram 2 description", "caption": "TODO: caption for diagram 2" }
+    ]
+  },
+
+  "drawings": [
+    { "src": "images/library/drawings/plan-level-01.svg",
+      "alt": "TODO", "label": "PLAN — LEVEL 01", "caption": "TODO: what this plan shows" },
+    { "src": "images/library/drawings/plan-level-02.svg",
+      "alt": "TODO", "label": "PLAN — LEVEL 02", "caption": "TODO: what this plan shows" },
+    { "src": "images/library/drawings/section-a-a.svg",
+      "alt": "TODO", "label": "SECTION — A-A", "caption": "TODO: what this section shows" },
+    { "src": "images/library/drawings/section-b-b.svg",
+      "alt": "TODO", "label": "SECTION — B-B", "caption": "TODO: what this section shows" },
+    { "src": "images/library/drawings/elevation-north.svg",
+      "alt": "TODO", "label": "ELEVATION — NORTH", "caption": "TODO: what this elevation shows" },
+    { "src": "images/library/drawings/elevation-south.svg",
+      "alt": "TODO", "label": "ELEVATION — SOUTH", "caption": "TODO: what this elevation shows" }
+  ],
+
+  "gallery": [
+    { "src": "images/library/renders/02-entrance-approach.webp",
+      "alt": "TODO", "caption": "TODO: entrance / approach" },
+    { "src": "images/library/renders/03-reading-room.webp",
+      "alt": "TODO", "caption": "TODO: reading room interior" },
+    { "src": "images/library/renders/04-interior-2.webp",
+      "alt": "TODO", "caption": "TODO: second interior" },
+    { "src": "images/library/renders/05-section-cutaway.webp",
+      "alt": "TODO", "caption": "TODO: section / cutaway view" },
+    { "src": "images/library/renders/06-dusk-view.webp",
+      "alt": "TODO", "caption": "TODO: dusk view" },
+    { "src": "images/library/renders/07-detail.webp",
+      "alt": "TODO", "caption": "TODO: material or joint detail" }
+  ],
+
+  "closing": {
+    "src": "images/library/renders/01-hero-exterior.webp",
+    "alt": "TODO",
+    "caption": "TODO: closing image caption",
+    "_": "'Next project' and 'Back to all projects' links are generated from projects/index.json — no need for a link here."
+  }
+}
