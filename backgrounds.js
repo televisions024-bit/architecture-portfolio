@@ -39,9 +39,9 @@
   if (!cfg || !cfg.slots) return;
   const s = cfg.slots[slot];
   if (!s || !s.selected) return;
-  apply('images/backgrounds/' + slot + '.webp',      /* your override */
-        'images/backgrounds/' + s.selected + '-1920.webp',
-        'images/backgrounds/' + s.selected + '-900.webp', s);
+  apply('images/backgrounds/' + slot + '.webp',      /* optional local override */
+        s.desktopUrl || ('images/backgrounds/' + s.selected + '-1920.webp'),
+        s.phoneUrl || ('images/backgrounds/' + s.selected + '-900.webp'), s);
   /* probe runs first; on 404 falls straight through to fallback */
   function apply(overrideSrc, deskSrc, phoneSrc, set) {
     const probe = new Image();
