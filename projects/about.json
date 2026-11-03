@@ -1,0 +1,17 @@
+{
+  "intro": [
+    "I got into architecture because I like how buildings and public spaces look and how they feel to use. I am most interested in spaces like libraries and parks, where good design gives people comfort and makes the best use of the space.",
+    "I am detail-oriented and neat. I enjoy 3D modelling and rendering the most, and I like every stage of a project, from drafting to presentation boards."
+  ],
+  "looking_for": "I am looking for an architecture internship in any kind of studio. I want to learn how real projects run in a studio, build my modelling and rendering skills on live work, understand site work and coordination, and grow my portfolio.",
+  "education": [
+    "Diploma in Architecture Assistantship, KLE CIM Polytechnic"
+  ],
+  "skills": ["AutoCAD", "SketchUp", "D5 Render", "V-Ray", "Lumion", "Canva", "MS Word", "Excel", "AI render tools"],
+  "study_and_projects": [
+    { "stage": "2nd year", "items": ["1BHK and 3BHK houses", "Proposal of an architect's office and school"] },
+    { "stage": "3rd year", "items": ["Public library proposal (see Projects)"] }
+  ],
+  "contact": { "email": "TODO", "phone": "TODO", "city": "TODO", "linkedin": "TODO" },
+  "pdf_url": "TODO"
+}
