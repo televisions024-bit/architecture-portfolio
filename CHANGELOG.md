@@ -1,4 +1,5 @@
 2026-11-04: UI refinement applied (solid header, nav aria-current, About and project hierarchy); cache version 20261104b [index.html, about.html, project.html, projects.html, script.js, styles.css]
+2026-11-04: Cover experiment D1: closed-door cover built in door.html + door.css (wall, title left, closed 9:21 burgundy door right, no animation); index.html untouched [door.html, door.css, PROJECT.md]
 2026-11-04: Repo tidy: noindex meta + "Remove before sharing" comment in four <head>s, .gitignore added, .opencode/.agents untracked on disk [index.html, projects.html, project.html, about.html, .gitignore, TODO.md]
 2026-11-04: Cache-busting: added ?v=20261104 to all local CSS/JS links in the four HTML pages [index.html, projects.html, project.html, about.html, README.md]
 2026-11-02: Cover-background fixes: config = backgrounds-config.js (file:// works, backgrounds.json deleted), cover hero mix-blend multiply, veil 0.85→0.6, ASSETS cover-art note [backgrounds-config.js, backgrounds.js, script.js, styles tags in 4 pages, index.html, ASSETS.md, backgrounds-preview.html]

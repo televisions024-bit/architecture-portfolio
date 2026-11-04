@@ -81,6 +81,7 @@ Writing rules: short paragraphs, meaningful captions, no filler words.
 - Use the exact colors and spacing in section 5.
 
 ## 10. Decisions log (add a line for every new decision)
+- New interactive cover (DOOR-COVER.md, approved 2026-11-03): plaster wall with a burgundy door at the far right edge; built in a separate door.html + door.css until owner approval (task D5); overrides section 3 "no animation" for the cover only
 - Cover: static PNG, no animation
 - Navigation limited to About / Projects / Contact
 - Site follows reference PDF structure but with our own layout

@@ -1,0 +1,159 @@
+/* door.css — new interactive cover (task D1: CLOSED door only, no animation).
+   Palette per PROJECT.md section 5: wall #F5F3EF, ink #1A1A1A, burgundy #7A1F2B,
+   grey #8A8A8A. No gradients, no shadows, no rounded corners. */
+
+/* ---- Tunable sizes (change here, everything follows) ---- */
+:root {
+  --wall: #F5F3EF;        /* plaster off-white */
+  --plaster-dark: #EAE5DC; /* slightly darker surround around the door frame */
+  --ink: #1A1A1A;         /* text and hairlines */
+  --burgundy: #7A1F2B;    /* door leaf + ENTER label only */
+  --grey: #8A8A8A;        /* secondary labels */
+  --hairline: rgba(26, 26, 26, 0.18); /* low-opacity 1px lines */
+  --door-h: clamp(380px, 82vh, 900px); /* door height; width follows 9:21 */
+  --floor-h: 14px;        /* thin floor strip */
+  --frame-pad: 10px;      /* plaster surround thickness around the leaf */
+}
+
+/* ---- Base ---- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--wall);
+  color: var(--ink);
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Header / nav (same pattern as the other pages) ---- */
+.site-header { padding: 20px 0 0; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
+.site-nav { display: flex; gap: 28px; }
+.site-nav a {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.site-nav a:hover { color: var(--burgundy); }
+.site-nav a[aria-disabled="true"] { color: var(--grey); cursor: default; }
+
+/* ---- The wall: fills the rest of the screen, title left, door right ---- */
+.wall {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;      /* door sits on the floor strip */
+  justify-content: space-between;
+  position: relative;
+  padding-left: clamp(24px, 8vw, 120px);
+  padding-right: 0;           /* the wall ENDS at the door frame */
+  min-height: 0;
+}
+
+/* One horizontal reveal joint across the wall, level with the door head.
+   Door head = floor strip + frame (2 x pad + 2 x 1px border) + leaf. */
+.wall::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--floor-h) + var(--door-h) + 2 * var(--frame-pad) + 2px);
+  border-top: 1px solid var(--hairline);
+}
+
+/* ---- Title block (same three lines as the current cover) ---- */
+.title-block { padding-bottom: clamp(48px, 12vh, 140px); max-width: 640px; }
+.kicker {
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 18px;
+}
+.title-block h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 1.15;
+  /* Contrast check: #1A1A1A on #F5F3EF is about 15:1 — well above 4.5:1 */
+}
+.presenter { margin-top: 18px; font-size: 15px; color: var(--ink); }
+
+/* ---- Door zone: flush against the right edge of the wall ---- */
+.door-zone {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: calc(var(--door-h) + 2 * var(--frame-pad) + 2px);
+}
+
+/* ENTER label: small burgundy uppercase with a thin line, on the wall left of the door */
+.enter-label {
+  position: absolute;
+  right: calc(100% + 28px);
+  bottom: 50%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--burgundy);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.enter-label::after { content: ""; width: 48px; height: 1px; background: var(--burgundy); }
+
+/* The frame: 1px ink line around a slightly darker plaster surround */
+.door {
+  display: block;
+  padding: var(--frame-pad);
+  background: var(--plaster-dark);
+  border: 1px solid var(--ink);
+  height: 100%;
+}
+.door:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 3px; }
+
+/* The closed leaf: burgundy, 9:21 proportion */
+.leaf {
+  display: block;
+  height: var(--door-h);
+  aspect-ratio: 9 / 21;
+  background: var(--burgundy);
+  position: relative;
+}
+
+/* Handle: one slim vertical bar on the side away from the hinge (hinge = left) */
+.handle {
+  position: absolute;
+  right: 14%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 96px;
+  background: var(--wall); /* reads as light metal against the burgundy leaf */
+}
+
+/* ---- Floor: thin strip at the bottom of the wall ---- */
+.floor {
+  height: var(--floor-h);
+  background: var(--plaster-dark);
+  border-top: 1px solid var(--hairline);
+  flex-shrink: 0;
+}
+
+/* ---- Phone (under 720px): title on top, door below, still on the right ---- */
+@media (max-width: 719px) {
+  :root { --door-h: 55vh; }
+  .wall {
+    flex-direction: column;
+    align-items: flex-end;          /* door keeps to the right edge */
+    padding: 32px 0 0 16px;         /* 16px side padding on the text side */
+    gap: 40px;
+  }
+  .title-block { align-self: flex-start; padding-bottom: 0; padding-right: 16px; }
+  .enter-label { right: calc(100% + 16px); }
+}
