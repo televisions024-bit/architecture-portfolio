@@ -199,7 +199,7 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   }
 
   /* ---- 1 — HERO: full-width render + title + one-liner ---- */
-  const hero = el('section', 'section');
+  const hero = el('section', 'section project-hero');
   hero.dataset.part = 'TITLE';
   hero.style.paddingTop = '48px';
   const hw = el('div', 'wrap');
@@ -523,7 +523,7 @@ if (aboutRoot) {
     .then(d => {
       aboutRoot.innerHTML = '';
       const main = document.createElement('div');
-      main.className = 'wrap';
+      main.className = 'wrap about-layout';
 
       /* little local helpers (same ideas as the project page) */
       const el = (tag, cls, text) => {
@@ -542,9 +542,12 @@ if (aboutRoot) {
       const isTodo = (v) => !v || String(v).trim().split('=')[0].toUpperCase().startsWith('TODO');
 
       /* header + intro paragraphs */
-      const h = el('h1', 'index-title', 'About');
+      const h = el('h1', 'page-title', 'About');
       main.appendChild(h);
-      d.intro.forEach(t => main.appendChild(el('p', 'measure', t)));
+      d.intro.forEach(t => main.appendChild(el('p', 'measure about-intro', t)));
+      const introRule = el('div', 'dim-line');
+      introRule.style.marginTop = '28px';
+      main.insertBefore(introRule, main.children[main.children.length - d.intro.length]);
 
       /* looking for — its own short section */
       sec('LOOKING FOR').appendChild(el('p', 'measure', d.looking_for));

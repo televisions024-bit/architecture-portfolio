@@ -549,3 +549,150 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 }
 .site-footer a { color: var(--ink); text-decoration: none; }
 .site-footer a:hover { color: var(--accent); }
+
+/* ============================================================
+   UI REFINEMENT — 02 NOV 2026
+   Keeps the Drawing Sheet language; improves hierarchy, rhythm,
+   responsive behaviour and keyboard clarity. Cover is untouched.
+============================================================ */
+:root {
+  --max-w: 1240px;
+  --space-section: clamp(68px, 8vw, 112px);
+  --rule: rgba(26, 26, 26, .22);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.site-header {
+  background: #F5F3EF;
+}
+.site-header .wrap {
+  min-height: 62px;
+  align-items: center;
+}
+.brand {
+  font-size: 16px;
+  letter-spacing: .075em;
+}
+.site-nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 30px); }
+.site-nav a {
+  margin-left: 0;
+  padding: 7px 0 5px;
+  font-size: 10px;
+  letter-spacing: .19em;
+  transition: color .18s ease, border-color .18s ease;
+}
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.site-nav a[aria-disabled="true"] { opacity: .48; cursor: default; }
+
+/* Page introductions: a stronger title hierarchy without adding cards. */
+.page-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr);
+  align-items: end;
+  gap: 32px;
+  padding: clamp(54px, 8vw, 100px) 0 28px;
+  border-bottom: 1px solid var(--rule);
+}
+.page-intro .label { margin-bottom: 12px; }
+.page-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(42px, 7vw, 84px);
+  line-height: .98;
+  letter-spacing: -.035em;
+}
+.page-intro-note {
+  max-width: 34ch;
+  justify-self: end;
+  color: var(--grey);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* Drawing register: a measured index, not a stack of UI cards. */
+#projects-root, #index-root { min-height: 54vh; }
+#index-root > .wrap { padding-top: clamp(42px, 6vw, 76px); }
+#index-root .label { margin-bottom: 10px; }
+.index-title { font-size: clamp(34px, 4.5vw, 52px); letter-spacing: -.025em; margin-bottom: 28px; }
+.register { margin-top: 0; border-top: 1px solid var(--ink); }
+.reg-row {
+  min-height: 94px;
+  grid-template-columns: 76px minmax(180px, 1fr) minmax(170px, 230px) 72px 128px;
+  gap: clamp(10px, 1.8vw, 22px);
+  padding: 14px 12px;
+  margin: 0 -12px;
+  transition: background .2s ease, padding .2s ease;
+}
+.reg-row:hover { padding-left: 18px; }
+.reg-code { font-size: 10px; }
+.reg-title { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.25; }
+.reg-type, .reg-year { font-size: 10px; }
+.reg-thumb { width: 128px; height: 70px; filter: saturate(.78); transition: filter .2s ease; }
+.reg-row:hover .reg-thumb { filter: saturate(1); }
+.reg-row .ph { height: auto; min-height: 70px; }
+
+/* About page: clear intro, quiet column structure and readable rhythm. */
+.about-layout { padding-top: clamp(42px, 6vw, 72px); }
+.about-intro { max-width: 68ch; font-size: clamp(16px, 1.5vw, 19px); line-height: 1.85; }
+.about-intro + .about-intro { margin-top: 10px; }
+.about .section-tight { padding-top: clamp(38px, 5vw, 62px); }
+.about .section-tight > .label { display: block; margin-bottom: 12px; }
+.about .section-tight > .measure { line-height: 1.85; }
+.stage-row { grid-template-columns: minmax(120px, 190px) minmax(0, 1fr); gap: 24px; padding: 14px 0; }
+.stage-items { line-height: 1.8; }
+
+/* Project detail: stronger title and a wide, editorial hero image. */
+.project-hero { padding-top: clamp(40px, 6vw, 72px) !important; }
+.project-hero .proj-title { max-width: 16ch; font-size: clamp(38px, 6vw, 70px) !important; line-height: 1.02; letter-spacing: -.03em; }
+.project-hero .label { margin: 12px 0 24px; }
+.project-hero .fig-wide { margin-top: 34px; }
+.project-hero .fig-wide img { width: 100%; max-height: 680px; object-fit: cover; object-position: center; }
+.metadata { max-width: 760px; }
+.metadata div { padding: 13px 0; }
+.metadata dt { min-width: 130px; }
+.measure { line-height: 1.9; }
+.two-col, .gallery { column-gap: clamp(16px, 2.5vw, 32px); row-gap: 34px; }
+
+/* Figure captions and temporary image warnings remain sheet-like. */
+.cap-row { padding-top: 10px; gap: 6px 14px; }
+.ph-tag { top: 10px; left: 10px; }
+
+.site-footer { margin-top: clamp(72px, 9vw, 120px); padding: 24px 0 42px; }
+.site-footer .wrap { font-size: 10px; letter-spacing: .08em; line-height: 1.8; }
+.site-footer a { margin-left: 14px; text-underline-offset: 4px; }
+.tb-row { height: 48px; }
+
+@media (max-width: 719px) {
+  .site-header .wrap { min-height: 58px; align-items: center; }
+  .brand { font-size: 14px; }
+  .site-nav { gap: 13px; }
+  .site-nav a { font-size: 9px; letter-spacing: .11em; }
+  .page-intro { grid-template-columns: 1fr; gap: 18px; padding-top: 46px; }
+  .page-intro-note { justify-self: start; }
+  .reg-row {
+    grid-template-columns: auto minmax(0, 1fr) 84px;
+    padding: 13px 4px;
+    margin: 0 -4px;
+  }
+  .reg-row:hover { padding-left: 8px; }
+  .reg-thumb { width: 84px; height: 58px; }
+  .reg-row .ph { height: auto; min-height: 58px; }
+  .reg-type, .reg-year { font-size: 9px; letter-spacing: .1em; }
+  .stage-row { grid-template-columns: 1fr; gap: 5px; }
+  .project-hero .fig-wide { margin-top: 24px; }
+  .project-hero .fig-wide img { min-height: 240px; }
+  .metadata dt { min-width: 96px; }
+  .site-footer .wrap { display: grid; grid-template-columns: 1fr; }
+  .site-footer a:first-child { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
