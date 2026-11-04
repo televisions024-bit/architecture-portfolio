@@ -26,4 +26,5 @@
 - [ ] Optional extras beyond the MVS: upper plan, cross section, elevations, 2nd interior/cutaway renders, massing diagram (ASSETS.md "Full target")
 - [ ] Contact page (link is already in the nav)
 - [ ] Deployment: GitHub Pages or Netlify, free (README has the steps). Note: OG image links resolve fully only after deploy
+- [ ] Remove the noindex meta tag from the four pages before sharing the link, after check-placeholders.js passes
 - [ ] "Direction A" strip uses placeholder sheet text "SCALE 1:200 · OCT 2026" — give real scale/date values if wanted

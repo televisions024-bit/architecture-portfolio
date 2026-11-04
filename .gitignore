@@ -1,0 +1,7 @@
+.opencode/
+.agents/
+node_modules/
+*.zip
+git-report.txt
+.DS_Store
+Thumbs.db
