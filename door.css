@@ -1,159 +1,279 @@
-/* door.css — new interactive cover (task D1: CLOSED door only, no animation).
-   Palette per PROJECT.md section 5: wall #F5F3EF, ink #1A1A1A, burgundy #7A1F2B,
-   grey #8A8A8A. No gradients, no shadows, no rounded corners. */
+/* door.css — the "walk into the house" scenes (door.html).
+   Replaces the old CSS-drawn cover experiment (kept as rollback in git).
+   Palette per PROJECT.md section 5. No gradients, no glass, no shadows except
+   none at all. A beginner edits only the THEME block below and scenes.json. */
 
-/* ---- Tunable sizes (change here, everything follows) ---- */
+/* ============================================================
+   THEME — edit colours here
+   ============================================================ */
 :root {
-  --wall: #F5F3EF;        /* plaster off-white */
-  --plaster-dark: #EAE5DC; /* slightly darker surround around the door frame */
-  --ink: #1A1A1A;         /* text and hairlines */
-  --burgundy: #7A1F2B;    /* door leaf + ENTER label only */
-  --grey: #8A8A8A;        /* secondary labels */
-  --hairline: rgba(26, 26, 26, 0.18); /* low-opacity 1px lines */
-  --door-h: clamp(380px, 82vh, 900px); /* door height; width follows 9:21 */
-  --floor-h: 14px;        /* thin floor strip */
-  --frame-pad: 10px;      /* plaster surround thickness around the leaf */
+  /* Placeholder colours (used while the real scene art is missing) */
+  --ph-wall:   #E9E4DA;  /* flat plaster wall block     */
+  --ph-door:   #7A1F2B;  /* flat door leaf block        */
+  --ph-label:  #1A1A1A;  /* "PLACEHOLDER" note text     */
+
+  /* Text + accents */
+  --scene-text:    #1A1A1A;                 /* all text; >= 4.5:1 on the chips below */
+  --scene-accent:  #7A1F2B;                 /* burgundy, hover + focus only          */
+  --chip-bg:       #F5F3EF;                 /* solid chip behind every visible label */
+  --chip-text:     #1A1A1A;                 /* ink on chip ≈ 15:1                    */
+  --focus-ring:    #7A1F2B;                 /* visible focus outline colour          */
+
+  /* Door recolour (see .scene-leaf-tint). To change the door colour:
+     1. set --door-color to any hex,
+     2. --door-tint 0 keeps the image's own colour, 1 recolours it fully,
+        e.g. --door-color: #2B4A6B; --door-tint: 1; = deep blue door.  */
+  --door-color: #7A1F2B;
+  --door-tint:  0;   /* 0 = keep the photo's colour, 1 = full recolour */
+
+  /* Motion (all transitions after a scene change live here, <= 1.2s) */
+  --fade-ms:    450ms;  /* scene crossfade            */
+  --leaf-ms:    1050ms; /* door leaf swing, <= 1.1s   */
+  --camera-ms:  900ms;  /* camera push, <= 1.2s total */
 }
 
-/* ---- Base ---- */
+/* ============================================================
+   Base (same reset + type as the rest of the site)
+   ============================================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
-  background: var(--wall);
-  color: var(--ink);
+  background: var(--chip-bg);
+  color: var(--scene-text);
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;               /* the scenes fit the viewport; no scroll */
 }
 
-/* ---- Header / nav (same pattern as the other pages) ---- */
-.site-header { padding: 20px 0 0; }
-.wrap { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
-.site-nav { display: flex; gap: 28px; }
-.site-nav a {
-  color: var(--ink);
+/* Skip link: FIRST in the tab order, appears on focus */
+.skip-link {
+  position: fixed;
+  top: -48px;                     /* visible only when focused */
+  left: 16px;
+  z-index: 60;
+  padding: 10px 16px;
+  background: var(--chip-bg);
+  color: var(--scene-text);
   text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.site-nav a:hover { color: var(--burgundy); }
-.site-nav a[aria-disabled="true"] { color: var(--grey); cursor: default; }
-
-/* ---- The wall: fills the rest of the screen, title left, door right ---- */
-.wall {
-  flex: 1;
-  display: flex;
-  align-items: flex-end;      /* door sits on the floor strip */
-  justify-content: space-between;
-  position: relative;
-  padding-left: clamp(24px, 8vw, 120px);
-  padding-right: 0;           /* the wall ENDS at the door frame */
-  min-height: 0;
-}
-
-/* One horizontal reveal joint across the wall, level with the door head.
-   Door head = floor strip + frame (2 x pad + 2 x 1px border) + leaf. */
-.wall::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(var(--floor-h) + var(--door-h) + 2 * var(--frame-pad) + 2px);
-  border-top: 1px solid var(--hairline);
-}
-
-/* ---- Title block (same three lines as the current cover) ---- */
-.title-block { padding-bottom: clamp(48px, 12vh, 140px); max-width: 640px; }
-.kicker {
-  font-size: 13px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--grey);
-  margin-bottom: 18px;
-}
-.title-block h1 {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 400;
-  font-size: clamp(34px, 5vw, 64px);
-  line-height: 1.15;
-  /* Contrast check: #1A1A1A on #F5F3EF is about 15:1 — well above 4.5:1 */
-}
-.presenter { margin-top: 18px; font-size: 15px; color: var(--ink); }
-
-/* ---- Door zone: flush against the right edge of the wall ---- */
-.door-zone {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  height: calc(var(--door-h) + 2 * var(--frame-pad) + 2px);
-}
-
-/* ENTER label: small burgundy uppercase with a thin line, on the wall left of the door */
-.enter-label {
-  position: absolute;
-  right: calc(100% + 28px);
-  bottom: 50%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--burgundy);
   font-size: 12px;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+  border: 1px solid var(--scene-text);
+}
+.skip-link:focus-visible { top: 12px; outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+
+/* Top bar: name left, Index link right */
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  pointer-events: none;           /* the bar itself lets clicks through */
+}
+.top-bar a { pointer-events: auto; }
+.top-bar .who {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--scene-text);
+  background: var(--chip-bg);
+  padding: 6px 10px;
+}
+.top-bar .index-link {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--scene-text);
+  text-decoration: none;
+  background: var(--chip-bg);
+  padding: 10px;                  /* >= 44px tall tap target */
+  border: 1px solid transparent;
+}
+.top-bar .index-link:hover { color: var(--scene-accent); border-bottom-color: var(--scene-accent); }
+.top-bar .index-link:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+
+/* ============================================================
+   STAGE — a box with the image's own aspect ratio, sized to
+   COVER the viewport and centred, so % hotspots stay aligned.
+   ============================================================ */
+.viewport { position: fixed; inset: 0; overflow: hidden; }
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* portrait aspect set by JS via --stage-w/--stage-h in % of the viewport,
+     using max() so the stage always COVERS the screen in both axes */
+  width:  max(var(--stage-w, 9999vw), 1px);
+  height: max(var(--stage-h, 9999vw), 1px);
+  /* centre it; the camera (scale + translate, door -> hall only) goes on
+     the inner .camera so this centring transform is never disturbed */
+  transform: translate(-50%, -50%);
+}
+.camera { position: absolute; inset: 0; }
+
+/* The two scene layers, stacked; crossfade = opacity swap */
+.scene-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--fade-ms) ease;
+  pointer-events: none;           /* only the active layer receives clicks */
+}
+.scene-layer.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Each layer holds its scene image */
+.scene-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   PLACEHOLDER — flat block while scene art is missing
+   ============================================================ */
+.scene-ph {
+  position: absolute;
+  inset: 0;
+  background: var(--ph-wall);
+}
+.scene-ph .ph-door {
+  position: absolute;             /* positioned by JS from doorRect */
+  background: var(--ph-door);
+}
+.scene-ph .ph-note {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--chip-bg);
+  color: var(--ph-label);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  border: 1px solid var(--ph-door);
   white-space: nowrap;
 }
-.enter-label::after { content: ""; width: 48px; height: 1px; background: var(--burgundy); }
 
-/* The frame: 1px ink line around a slightly darker plaster surround */
-.door {
+/* ============================================================
+   HOTSPOTS — real <a>/<button> with VISIBLE text labels
+   ============================================================ */
+.hotspot {
+  position: absolute;             /* positioned by % rect from scenes.json */
+  min-width: 44px;                /* tap-target floor (spec + a11y) */
+  min-height: 44px;
+  background: none;
+  border: 0;
+  cursor: pointer;
   display: block;
-  padding: var(--frame-pad);
-  background: var(--plaster-dark);
-  border: 1px solid var(--ink);
-  height: 100%;
+  text-decoration: none;
 }
-.door:focus-visible { outline: 2px solid var(--burgundy); outline-offset: 3px; }
-
-/* The closed leaf: burgundy, 9:21 proportion */
-.leaf {
-  display: block;
-  height: var(--door-h);
-  aspect-ratio: 9 / 21;
-  background: var(--burgundy);
-  position: relative;
+.hotspot:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 4px;
 }
 
-/* Handle: one slim vertical bar on the side away from the hinge (hinge = left) */
-.handle {
+/* The visible label: solid chip, ink text, never hover-only */
+.hs-label {
   position: absolute;
-  right: 14%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 5px;
-  height: 96px;
-  background: var(--wall); /* reads as light metal against the burgundy leaf */
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 7px 12px;
+  white-space: nowrap;
+  border: 1px solid var(--scene-text);
+}
+.hotspot:hover .hs-label { color: var(--scene-accent); border-color: var(--scene-accent); }
+
+/* The whole door area is ALSO a button (Enter / Space works) */
+.hotspot.is-door .hs-label { bottom: 6px; }
+
+/* ============================================================
+   DOOR LEAF — crop of door-closed at doorRect; open = swing
+   ============================================================ */
+.scene-door-leaf-wrap {
+  position: absolute;             /* sized + placed by JS from doorRect */
+  perspective: 1200px;            /* gives the swing its depth */
+  transform-style: preserve-3d;
+}
+/* The closed leaf: JS sets background size/position to crop the image */
+.scene-door-leaf {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  transition: transform var(--leaf-ms) ease-in-out;
+  backface-visibility: hidden;
+}
+/* Recolour layer: blend the scene's door area towards --door-color.
+   --door-tint 0 keeps the image's own colour; 1 recolours fully. */
+.scene-door-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--door-color);
+  mix-blend-mode: color;          /* takes hue+sat of --door-color, keeps luminance */
+  opacity: var(--door-tint);      /* harmless at the default tint 0 */
+  pointer-events: none;
+}
+/* Open state: swing around the hinge edge (JS sets which edge + direction) */
+.is-open-swing .scene-door-leaf { transform: rotateY(-92deg); }
+
+/* ============================================================
+   CREDIT — shown small at the bottom of every scene
+   ============================================================ */
+.scene-credit {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--chip-bg);
+  color: var(--scene-text);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  padding: 4px 8px;
+  white-space: nowrap;
+  z-index: 40;
 }
 
-/* ---- Floor: thin strip at the bottom of the wall ---- */
-.floor {
-  height: var(--floor-h);
-  background: var(--plaster-dark);
-  border-top: 1px solid var(--hairline);
-  flex-shrink: 0;
+/* ============================================================
+   DEBUG (?debug=1) — outline every hotspot + always show labels
+   ============================================================ */
+body.debug .hotspot {
+  outline: 2px dashed var(--scene-accent);
+  background: rgba(122, 31, 43, 0.08);
+}
+body.debug .hotspot::after {
+  /* exact % rect, so the file values can be copied back to scenes.json */
+  content: attr(data-rect);
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: var(--chip-bg);
+  color: var(--scene-accent);
+  font-size: 10px;
+  padding: 2px 5px;
+  letter-spacing: 0.05em;
 }
 
-/* ---- Phone (under 720px): title on top, door below, still on the right ---- */
-@media (max-width: 719px) {
-  :root { --door-h: 55vh; }
-  .wall {
-    flex-direction: column;
-    align-items: flex-end;          /* door keeps to the right edge */
-    padding: 32px 0 0 16px;         /* 16px side padding on the text side */
-    gap: 40px;
-  }
-  .title-block { align-self: flex-start; padding-bottom: 0; padding-right: 16px; }
-  .enter-label { right: calc(100% + 16px); }
+/* No-JS visitors: plain list (nothing else on the page needs JS to exist) */
+
+/* ============================================================
+   REDUCED MOTION — instant swaps, no camera push, no leaf swing
+   (JS also reads this so the camera never runs at all)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .scene-layer { transition: none; }
+  .scene-door-leaf { transition: none; }
 }

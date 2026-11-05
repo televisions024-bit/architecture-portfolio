@@ -1,0 +1,29 @@
+{
+  "_": "Scenes for the door walkthrough (door.html). Rects are PERCENTAGES of the scene image: {x, y} top-left, w/h size as a percent of the whole image. Tune them by eye with door.html?debug=1 (outlines every hotspot + its label). Scene images are 1920x1080 webp; portrait variants (900x1600) are auto-detected as the same filename plus -portrait, e.g. hall-portrait.webp. Missing images render as PLACEHOLDER blocks.",
+
+  "credit": "Scene images: AI-generated, not photographs of my work",
+
+  "scenes": {
+    "door": {
+      "aspect": [16, 9],
+      "alt": "A closed burgundy door in a warm plaster wall, seen straight on",
+      "image": "images/scenes/door-closed.webp",
+      "openImage": "images/scenes/door-open.webp",
+      "doorRect": { "x": 62, "y": 12, "w": 14, "h": 76 },
+      "hinge": "left",
+      "hotspots": [
+        { "x": 62, "y": 12, "w": 14, "h": 76, "label": "Enter", "action": "open" }
+      ]
+    },
+    "hall": {
+      "aspect": [16, 9],
+      "alt": "A quiet hall with three labelled openings leading onward",
+      "image": "images/scenes/hall.webp",
+      "hotspots": [
+        { "x": 7,  "y": 30, "w": 18, "h": 52, "label": "Projects", "target": "projects.html" },
+        { "x": 41, "y": 30, "w": 18, "h": 52, "label": "About",    "target": "about.html" },
+        { "x": 75, "y": 30, "w": 18, "h": 52, "label": "Contact",  "target": "about.html#contact" }
+      ]
+    }
+  }
+}
