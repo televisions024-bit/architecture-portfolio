@@ -355,45 +355,47 @@ if (indexRoot) {
       const w = document.createElement('div');
       w.className = 'wrap';
 
+      /* the register header keeps its Direction A intro */
       w.appendChild(Object.assign(document.createElement('p'),
         { className: 'label', textContent: 'DRAWING REGISTER' }));
       w.appendChild(Object.assign(document.createElement('h2'),
         { className: 'index-title', textContent: 'All projects' }));
 
+      const projects = ix.projects || [];
+
+      /* One tall section per project (door task layout): big number,
+         title, year/type, big thumbnail — and the WHOLE section is a
+         link to the project page. Sheet codes stay in the head row. */
       const list = document.createElement('div');
-      list.className = 'register';
-      (ix.projects || []).forEach(p => {
-        /* the whole row is one link, like a line in a sheet list */
-        const row = document.createElement('a');
-        row.className = 'reg-row fade';
-        row.href = 'project.html?p=' + encodeURIComponent(p.slug);
+      list.className = 'proj-list';
 
-        const code = document.createElement('span');
-        code.className = 'reg-code';
-        code.textContent = p.sheet || '—';        // drawing code, e.g. A-01
-        row.appendChild(code);
+      projects.forEach((p, i) => {
+        const slot = document.createElement('a');
+        slot.className = 'proj-slot fade';
+        slot.href = 'project.html?p=' + encodeURIComponent(p.slug);
+        slot.dataset.index = String(i + 1);       // for the 1 / N counter
 
-        const title = document.createElement('h3');
-        title.className = 'reg-title';
-        title.textContent = p.title;
-        row.appendChild(title);
+        const cw = document.createElement('div'); // same wrap width as everything else
+        cw.className = 'wrap';
 
-        /* type + year: separate columns on desktop, one line on phone */
-        const meta = document.createElement('span');
-        meta.className = 'reg-meta';
-        const type = document.createElement('span');
-        type.className = 'reg-type';
-        type.textContent = p.type || '—';
-        const year = document.createElement('span');
-        year.className = 'reg-year';
-        year.textContent = p.year || '';
-        meta.appendChild(type);
-        meta.appendChild(year);
-        row.appendChild(meta);
+        /* head: big number left, sheet code right */
+        const head = document.createElement('div');
+        head.className = 'slot-head';
+        head.appendChild(Object.assign(document.createElement('span'),
+          { className: 'proj-num', textContent: String(i + 1).padStart(2, '0') }));
+        head.appendChild(Object.assign(document.createElement('span'),
+          { className: 'reg-code', textContent: 'SHEET ' + (p.sheet || '—') }));
+        cw.appendChild(head);
 
-        /* small framed thumbnail; missing file -> IMAGE TODO block */
+        /* title + the type / year line (TODO text shows as-is, like before) */
+        cw.appendChild(Object.assign(document.createElement('h3'),
+          { className: 'proj-title', textContent: p.title }));
+        cw.appendChild(Object.assign(document.createElement('p'),
+          { className: 'proj-meta', textContent: [p.type, p.year].filter(Boolean).join(' · ') || '\u00A0' }));
+
+        /* big thumbnail; missing file -> the usual IMAGE TODO block */
         const img = document.createElement('img');
-        img.className = 'reg-thumb';
+        img.className = 'proj-thumb';
         img.src = p.thumbnail;
         img.alt = p.title + ' — thumbnail';
         img.setAttribute('loading', 'lazy');
@@ -401,13 +403,35 @@ if (indexRoot) {
         ph.className = 'ph';
         ph.innerHTML = '<span>THUMB TODO:<br><span>' + p.thumbnail + '</span></span>';
         img.addEventListener('error', () => img.replaceWith(ph));
-        row.appendChild(img);
+        cw.appendChild(img);
 
-        list.appendChild(row);
+        slot.appendChild(cw);
+        list.appendChild(slot);
       });
+
       w.appendChild(list);
       indexRoot.appendChild(w);
       initFades(document);
+
+      /* fixed small counter "1 / N": updates with an IntersectionObserver
+         as a slot crosses the middle of the screen. Works with 1 project
+         (counter just says 1 / 1) and with 20.                              */
+      const counter = document.createElement('div');
+      counter.className = 'proj-counter';
+      counter.textContent = '1 / ' + projects.length;
+      document.body.appendChild(counter);
+
+      if ('IntersectionObserver' in window) {
+        const slots = list.querySelectorAll('.proj-slot');
+        const io = new IntersectionObserver(entries => {
+          entries.forEach(en => {
+            if (en.isIntersecting) {
+              counter.textContent = en.target.dataset.index + ' / ' + projects.length;
+            }
+          });
+        }, { rootMargin: '-40% 0px -50% 0px' });    // watches the middle band
+        slots.forEach(s => io.observe(s));
+      }
     })
     .catch(err => {
       indexRoot.innerHTML =

@@ -22,7 +22,7 @@
       anchor lives in the CONTACT section built by script.js (about.html
       has no static sections), so `ct.id = 'contact'` there; quick fade
       (350ms) then navigate.
-- [ ] STEP 5 SCROLLING PROJECTS PAGE — projects.html one tall section per
+- [x] STEP 5 SCROLLING PROJECTS PAGE — projects.html one tall section per
       project (big number, title, year/type, thumbnail, whole-section link,
       sheet code kept), fixed "1 / N" counter, IO fade/slide, proximity
       scroll-snap, reduced-motion opt-out, link to door.html#hall.

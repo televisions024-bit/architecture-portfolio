@@ -696,3 +696,107 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* ============================================================
+   SCROLLING PROJECTS INDEX — door task, 05 NOV 2026
+   One tall section per project, adapted from a reference studio
+   layout: big sheet number, title, year/type, big thumbnail —
+   and the WHOLE section is the link. Sheet codes from
+   projects/index.json stay on every slot. A small fixed
+   "1 / N" counter follows the scroll (IntersectionObserver,
+   no animation). Proximity scroll-snap settles gently near a
+   slot edge; reduced-motion visitors get NO snap and NO fades.
+============================================================ */
+html { scroll-snap-type: y proximity; }
+
+.proj-slot {
+  display: block;
+  min-height: 78vh;
+  padding: clamp(48px, 9vh, 120px) 0 56px;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  scroll-snap-align: start;
+}
+.proj-slot .wrap { padding-top: 0; }
+
+/* head row: big number left, sheet code right */
+.slot-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.proj-num {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(56px, 9vw, 120px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+}
+.proj-slot:hover .proj-num { color: var(--accent); }   /* the one hover accent */
+.slot-head .reg-code { white-space: nowrap; }
+
+.proj-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(30px, 4.6vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+/* type / year line under the title (may still be TODO land — shown as-is
+   exactly like the old register did) */
+.proj-meta {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 28px;
+}
+
+/* big thumbnail with a hairline frame; fades in on first view (.fade) */
+.proj-thumb {
+  width: 100%;
+  max-height: 72vh;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid var(--rule);
+  background: #EFEDE8;
+}
+.proj-slot .ph { min-height: 40vh; }
+
+/* fixed counter, sits just above the title-block strip */
+.proj-counter {
+  position: fixed;
+  left: var(--side);
+  bottom: 62px;
+  z-index: 21;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--bg);
+  padding: 5px 9px;
+  border: 1px solid var(--rule);
+}
+
+@media (max-width: 719px) {
+  .proj-slot { min-height: 66vh; padding: 44px 0 40px; }
+  .proj-num { font-size: clamp(48px, 14vw, 72px); }
+  .proj-title { font-size: clamp(26px, 7vw, 34px); }
+  .proj-slot .ph { min-height: 30vh; }
+  .proj-counter { bottom: 52px; }        /* above the 40px phone strip */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-snap-type: none; }         /* no snapping */
+  .proj-slot { scroll-snap-align: auto; }
+}
+
+@media print {
+  .proj-counter { display: none !important; }
+  .proj-slot { min-height: 0; break-inside: avoid; }
+}
