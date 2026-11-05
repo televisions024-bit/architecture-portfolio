@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!-- ============================================================
+  DOOR WALK-THROUGH — scenes live in scenes.json, colours in the
+  THEME block at the top of door.css. This file has no content.
+  Old CSS-drawn cover experiment is OUTDATED (git keeps it).
+  tip: open with door.html?debug=1 to tune hotspot rectangles.
+============================================================ -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,43 +14,40 @@
   <meta name="description" content="Architecture portfolio of Mohammed Huzefa, 2024-27. Architecture internship portfolio.">
   <!-- Fonts (decided): Fraunces headings / Inter body, display=swap, system fallbacks -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="door.css?v=20261104b">
+  <link rel="stylesheet" href="door.css?v=20261105">
 </head>
 <body>
 
-  <!-- Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) -->
-  <header class="site-header">
-    <div class="wrap">
-      <nav class="site-nav">
-        <!-- Contact page comes later (see TODO.md); About is live on about.html -->
-        <a href="about.html">About</a>
-        <a href="projects.html">Projects</a>
-        <a href="#" aria-disabled="true" onclick="return false" title="coming later">Contact</a>
-      </nav>
-    </div>
+  <!-- FIRST in tab order on every scene -->
+  <a class="skip-link" href="projects.html">Skip to projects</a>
+
+  <!-- Top bar: name left, Index (project list) right -->
+  <header class="top-bar">
+    <span class="who">Mohammed Huzefa — Architecture Portfolio 2024-27</span>
+    <a class="index-link" href="projects.html">Index</a>
   </header>
 
-  <!-- The cover: a plain plaster wall. Title on the empty LEFT, door at the far RIGHT edge. -->
-  <main class="wall">
-    <div class="title-block">
-      <p class="kicker">Portfolio 2024-27</p>
-      <h1>Architecture Internship Portfolio</h1>
-      <p class="presenter">Presented by Mohammed Huzefa</p>
-    </div>
-
-    <!-- The door is a real link, so keyboard Enter works with no JS (DOOR-COVER.md). -->
-    <div class="door-zone">
-      <span class="enter-label" aria-hidden="true">Enter</span>
-      <a href="projects.html" class="door" aria-label="Enter the portfolio: projects">
-        <span class="leaf">
-          <span class="handle"></span>
-        </span>
-      </a>
+  <!-- The stage and its two scene layers are filled by door.js -->
+  <main class="viewport">
+    <div class="stage" id="stage">
+      <div class="camera" id="camera">
+        <div class="scene-layer" id="layer-a"></div>
+        <div class="scene-layer" id="layer-b"></div>
+      </div>
+      <!-- honesty note; text comes from scenes.json -->
+      <p class="scene-credit" id="credit"></p>
     </div>
   </main>
 
-  <!-- Thin floor strip along the bottom of the wall -->
-  <div class="floor" aria-hidden="true"></div>
+  <!-- No-JS visitors: a plain list of the same destinations -->
+  <noscript>
+    <ul style="padding:110px 16px;font-family:'Inter','Segoe UI',Arial,sans-serif;font-size:16px;background:#F5F3EF;height:100vh">
+      <li style="margin-bottom:14px"><a href="projects.html">Projects</a> (skip the door)</li>
+      <li style="margin-bottom:14px"><a href="about.html">About</a></li>
+      <li><a href="about.html#contact">Contact</a></li>
+    </ul>
+  </noscript>
 
+  <script src="door.js?v=20261105"></script>
 </body>
 </html>

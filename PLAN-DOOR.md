@@ -7,11 +7,11 @@
       committed at dd25327, so no "wip: old CSS door" commit was needed; the
       dirty doc/sketch files from the previous session were committed first so
       the tag lands on a clean tree). This file created.
-- [ ] STEP 1 DATA + THEME — scenes.json (door + hall, hotspots, credit),
+- [x] STEP 1 DATA + THEME — scenes.json (door + hall, hotspots, credit),
       door.css with a single "THEME" variable block incl. door recolour
       (--door-color / --door-tint), ?debug=1 hotspot outlines, placeholder
       blocks when scene images are missing.
-- [ ] STEP 2 ENGINE — door.html + door.js: cover-sized stage, real
+- [x] STEP 2 ENGINE — door.html + door.js: cover-sized stage, real
       button/link hotspots, crossfade, camera transform (door -> hall only),
       #door/#hall hashes, skip link first in tab order, top bar, noscript
       list, next-scene preloading, contrast >= 4.5:1, reduced motion.

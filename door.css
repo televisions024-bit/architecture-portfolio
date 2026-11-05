@@ -119,11 +119,14 @@ body {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity var(--fade-ms) ease;
+  visibility: hidden;             /* hidden layers also leave the tab order */
+  transition: opacity var(--fade-ms) ease, visibility 0s linear var(--fade-ms);
   pointer-events: none;           /* only the active layer receives clicks */
 }
 .scene-layer.is-active {
   opacity: 1;
+  visibility: visible;
+  transition: opacity var(--fade-ms) ease, visibility 0s;
   pointer-events: auto;
 }
 
@@ -227,8 +230,8 @@ body {
   opacity: var(--door-tint);      /* harmless at the default tint 0 */
   pointer-events: none;
 }
-/* Open state: swing around the hinge edge (JS sets which edge + direction) */
-.is-open-swing .scene-door-leaf { transform: rotateY(-92deg); }
+/* Old camera swing value hook (hinge side comes from scenes.json) */
+.is-open-swing .scene-door-leaf { transform: rotateY(var(--swing, -92deg)); }
 
 /* ============================================================
    CREDIT — shown small at the bottom of every scene
@@ -276,4 +279,5 @@ body.debug .hotspot::after {
 @media (prefers-reduced-motion: reduce) {
   .scene-layer { transition: none; }
   .scene-door-leaf { transition: none; }
+  .skip-link:focus-visible { top: 12px; } /* focus reveal must stay instant-safe */
 }
