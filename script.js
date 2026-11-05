@@ -432,6 +432,18 @@ if (indexRoot) {
         }, { rootMargin: '-40% 0px -50% 0px' });    // watches the middle band
         slots.forEach(s => io.observe(s));
       }
+
+      /* scroll-snap wakes up on the visitor's FIRST real scroll only,
+         so the browser never snap-jumps the page while it loads */
+      const wake = () => {
+        document.documentElement.classList.add('snap-on');
+        window.removeEventListener('scroll', wake);
+        window.removeEventListener('wheel', wake);
+        window.removeEventListener('touchmove', wake);
+      };
+      window.addEventListener('scroll', wake, { passive: true });
+      window.addEventListener('wheel', wake, { passive: true });
+      window.addEventListener('touchmove', wake, { passive: true });
     })
     .catch(err => {
       indexRoot.innerHTML =
@@ -816,7 +828,6 @@ if (aboutRoot) {
         'local server — see README.md for how.</p></div>';
     });
 }
-
 /* ============================================================
    GENTLE FADE-IN on scroll — the only allowed motion
    (PROJECT.md section 5). Off when the visitor prefers

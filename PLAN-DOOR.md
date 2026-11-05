@@ -29,8 +29,13 @@
 - [x] STEP 6 VIEWER — the existing initLightbox upgraded in place: zoom
       (wheel / +/- / double click / pinch), pan drag, fullscreen button,
       visible prev/next, swipe, Esc, focus trap, counter + caption kept.
-- [ ] STEP 7 PHONES — portrait scene images when the viewport is portrait;
-      screenshot check at 375 / 768 / 1440 where a headless browser allows.
+- [x] STEP 7 PHONES — portrait scene image used when the viewport is
+      portrait and images/scenes/<name>-portrait.webp exists; snap was
+      additionally armed only after the first real scroll (Chrome jumped
+      to the first slot on load). Headless Chromium clamps the window to
+      a 500px minimum, so 375 was tested as a 500px canvas crop; true
+      500 / 768 / 1440 verified by screenshot (door, hall, ?debug,
+      projects incl. reduced motion, project page).
 - [ ] STEP 8 LINK-UP — one "Enter" link in index.html to door.html (nothing
       else), cache-bust ?v= bump on touched pages, extend
       check-placeholders.js with scene placeholders, run it, update TODO.md

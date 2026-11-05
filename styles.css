@@ -759,8 +759,11 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
    "1 / N" counter follows the scroll (IntersectionObserver,
    no animation). Proximity scroll-snap settles gently near a
    slot edge; reduced-motion visitors get NO snap and NO fades.
-============================================================ */
-html { scroll-snap-type: y proximity; }
+##============ */
+/* Snap is switch-proofed: html gets .snap-on only after the visitor's
+   first REAL scroll (script.js), so the browser never snap-jumps the
+   page on load and reduced-motion visitors never snap at all.      */
+html.snap-on { scroll-snap-type: y proximity; }
 
 .proj-slot {
   display: block;
@@ -845,7 +848,7 @@ html { scroll-snap-type: y proximity; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-snap-type: none; }         /* no snapping */
+  html.snap-on { scroll-snap-type: none; }  /* no snapping */
   .proj-slot { scroll-snap-align: auto; }
 }
 
