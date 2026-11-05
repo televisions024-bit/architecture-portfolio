@@ -233,6 +233,13 @@ body {
 /* Old camera swing value hook (hinge side comes from scenes.json) */
 .is-open-swing .scene-door-leaf { transform: rotateY(var(--swing, -92deg)); }
 
+/* Hall opening click: the whole viewport fades out (<= 0.4s) before the
+   browser navigates. The next page loads fresh, nothing to reset. */
+.opening .viewport { opacity: 0; transition: opacity 350ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  .opening .viewport { opacity: 1; transition: none; }
+}
+
 /* ============================================================
    CREDIT — shown small at the bottom of every scene
    ============================================================ */

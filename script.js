@@ -587,6 +587,7 @@ if (aboutRoot) {
 
       /* contact details: only the lines that are filled in */
       const ct = sec('CONTACT');
+      ct.id = 'contact';   // door.html hall links to about.html#contact
       const rows = [
         ['EMAIL', d.contact.email, 'mailto:data'],
         ['PHONE', d.contact.phone, null],

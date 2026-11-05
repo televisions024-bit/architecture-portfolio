@@ -15,12 +15,13 @@
       button/link hotspots, crossfade, camera transform (door -> hall only),
       #door/#hall hashes, skip link first in tab order, top bar, noscript
       list, next-scene preloading, contrast >= 4.5:1, reduced motion.
-- [ ] STEP 3 DOOR — leaf rotation (crop of door-closed, rotateY round the
+- [x] STEP 3 DOOR — leaf rotation (crop of door-closed, rotateY round the
       hinge), reveals door-open, camera push into hall; sessionStorage
       "seen" starts repeat visits at the hall; graceful crossfade fallback.
-- [ ] STEP 4 HALL — Projects / About / Contact openings; add the missing
-      `id="contact"` anchor (it lives in the CONTACT section built by
-      script.js, not in about.html); quick fade then navigate.
+- [x] STEP 4 HALL — Projects / About / Contact openings; the contact
+      anchor lives in the CONTACT section built by script.js (about.html
+      has no static sections), so `ct.id = 'contact'` there; quick fade
+      (350ms) then navigate.
 - [ ] STEP 5 SCROLLING PROJECTS PAGE — projects.html one tall section per
       project (big number, title, year/type, thumbnail, whole-section link,
       sheet code kept), fixed "1 / N" counter, IO fade/slide, proximity

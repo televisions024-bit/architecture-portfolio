@@ -140,6 +140,17 @@ function makeHotspot(h) {
   if (h.target) a.href = h.target;            // <a> hotspots navigate
   a.style.cssText = rectCSS(h);
 
+  /* hall openings: quick fade (<= 0.4s) THEN navigate, no camera move.
+     Reduced motion skips the fade entirely. */
+  if (h.target && !h.action) {
+    a.addEventListener('click', function (e) {
+      if (REDUCED) return;                    // default navigation, instant
+      e.preventDefault();
+      document.body.classList.add('opening'); // door.css fades the viewport
+      setTimeout(function () { location.href = h.target; }, 360);
+    });
+  }
+
   const label = document.createElement('span');
   label.className = 'hs-label';
   label.textContent = h.label;
