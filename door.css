@@ -1,30 +1,45 @@
 /* door.css — the "walk into the house" scenes (door.html).
-   Replaces the old CSS-drawn cover experiment (kept as rollback in git).
-   Palette per PROJECT.md section 5. No gradients, no glass, no shadows except
-   none at all. A beginner edits only the THEME block below and scenes.json. */
+   The scenes are DRAWN here in plain HTML/CSS (no image files needed);
+   if a real scene photo exists in images/scenes/ it wins automatically
+   (door.js swaps the CSS scene out for it). A beginner edits only the
+   THEME block below and scenes.json. */
 
 /* ============================================================
    THEME — edit colours here
    ============================================================ */
 :root {
-  /* Placeholder colours (used while the real scene art is missing) */
-  --ph-wall:   #E9E4DA;  /* flat plaster wall block     */
-  --ph-door:   #7A1F2B;  /* flat door leaf block        */
-  --ph-label:  #1A1A1A;  /* "PLACEHOLDER" note text     */
+  /* Plaster hall (both scenes share these) */
+  --wall:       #E4DCCB;                 /* warm beige lime plaster       */
+  --wall-shade: #C9BFA8;                 /* darker: far walls + tile shade*/
+  --floor:      #CDC6B6;                 /* pale warm-grey stone          */
+  --joint:      rgba(60, 50, 40, 0.30);  /* stone tile joints             */
+  --light:      rgba(255, 222, 160, 0.22); /* window-light bands          */
+
+  /* Door: leaf AND frame follow --door, so change it in ONE place.
+     (color-mix just mixes --door with near-black; safe fallbacks below) */
+  --door:      #7A1F2B;                /* THE door colour                */
+  --door-dark: #4f121a;                /* restored by color-mix below    */
+  --frame:     #56151e;                /* restored by color-mix below    */
+  --door-dark: color-mix(in srgb, var(--door) 62%, #1c0509);
+  --frame:     color-mix(in srgb, var(--door) 55%, #1c0509);
+  --brass-1:   #8A6A2F;                /* handle brass, dark end         */
+  --brass-2:   #E8CE8B;                /* handle brass, highlight end    */
+
+  /* Warm light inside the open doorway / hall openings */
+  --glow: rgba(255, 214, 150, 0.55);
 
   /* Text + accents */
-  --scene-text:    #1A1A1A;                 /* all text; >= 4.5:1 on the chips below */
-  --scene-accent:  #7A1F2B;                 /* burgundy, hover + focus only          */
-  --chip-bg:       #F5F3EF;                 /* solid chip behind every visible label */
-  --chip-text:     #1A1A1A;                 /* ink on chip ≈ 15:1                    */
-  --focus-ring:    #7A1F2B;                 /* visible focus outline colour          */
+  --scene-text:   #1A1A1A;                  /* all text; >= 4.5:1 on chips */
+  --scene-accent: #7A1F2B;                  /* burgundy, hover + focus     */
+  --chip-bg:      #F5F3EF;                  /* solid chip behind labels    */
+  --chip-text:    #1A1A1A;                  /* ink on chip is about 15:1   */
+  --focus-ring:   #7A1F2B;                  /* visible focus outline       */
 
-  /* Door recolour (see .scene-leaf-tint). To change the door colour:
-     1. set --door-color to any hex,
-     2. --door-tint 0 keeps the image's own colour, 1 recolours it fully,
-        e.g. --door-color: #2B4A6B; --door-tint: 1; = deep blue door.  */
+  /* Door recolour (see .scene-door-tint) — only matters when the real
+     door-closed.webp IMAGE is used, never for the CSS-drawn door.
+     0 keeps the photo's own colour, 1 recolours it fully.            */
   --door-color: #7A1F2B;
-  --door-tint:  0;   /* 0 = keep the photo's colour, 1 = full recolour */
+  --door-tint:  0;
 
   /* Motion (all transitions after a scene change live here, <= 1.2s) */
   --fade-ms:    450ms;  /* scene crossfade            */
@@ -36,6 +51,7 @@
    Base (same reset + type as the rest of the site)
    ============================================================ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+button { font: inherit; }
 body {
   background: var(--chip-bg);
   color: var(--scene-text);
@@ -104,11 +120,8 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  /* portrait aspect set by JS via --stage-w/--stage-h in % of the viewport,
-     using max() so the stage always COVERS the screen in both axes */
-  width:  max(var(--stage-w, 9999vw), 1px);
-  height: max(var(--stage-h, 9999vw), 1px);
-  /* centre it; the camera (scale + translate, door -> hall only) goes on
+  /* width/height are set by door.js to cover the viewport */
+  /* centred; the camera (scale + translate, door -> hall only) goes on
      the inner .camera so this centring transform is never disturbed */
   transform: translate(-50%, -50%);
 }
@@ -130,7 +143,7 @@ body {
   pointer-events: auto;
 }
 
-/* Each layer holds its scene image */
+/* Each layer holds its scene image (when a real photo exists) */
 .scene-img {
   position: absolute;
   inset: 0;
@@ -138,32 +151,213 @@ body {
   height: 100%;
   object-fit: cover;
 }
+.scene-img[hidden] { display: none; }   /* until the photo truly loads */
 
 /* ============================================================
-   PLACEHOLDER — flat block while scene art is missing
+   CSS-DRAWN SCENES — the backdrop every scene starts with.
+   door.js appends them first; a real scene photo simply covers
+   them, so both paths work with the same code.
    ============================================================ */
-.scene-ph {
+/* one shared plaster-noise texture: an inline SVG (feTurbulence),
+   static, no external file — used by wall AND door leaf */
+.scene-art { position: absolute; inset: 0; overflow: hidden; }
+.noise {
   position: absolute;
   inset: 0;
-  background: var(--ph-wall);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  background-size: 140px 140px;
+  opacity: 0.10;
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
-.scene-ph .ph-door {
-  position: absolute;             /* positioned by JS from doorRect */
-  background: var(--ph-door);
-}
-.scene-ph .ph-note {
+
+/* ---- DOOR SCENE ---- */
+.d-wall  { position: absolute; inset: 0; background: var(--wall); }
+/* three skewed window-light bands on the left third, fading right */
+.d-light {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--chip-bg);
-  color: var(--ph-label);
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 10px 14px;
-  border: 1px solid var(--ph-door);
-  white-space: nowrap;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 37%;                     /* stops where the door frame starts */
+  pointer-events: none;
+}
+.d-light span {
+  position: absolute;
+  top: -10%;
+  height: 120%;
+  transform: skewX(-18deg);       /* static skew: a raking window light */
+  background: linear-gradient(to right, transparent, var(--light) 45%, transparent);
+}
+.d-light span:nth-child(1) { left: 4%;  width: 9%; opacity: 1;    }
+.d-light span:nth-child(2) { left: 17%; width: 8%; opacity: 0.7;  }
+.d-light span:nth-child(3) { left: 29%; width: 7%; opacity: 0.4;  }  /* fades toward the door */
+
+/* stone floor: bottom 9% of the stage, tile joints in one gradient */
+.d-floor {
+  position: absolute;
+  left: 0; right: 0;
+  top: 91%; bottom: 0;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0, transparent calc(6% - 1px), var(--joint) calc(6% - 1px), var(--joint) 6%),
+    linear-gradient(to bottom, var(--wall-shade), var(--floor) 40%);
+  border-top: 1px solid var(--joint);
+}
+/* thin lighter threshold strip sitting under the doorway */
+.d-threshold {
+  position: absolute;
+  left: 35%; right: auto; width: 30%;
+  top: 90.4%; height: 0.7%;
+  background: rgba(245, 240, 228, 0.75);
+}
+
+/* deep burgundy frame: x 36.5-63.5, y 2.7-91 (all scene %) */
+.d-frame {
+  position: absolute;
+  left: 36.5%; top: 2.7%;
+  width: 27%;   height: 88.3%;
+  background: var(--frame);
+}
+/* thin inner bevel on the frame opening */
+.d-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 2px rgba(255, 235, 210, 0.14);
+}
+
+/* the lit hall seen THROUGH the doorway (behind the leaf) */
+.d-open-room {
+  position: absolute;
+  left: 37.8%; top: 5.5%;
+  width: 24.4%; height: 85.4%;
+  background:
+    radial-gradient(ellipse at 50% 62%, var(--glow), transparent 72%),
+    linear-gradient(to bottom,
+      var(--wall) 0 76%,                  /* far beige wall   */
+      var(--wall-shade) 76% 82%,          /* floor line shade */
+      var(--floor) 82%);                  /* floor continues  */
+}
+.d-open-room::after {            /* a brighter centre to the glow */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 58%, rgba(255, 236, 200, 0.35), transparent 55%);
+}
+
+/* THE LEAF (CSS-drawn): x 37.8-62.2, y 5.5-90.9, hinge LEFT */
+.scene-door-leaf-wrap {          /* sized + placed by door.js from doorRect */
+  position: absolute;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+.d-leaf {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;   /* hinge on the LEFT (scenes.json) */
+  background:
+    /* vertical wood grain: dark + light streaks of varying alpha */
+    repeating-linear-gradient(90deg,
+      rgba(0, 0, 0, 0.12) 0 2px,
+      rgba(0, 0, 0, 0.03) 2px 5px,
+      rgba(255, 255, 255, 0.05) 5px 7px,
+      rgba(0, 0, 0, 0.06) 7px 9px,
+      transparent 9px 13px),
+    var(--door);
+  box-shadow: inset 0 0 26px var(--door-dark);   /* slightly darker at edges */
+  transition: transform var(--leaf-ms) ease-in-out;
+  backface-visibility: hidden;
+}
+.d-leaf .noise { opacity: 0.07; }               /* faint grain noise too */
+/* handle: slim brass bar, right of centre (hinge is left) */
+.d-handle {
+  position: absolute;
+  left: 89.5%;                    /* of the LEAF = x 60% of the stage */
+  top: 33.5%;                     /* of the LEAF = y 34-66% of the stage */
+  width: 2.9%;                    /* about 0.7% of the stage */
+  height: 38%;
+  background: linear-gradient(90deg, var(--brass-1), var(--brass-2) 30%, var(--brass-1) 65%, #5e4518);
+}
+.d-handle::before {              /* one highlight line on the brass */
+  content: "";
+  position: absolute;
+  left: 30%; top: 0; bottom: 0;
+  width: 1px;
+  background: rgba(255, 250, 230, 0.85);
+}
+/* darken overlay while the leaf turns (opacity only, cheap) */
+.d-leaf-shade {
+  position: absolute;
+  inset: 0;
+  background: var(--door-dark);
+  opacity: 0;
+  transition: opacity var(--leaf-ms) ease-in-out;
+}
+
+/* Open state: swing around the hinge edge, direction from scenes.json */
+.is-open-swing .scene-door-leaf { transform: rotateY(var(--swing, -92deg)); }
+.is-open-swing .d-leaf {
+  transform: rotateY(-78deg);     /* the CSS door leans just clear of the frame */
+}
+.is-open-swing .d-leaf-shade { opacity: 0.45; }
+
+/* Honeymoon rules for the photo leaf: recolour layer (THEME) */
+.scene-door-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--door-color);
+  mix-blend-mode: color;
+  opacity: var(--door-tint);
+  pointer-events: none;
+}
+
+/* ---- HALL SCENE (same wall / floor variables) ---- */
+.d-ceiling {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 20%;
+  background: linear-gradient(to bottom, rgba(26, 22, 18, 0.30), transparent);
+  pointer-events: none;
+}
+/* hall openings are DRAWN from the hotspot rects in scenes.json, so the
+   frames and the click targets can never drift apart (door.js sets %)   */
+.d-opening {
+  position: absolute;             /* left/top/width/height come from scenes.json */
+  background: var(--frame);
+}
+.d-opening::after {              /* soft warm glow inside each opening */
+  content: "";
+  position: absolute;
+  inset: 4%;
+  background:
+    radial-gradient(ellipse at 50% 55%, var(--glow), transparent 70%),
+    linear-gradient(to bottom, var(--wall) 0 70%, var(--wall-shade) 70% 78%, var(--floor) 78%);
+}
+/* floor with PERSPECTIVE tile joints: a flat gridded plane rotated back.
+   A static CSS 3D plane: only transform, no animation.                 */
+.hall-floor {
+  position: absolute;
+  left: 0; right: 0;
+  top: 91%; bottom: 0;
+  overflow: hidden;
+  background: var(--floor);
+  border-top: 1px solid var(--joint);
+}
+.hall-floor .tile-plane {
+  position: absolute;
+  left: -50%; right: -50%;
+  height: 260%;
+  top: 0;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0, transparent calc(100% / 9 - 1px), var(--joint) calc(100% / 9 - 1px),
+      var(--joint) calc(100% / 9)),
+    repeating-linear-gradient(0deg,
+      transparent 0, transparent 58px, var(--joint) 58px, var(--joint) 59px),
+    var(--floor);
+  transform: perspective(240px) rotateX(-62deg);  /* joints converge to the BACK (top) of the floor */
+  transform-origin: 50% 0;
 }
 
 /* ============================================================
@@ -205,43 +399,8 @@ body {
 .hotspot.is-door .hs-label { bottom: 6px; }
 
 /* ============================================================
-   DOOR LEAF — crop of door-closed at doorRect; open = swing
-   ============================================================ */
-.scene-door-leaf-wrap {
-  position: absolute;             /* sized + placed by JS from doorRect */
-  perspective: 1200px;            /* gives the swing its depth */
-  transform-style: preserve-3d;
-}
-/* The closed leaf: JS sets background size/position to crop the image */
-.scene-door-leaf {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  transition: transform var(--leaf-ms) ease-in-out;
-  backface-visibility: hidden;
-}
-/* Recolour layer: blend the scene's door area towards --door-color.
-   --door-tint 0 keeps the image's own colour; 1 recolours fully. */
-.scene-door-tint {
-  position: absolute;
-  inset: 0;
-  background: var(--door-color);
-  mix-blend-mode: color;          /* takes hue+sat of --door-color, keeps luminance */
-  opacity: var(--door-tint);      /* harmless at the default tint 0 */
-  pointer-events: none;
-}
-/* Old camera swing value hook (hinge side comes from scenes.json) */
-.is-open-swing .scene-door-leaf { transform: rotateY(var(--swing, -92deg)); }
-
-/* Hall opening click: the whole viewport fades out (<= 0.4s) before the
-   browser navigates. The next page loads fresh, nothing to reset. */
-.opening .viewport { opacity: 0; transition: opacity 350ms ease; }
-@media (prefers-reduced-motion: reduce) {
-  .opening .viewport { opacity: 1; transition: none; }
-}
-
-/* ============================================================
-   CREDIT — shown small at the bottom of every scene
+   CREDIT — shown only while a scene PHOTO is actually in use
+   (door.js unhides it; the CSS-drawn scenes need no credit)
    ============================================================ */
 .scene-credit {
   position: absolute;
@@ -256,6 +415,7 @@ body {
   white-space: nowrap;
   z-index: 40;
 }
+.scene-credit[hidden] { display: none; }
 
 /* ============================================================
    DEBUG (?debug=1) — outline every hotspot + always show labels
@@ -277,7 +437,12 @@ body.debug .hotspot::after {
   letter-spacing: 0.05em;
 }
 
-/* No-JS visitors: plain list (nothing else on the page needs JS to exist) */
+/* Hall opening click: the whole viewport fades out (<= 0.4s) before the
+   browser navigates. The next page loads fresh, nothing to reset. */
+.opening .viewport { opacity: 0; transition: opacity 350ms ease; }
+@media (prefers-reduced-motion: reduce) {
+  .opening .viewport { opacity: 1; transition: none; }
+}
 
 /* ============================================================
    REDUCED MOTION — instant swaps, no camera push, no leaf swing
@@ -286,5 +451,5 @@ body.debug .hotspot::after {
 @media (prefers-reduced-motion: reduce) {
   .scene-layer { transition: none; }
   .scene-door-leaf { transition: none; }
-  .skip-link:focus-visible { top: 12px; } /* focus reveal must stay instant-safe */
+  .d-leaf, .d-leaf-shade { transition: none; }
 }

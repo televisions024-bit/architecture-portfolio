@@ -71,22 +71,42 @@ function sizeStage(scene) {
 }
 
 /* ============================================================
-   Placeholder block while scene art is missing
+   CSS scene art: the backdrop EVERY scene starts with, drawn in
+   plain HTML/CSS (styles live in door.css, no image files).
+   A real scene photo is layered on top, so when it loads it
+   simply covers this art — "image wins" needs no extra code.
    ============================================================ */
-function makePlaceholder(scene, name) {
-  const ph = document.createElement('div');
-  ph.className = 'scene-ph';
-  if (name === 'door' && scene.doorRect) {
-    const d = document.createElement('div');   // flat door-colour block
-    d.className = 'ph-door';
-    d.style.cssText = rectCSS(scene.doorRect);
-    ph.appendChild(d);
-  }
-  const note = document.createElement('div');
-  note.className = 'ph-note';
-  note.textContent = 'PLACEHOLDER SCENE — NOT FINAL ART';
-  ph.appendChild(note);
-  return ph;
+function addArt(parent, cls, css) {
+  const el = document.createElement('div');
+  el.className = cls;
+  if (css) el.style.cssText = css;
+  parent.appendChild(el);
+  return el;
+}
+
+/* door scene: wall, window-light bands, floor, frame, lit room */
+function buildDoorArt(layer) {
+  const art = addArt(layer, 'scene-art');
+  addArt(art, 'd-wall');
+  addArt(art, 'd-light').innerHTML = '<span></span><span></span><span></span>';
+  addArt(art, 'd-floor');
+  addArt(art, 'd-threshold');
+  addArt(art, 'd-frame');
+  addArt(art, 'd-open-room');
+  addArt(art, 'noise');
+}
+
+/* hall scene: same wall/floor, openings drawn FROM the hotspot
+   rects in scenes.json, so frames and click targets can't drift */
+function buildHallArt(layer, scene) {
+  const art = addArt(layer, 'scene-art');
+  addArt(art, 'd-wall');
+  (scene.hotspots || []).forEach(function (h) {
+    addArt(art, 'd-opening', rectCSS(h));
+  });
+  addArt(art, 'hall-floor').innerHTML = '<div class="tile-plane"></div>';
+  addArt(art, 'd-ceiling');
+  addArt(art, 'noise');
 }
 
 /* ============================================================
@@ -104,15 +124,23 @@ function buildLeaf(scene, tok) {
   leaf.appendChild(Object.assign(document.createElement('div'), { className: 'scene-door-tint' }));
   wrap.appendChild(leaf);
 
+  /* the CSS-drawn leaf shows straight away and CAN swing already
+     (d-leaf + handle + shade, styles in door.css); the real photo
+     covers it when it loads, so the image always wins           */
+  const cssLeaf = document.createElement('div');
+  cssLeaf.className = 'd-leaf';
+  cssLeaf.innerHTML =
+    '<div class="d-handle"></div><div class="d-leaf-shade"></div><div class="noise"></div>';
+  leaf.appendChild(cssLeaf);
+  wrap.dataset.armed = '1';                    // leaf ready -> swing allowed
+
   const src = variantOf(scene.image);
   loadImg(src, tok, function (url) {
     if (url) {
       // the background is the WHOLE scene image; sizeLeaf() offsets it so the
       // leaf box shows exactly the door's slice (true even after resizes)
       leaf.style.backgroundImage = 'url("' + url + '")';
-      wrap.dataset.armed = '1';               // leaf art ready -> swing allowed
-    } else {
-      leaf.style.background = 'var(--ph-door)'; // flat block, no swing
+      cssLeaf.remove();                        // photo wins over the CSS leaf
     }
   });
   return wrap;
@@ -167,32 +195,38 @@ function makeHotspot(h) {
   return a;
 }
 
-/* ============================================================
-   Scene layer build: image (or placeholder) -> leaf -> hotspots
-   ============================================================ */
 function buildLayer(layer, scene, name) {
   layer.innerHTML = '';
   const tok = ++token;           // invalidate any pending image callbacks
 
-  /* 1 — the scene visual. The door scene always shows its OPEN image
-     behind the closed leaf; every other scene shows its own image. */
+  /* 1 - the CSS-drawn scene always goes in first (all door.css) */
+  if (name === 'door') buildDoorArt(layer);
+  else buildHallArt(layer, scene);
+
+  /* 2 - a real scene photo on top: it only shows once it has
+     actually loaded, so the CSS art is never blankly covered   */
   const bgSrc = variantOf(name === 'door' ? scene.openImage : scene.image);
   const bgImg = document.createElement('img');
   bgImg.className = 'scene-img';
   bgImg.alt = scene.alt || '';
-  const bgPh = makePlaceholder(scene, name);
+  bgImg.hidden = true;           // unhidden by the load callback only
   layer.appendChild(bgImg);
   loadImg(bgSrc, tok, function (url) {
-    if (url) { bgImg.src = url; layer.dataset.artOk = '1'; }
-    else bgImg.replaceWith(bgPh);              // graceful placeholder
+    if (url) {
+      bgImg.src = url;
+      bgImg.hidden = false;
+      const credit = document.getElementById('credit');
+      if (credit) credit.hidden = false; // credit only when a photo is used
+    }
   });
 
-  /* 2 — the closed leaf sits over the door area (door scene only) */
+  /* 3 - the closed leaf sits over the door area (door scene only) */
   if (name === 'door' && scene.doorRect) layer.appendChild(buildLeaf(scene, tok));
 
-  /* 3 — hotspots on top */
+  /* 4 - hotspots on top */
   (scene.hotspots || []).forEach(function (h) { layer.appendChild(makeHotspot(h)); });
 }
+
 
 /* ============================================================
    Scene switch: crossfade (or an instant swap for reduced motion).
@@ -233,10 +267,9 @@ window.addEventListener('hashchange', function () {
 
 /* ============================================================
    THE DOOR — click / Enter / Space rotates the closed leaf
-   around its hinge (<= 1.1s), revealing door-open, then the
-   camera pushes into the hall (<= 1.2s), then a crossfade.
-   Fallback: when art is missing or reduced motion is on, a plain
-   crossfade switches scenes instead of the swing + push.
+   around its hinge (<= 1.1s), revealing the lit room behind,
+   then the camera pushes into the hall (<= 1.2s), then a
+   crossfade. Reduced motion: a plain crossfade instead.
    ============================================================ */
 function openDoor() {
   if (busy) return;
@@ -245,10 +278,10 @@ function openDoor() {
 
   const scene = data.scenes.door;
   const wrap = stage.querySelector('.scene-door-leaf-wrap');
-  const layer = layers[current];
-  const artReady = layer.dataset.artOk === '1' && wrap && wrap.dataset.armed === '1';
 
-  if (REDUCED || !artReady) { show('hall'); return; }   // graceful fallback
+  // the CSS leaf is armed as soon as it exists, so the swing always
+  // works; only reduced motion falls back to a plain crossfade
+  if (REDUCED || !wrap || wrap.dataset.armed !== '1') { show('hall'); return; }
 
   // swing: rotate around the hinge edge (set in scenes.json)
   const leaf = wrap.querySelector('.scene-door-leaf');
@@ -308,7 +341,9 @@ window.addEventListener('resize', onResize);
    ============================================================ */
 function init(d) {
   data = d;
-  document.getElementById('credit').textContent = data.credit;
+  const credit = document.getElementById('credit');
+  credit.textContent = data.credit;
+  credit.hidden = true; // unhidden ONLY when a real scene photo loads
 
   let start = location.hash.slice(1);
   if (!data.scenes[start]) {
@@ -336,10 +371,12 @@ fetch('scenes.json')
   .then(function (r) { if (!r.ok) throw new Error('not-found'); return r.json(); })
   .then(init)
   .catch(function (err) {
-    stage.innerHTML =
-      '<div class="scene-ph"><div class="ph-note">PLACEHOLDER SCENE — NOT FINAL ART. ' +
-      'scenes.json could not be loaded (' + err.message +
-      '). Run a small local server — see README.md.</div></div>';
+    // plain message, no fake scene art (nothing is invented)
+    const msg = document.createElement('p');
+    msg.className = 'scene-credit';
+    msg.textContent = 'scenes.json could not be loaded (' + err.message +
+      '). Run a small local server — see README.md.';
+    stage.appendChild(msg);
     stage.style.width = '100%';
     stage.style.height = '100%';
   });

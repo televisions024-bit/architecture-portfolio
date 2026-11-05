@@ -14,7 +14,7 @@
   <meta name="description" content="Architecture portfolio of Mohammed Huzefa, 2024-27. Architecture internship portfolio.">
   <!-- Fonts (decided): Fraunces headings / Inter body, display=swap, system fallbacks -->
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="door.css?v=20261105">
+  <link rel="stylesheet" href="door.css?v=20261105b">
 </head>
 <body>
 
@@ -34,8 +34,9 @@
         <div class="scene-layer" id="layer-a"></div>
         <div class="scene-layer" id="layer-b"></div>
       </div>
-      <!-- honesty note; text comes from scenes.json -->
-      <p class="scene-credit" id="credit"></p>
+      <!-- honesty note; text comes from scenes.json; door.js unhides it
+           only when a real scene photo is actually in use -->
+      <p class="scene-credit" id="credit" hidden></p>
     </div>
   </main>
 
@@ -48,6 +49,6 @@
     </ul>
   </noscript>
 
-  <script src="door.js?v=20261105"></script>
+  <script src="door.js?v=20261105b"></script>
 </body>
 </html>

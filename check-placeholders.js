@@ -43,32 +43,29 @@ const strays = fs.existsSync('images/placeholders')
 strays.forEach(f => console.log('ORPHANED  images/placeholders/' + f +
   ' — no real file backs it up; safe to delete'));
 
-/* ---- scene placeholders (door.html) ------------------------------------
-   Every scene art file below is expected at 1920x1080 webp (plus the
-   optional 900x1600 -portrait variant). Free to miss: door.html shows a
-   flat PLACEHOLDER SCENE block until they exist.                          */
+/* ---- scene art (door.html) ---------------------------------------------
+   The scenes are DRAWN in HTML/CSS (door.css), so a missing scene photo
+   is NOT a problem — the photo is an optional upgrade that covers the
+   drawn scene when it exists. Informational only; never fails the run.  */
 const SCENES = [
   ['images/scenes/door-closed.webp', 'images/scenes/door-closed-portrait.webp'],
   ['images/scenes/door-open.webp',   'images/scenes/door-open-portrait.webp'],
   ['images/scenes/hall.webp',        'images/scenes/hall-portrait.webp']
 ];
-let sceneMisses = 0;
 for (const [real, portrait] of SCENES) {
   if (fs.existsSync(real)) {
     if (!fs.existsSync(portrait)) {
-      console.log('SCENE OK      ' + real +
+      console.log('SCENE PHOTO   ' + real +
         '  (portrait variant ' + portrait + ' still missing — optional)');
     }
   } else {
-    console.log('SCENE MISSING ' + real +
-      '  — door.html shows its PLACEHOLDER block until the file lands');
-    sceneMisses++;
+    console.log('SCENE PHOTO   ' + real +
+      '  missing — fine: door.html shows the drawn CSS scene instead');
   }
 }
 
-if (stillUsed || strays.length || sceneMisses) {
+if (stillUsed || strays.length) {
   console.log('\n' + (stillUsed ? stillUsed : 'No') + ' render placeholder(s)' +
-    (sceneMisses ? ' and ' + sceneMisses + ' scene image(s) missing' : '') +
     ' still in use. Do not publish while placeholders remain.');
   process.exit(1);
 }

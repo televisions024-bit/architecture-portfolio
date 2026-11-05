@@ -2,7 +2,7 @@
 
 ## DOOR WALK-THROUGH + SCROLLING PROJECTS (2026-11-05, done — see PLAN-DOOR.md)
 - [x] Engine built door.html + door.js + door.css with scenes.json data (tags door-1..door-7; resume file PLAN-DOOR.md)
-- [ ] Mohammed supplies the scene art: images/scenes/door-closed.webp, door-open.webp, hall.webp (1920x1080) + optional 900x1600 -portrait variants — until then door.html shows PLACEHOLDER SCENE blocks; tune hotspot rectangles with door.html?debug=1 if needed
+- [x] Scenes DRAWN in HTML/CSS (tag door-html) - no image files needed; Mohammed may still supply scene photos (door-closed/door-open/hall.webp 1920x1080 + optional -portrait variants): a photo simply covers the drawn scene and shows the AI-credit line; tune hotspot rects with door.html?debug=1 — until then door.html shows PLACEHOLDER SCENE blocks; tune hotspot rectangles with door.html?debug=1 if needed
 - [ ] Set the door colour by eye: --door-color / --door-tint in door.css THEME (default keeps the photo's colour)
 - [ ] Mohammed reviews door at 375 / 768 / 1440 and the new scrolling projects page
 - [ ] Before sharing: `node check-placeholders.js` must pass (now also guards scenes)
