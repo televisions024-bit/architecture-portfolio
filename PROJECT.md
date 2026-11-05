@@ -82,6 +82,7 @@ Writing rules: short paragraphs, meaningful captions, no filler words.
 
 ## 10. Decisions log (add a line for every new decision)
 - New interactive cover (DOOR-COVER.md, approved 2026-11-03): plaster wall with a burgundy door at the far right edge; built in a separate door.html + door.css until owner approval (task D5); overrides section 3 "no animation" for the cover only
+- 2026-11-05: Mohammed approved full MAKHNO-inspired immersive direction (OPENCODE_MAKHNO_MASTER_BUILD_GUIDE.md) — supersedes the older cover-is-untouchable rule for approved future work; the current cover and door.html stay intact as rollback until the new cover is explicitly approved. Prototype direction: hand-drawn animated architectural sketch (SKETCH-COVER.md), built in sketch.html + sketch.css only
 - Cover: static PNG, no animation
 - Navigation limited to About / Projects / Contact
 - Site follows reference PDF structure but with our own layout

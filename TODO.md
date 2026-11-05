@@ -1,5 +1,14 @@
 # TODO.md — remaining work
 
+## MAKHNO SKETCH COVER (2026-11-05, Phase 1+2 done — see SKETCH-COVER.md)
+- [x] Phase 0 audit (see my report; DESIGN-AUDIT.md remains the inner-page audit)
+- [x] Phase 1 storyboard (SKETCH-COVER.md): hand-drawn self-sketching room + ajar burgundy door, Drawing Sheet typography
+- [x] Phase 2 prototype: sketch.html + sketch.css (isolated, noindex, not linked; works on file:// — double-click it)
+- [ ] Mohammed reviews sketch.html at 1440x900, 768 and 390x844, and with font sizes he likes
+- [ ] Owner approves (or requests style changes — palette, room, timing all tunable in sketch.css/SVG)
+- [ ] Phase 3 ONLY after approval: replace index.html on the live site; keep old cover as index-v1.html; rollback tags cover-v1 / before-approved-changes stay
+- [ ] Later: swap the temporary sketch for Mohammed's own drawing/renders (never published with stand-in art; honesty tag on the prototype sketch until then)
+
 ## NOW — first target: produce the minimum viable set (see ASSETS.md, marked FIRST TARGET)
 - [x] Five temporary stand-in photos added + auto-swap + "PLACEHOLDER - NOT MY WORK" tag + photo credits; `node check-placeholders.js` guards publishing (2026-11-01, credits in images/PLACEHOLDERS.md). Drop a real render at its exact expected path and the stand-in disappears by itself
 - [x] Page backgrounds added on all four pages from stock candidates (2026-11-01): swappable via `backgrounds-config.js` / `images/backgrounds/<slot>.webp`; preview at backgrounds-preview.html; credits on the about page + images/BACKGROUNDS.md. Review the picks by eye and change "selected" if wanted

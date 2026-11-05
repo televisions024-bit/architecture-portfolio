@@ -1,0 +1,317 @@
+/* ============================================================
+   sketch.css — SKETCH COVER PROTOTYPE v4 (full-screen immersive).
+   Same tokens as styles.css (PROJECT.md section 5). Isolated on
+   purpose: nothing here touches index.html, door.html or styles.css.
+
+   v4 layers (bottom -> top): photo backdrop · sheet overlay ·
+   hero title-block panel · oversized door (own layer: hover-ajar,
+   click-swing via .open) · honesty/credit tag.
+   Flat colours, hairlines and ticks only — gradients appear ONLY
+   as light on the door leaf (owner realism instruction, prototype).
+   ============================================================ */
+
+:root {
+  --bg: #F5F3EF;            /* drawing paper */
+  --ink: #1A1A1A;           /* pencil/graphite */
+  --accent: #7A1F2B;        /* burgundy — the door + small labels only */
+  --grey: #5E5E5E;          /* secondary grey (AA-darkened token) */
+  --rule: rgba(26, 26, 26, 0.22);
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* ---------- Header / nav (same as the inner pages) ---------- */
+.site-header { border-bottom: 1px solid var(--rule); position: relative; z-index: 10; }
+.site-header .wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 62px;
+}
+.brand {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  letter-spacing: .075em;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand span { color: var(--accent); }
+.site-nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 30px); }
+.site-nav a {
+  font-size: 10px;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  padding: 7px 0 5px;
+  border-bottom: 1px solid transparent;
+  transition: color .18s ease, border-color .18s ease;
+}
+.site-nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.site-nav a[aria-disabled="true"] { opacity: .48; cursor: default; }
+
+/* ---------- LAYER 1 · full-bleed environment photo ---------- */
+.scene {
+  position: relative;
+  height: calc(100svh - 63px);
+  min-height: 560px;
+  overflow: hidden;              /* the photo bleeds; nothing scrolls */
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  /* portrait photo (1920x2560): anchor to the floor so the ground
+     plane is ALWAYS in frame on wide screens — the door needs it */
+  background: var(--bg) url('images/backgrounds/cover-05-courtyard-1920.webp') center bottom / cover no-repeat;
+  z-index: 0;
+}
+/* phones get the smaller variant */
+@media (max-width: 719px) {
+  .backdrop { background-image: url('images/backgrounds/cover-05-courtyard-900.webp'); }
+}
+/* data-saver / slow connection: keep the paper scene, drop the photo */
+@media (prefers-reduced-data: reduce) {
+  .backdrop { background-image: none; }
+}
+
+/* ---------- LAYER 2 · Drawing Sheet overlay (pencil over reality) --- */
+.sheet {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+/* pencil strokes: textured enough on a photo, hairline weight */
+.ink-sheet path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: .6;
+}
+.ink-sheet [pathLength="1"] {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw var(--d, .7s) var(--delay, 0s) ease forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+/* once drawn, the pencil settles into the scene like graphite print */
+.ink-sheet { animation: settle 1.6s ease 3s both; }
+@keyframes settle { from { opacity: 1; } to { opacity: .4; } }
+
+.sh-note, .sh-label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: .2em;
+  fill: var(--ink);
+  fill-opacity: .55;
+  text-transform: uppercase;
+}
+.sh-label  { font-size: 12px; letter-spacing: .26em; fill: var(--accent); fill-opacity: .8; }
+.sh-cta    { font-size: 12px; letter-spacing: .3em; fill: var(--accent); fill-opacity: .85; }
+.sh-end    { text-anchor: end; }
+
+/* ---------- LAYER 3 · hero title: flat paper title-block panel ---- */
+.title-block {
+  position: absolute;
+  z-index: 3;
+  left: clamp(18px, 5vw, 72px);
+  bottom: clamp(70px, 14vh, 130px);
+  width: min(560px, calc(100vw - 36px));
+  background: var(--bg);                     /* flat paper, opaque */
+  border: 1px solid var(--ink);
+  padding: clamp(20px, 3vw, 34px) clamp(20px, 3.2vw, 38px);
+  animation: rise .8s ease .2s both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.kicker {
+  font-size: 13px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.rule-mark {
+  width: 34px; height: 2px;
+  background: var(--ink);
+  border: 0; margin: 18px 0 20px;
+}
+/* Hero: big, but sized so the longest word never clips:
+   Fraunces uppercase "ARCHITECTURE" ≈ 7.4em needs ~0.62 of the
+   560px panel — 78px fits exactly at the cap stop.               */
+.title-block h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(40px, 6.4vw, 78px);
+  line-height: 1.02;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+}
+.presenter {
+  margin-top: 14px;
+  font-size: clamp(13px, 1.3vw, 15px);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.title-links { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 12px 28px; }
+.cover-link {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 3px;
+  transition: color .18s ease, border-color .18s ease;
+}
+.cover-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- LAYER 4 · THE DOOR ASSEMBLY (own layer, mm-true) ------ */
+/* viewBox 1600 x 3200 world: door plane 1000 x 2300; the assembly
+   is bottom-anchored so the apron IS the visible foreground floor. */
+.door {
+  position: absolute;
+  z-index: 4;
+  right: clamp(24px, 8vw, 170px);
+  bottom: 0;
+  height: min(97svh, 1420px);
+  aspect-ratio: 1600 / 3200;
+  display: block;
+  color: inherit;
+}
+.door svg, .door span { display: block; }
+.door .install, .door .portal { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* the leaf: its exact box inside the assembly (x 300..1300, y 314..2614) */
+.door .leaf {
+  position: absolute;
+  left: 18.75%;
+  top: 9.8125%;
+  width: 62.5%;
+  height: 71.875%;
+}
+.door .leaf svg { width: 100%; height: 100%; }
+
+/* warm light waiting behind the leaf: revealed by the swing */
+.door .threshold {
+  position: absolute;
+  left: 20.5%;
+  top: 11.2%;
+  width: 58.75%;
+  height: 69%;
+  background: #F8EDD3;
+  opacity: 1;               /* hidden by the leaf until it swings */
+}
+
+/* dynamic swing shadow: grounded on the slab, follows its own hinge */
+.door .gshadow {
+  position: absolute;
+  left: 17%;
+  top: 81.6%;
+  width: 74%;
+  height: 3.4%;
+  background: #1A1A1A;
+  filter: blur(10px);
+  opacity: 0;
+  transform-origin: 3% 50%;
+}
+
+/* hover = ajar 7 deg on the real hinge (left jamb) */
+.door .leaf {
+  transition: transform .55s ease;
+  transform-origin: 0% 50%;
+}
+.door:hover .leaf,
+.door:focus-visible .leaf {
+  transform: perspective(1500px) rotateY(-7deg);
+}
+/* click (.open from sketch.js) = full swing on the hinge + light */
+.door.open .leaf {
+  transform: perspective(1500px) rotateY(-84deg);
+  transition: transform .9s cubic-bezier(.55, 0, .4, 1);
+}
+.door.open .gshadow {
+  opacity: .2;
+  transform: perspective(1500px) rotateY(-32deg) skewX(-4deg);
+  transition: transform .9s cubic-bezier(.55, 0, .4, 1), opacity .9s ease;
+}
+/* warm flood across the apron once the leaf is open */
+.door .spill {
+  position: absolute;
+  left: 0; right: 0; top: 68%; bottom: 0;
+  background: radial-gradient(62% 58% at 44% 10%, rgba(248, 237, 211, .8), rgba(248, 237, 211, 0) 78%);
+  opacity: 0;
+  transition: opacity .7s ease .25s;
+  pointer-events: none;
+}
+.door.open .spill { opacity: 1; }
+
+.door .portal { pointer-events: none; }
+.door::after { content: none; }   /* CTA moved into the portal overlay */
+
+/* ---------- honesty + credit tag ---------- */
+.honesty {
+  position: absolute;
+  z-index: 5;
+  left: clamp(18px, 5vw, 72px);
+  top: clamp(14px, 2.5vh, 24px);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 4px 8px;
+}
+
+/* ---------- Reduced motion: the finished scene, instantly;
+   the door is a plain link — no swing, straight navigation ------ */
+@media (prefers-reduced-motion: reduce) {
+  .ink-sheet [pathLength="1"] { animation: none; stroke-dashoffset: 0; }
+  .ink-sheet { animation: none; opacity: .4; }
+  .title-block { animation: none; }
+  .door .leaf, .door .gshadow, .door .spill { transition: none; }
+  .door:hover .leaf, .door:focus-visible .leaf, .door.open .leaf { transform: none; }
+  .door.open .gshadow { transform: none; opacity: 0; }
+}
+
+/* ---------- Phone: door centred on the full-height photo ---------- */
+@media (max-width: 719px) {
+  .site-header .wrap { padding: 12px 16px; }
+  .scene { min-height: 520px; }
+  .door {
+    right: 50%;
+    height: 84svh;
+    transform: translateX(50%);
+  }
+  .title-block {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: clamp(56px, 9vh, 90px);
+  }
+  .title-block h1 { font-size: clamp(34px, 10vw, 44px); }
+  .honesty { right: 12px; top: 10px; }
+}

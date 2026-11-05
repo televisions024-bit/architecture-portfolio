@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  SKETCH COVER PROTOTYPE v4 (SKETCH-COVER.md — full-screen
+  immersive pass after owner direction). ISOLATED — NOT the live
+  site. index.html, door.html and all existing files untouched.
+  Not indexed, not linked anywhere.
+
+  CONCEPT (v5): full-bleed loggia photo (existing credited repo asset,
+  temporary stand-in) with its FLOOR kept in frame (background-position
+  bottom — the photo is portrait 1920x2560, so bottom anchoring shows
+  stone wall bay + flagstone floor on 16:9 screens). The door is a
+  mm-true timber gate (leaf 1000 x 2300, ratio 0.435) INSTALLED into
+  the stone wall: carved reveals (jambs + head), stone threshold slab,
+  apron ground plane extending to the viewer with sun stripes, contact
+  shadows, three hinges + flush pull. Hover = ajar, click = the leaf
+  swings on its real left-jamb hinge, revealing warm light + a swing
+  shadow, then navigates to projects.html.
+
+  HOW: the photo is a CSS background (no <img>); one tiny local
+  script (sketch.js, ~20 lines) only intercepts the door click
+  for the swing-then-navigate moment. No libraries, no WebGL.
+  prefers-reduced-motion: no swing — plain instant navigation.
+  prefers-reduced-data: photo hidden, paper scene remains.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow"><!-- prototype: never indexed -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio 2024-27 — Mohammed Huzefa (sketch prototype)</title>
+  <meta name="description" content="Prototype cover concept — immersive door environment. Temporary prototype, not the live site.">
+  <!-- Fonts: same decided pair as the whole site (Fraunces / Inter) -->
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sketch.css?v=20261105e">
+</head>
+<body>
+
+  <!-- Header / nav, identical pattern to the inner pages — always visible -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MOHAMMED <span>H.</span></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="about.html">About</a>
+        <a href="projects.html">Projects</a>
+        <!-- Contact page does not exist yet (TODO.md) — honest disabled link -->
+        <a href="#" aria-disabled="true" onclick="return false" title="coming later">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== THE IMMERSIVE SCENE ==================== -->
+  <main class="scene">
+
+    <!-- LAYER 1 · full-bleed environment photo.
+         TEMPORARY stand-in: cover-05-courtyard, © Kubra Nur Sahin,
+         Pexels License (images/BACKGROUNDS.md). NOT Mohammed's work.
+         aria-hidden: purely decorative; credit is visible in text. -->
+    <div class="backdrop" aria-hidden="true"></div>
+
+    <!-- LAYER 2 · Drawing Sheet overlay: hairline frame, ticks and
+         labels draw themselves over the photo (pencil over reality),
+         then settle to a faint graphite print. Never interactive. -->
+    <svg class="sheet" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g class="ink-sheet">
+        <!-- the sheet frame: the drawing is ON a sheet -->
+        <path pathLength="1" style="--d:1.1s"                  d="M 40 40 L 1560 40"/>
+        <path pathLength="1" style="--d:1.1s;--delay:.15s"     d="M 1560 40 L 1560 960"/>
+        <path pathLength="1" style="--d:1.1s;--delay:.3s"      d="M 1560 960 L 40 960"/>
+        <path pathLength="1" style="--d:1.1s;--delay:.45s"     d="M 40 960 L 40 40"/>
+        <!-- corner ticks: the sheet language -->
+        <path pathLength="1" style="--d:.2s;--delay:.8s"       d="M 40 64 L 40 40 L 64 40"/>
+        <path pathLength="1" style="--d:.2s;--delay:.85s"      d="M 1536 40 L 1560 40 L 1560 64"/>
+        <path pathLength="1" style="--d:.2s;--delay:.9s"       d="M 1560 936 L 1560 960 L 1536 960"/>
+        <path pathLength="1" style="--d:.2s;--delay:.95s"      d="M 64 960 L 40 960 L 40 936"/>
+      </g>
+      <text class="sh-note" x="56" y="936">TEMPORARY ENVIRONMENT · STAND-IN PHOTO</text>
+      <text class="sh-note sh-end" x="1544" y="72">A-00 · CONCEPT SHEET</text>
+    </svg>
+
+    <!-- LAYER 3 · the hero title. Flat paper title-block panel
+         (drawing sheet identity), opaque, no blur, no glass. -->
+    <div class="title-block">
+      <p class="kicker">Portfolio 2024-27</p>
+      <hr class="rule-mark">
+      <h1>Architecture<br>Internship<br>Portfolio</h1>
+      <p class="presenter">Presented by Mohammed Huzefa</p>
+      <!-- Persistent routes (guide 1.2): always visible, semantic links -->
+      <div class="title-links">
+        <a class="cover-link" href="projects.html">View projects</a>
+        <a class="cover-link" href="about.html">About me</a>
+      </div>
+    </div>
+
+    <!-- LAYER 4 · THE DOOR ASSEMBLY — its own stacked layer, installed
+         into the stone wall. Coordinate space is mm-true: leaf
+         1000 x 2300; frame reveals 120 thick; threshold slab ~200.
+         viewBox 0 0 1600 3200 = the full install incl. ground apron
+         down to the viewport bottom (world-to-viewer ground plane).
+         A real <a href="projects.html">: keyboard + no-JS users
+         simply follow the link; with JS the click plays the swing. -->
+    <a class="door" href="projects.html" aria-label="Open the timber door to the projects">
+      <!-- STATIC INSTALLATION (does not rotate): apron ground plane,
+           sun stripes, stone threshold, jamb/head reveals, contact shadow -->
+      <svg class="install" viewBox="0 0 1600 3200" aria-hidden="true">
+        <defs>
+          <!-- wood grain (shared with the leaf) -->
+          <filter id="wood" x="-4%" y="-4%" width="108%" height="108%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.006" numOctaves="3" seed="11" result="n"/>
+            <feColorMatrix in="n" type="matrix"
+              values="0 0 0 0 0.24
+                      0 0 0 0 0.08
+                      0 0 0 0 0.11
+                      0 0 0 0.6 0" result="grain"/>
+            <feComposite in="grain" in2="SourceGraphic" operator="in" result="g2"/>
+            <feBlend in="g2" in2="SourceGraphic" mode="multiply"/>
+          </filter>
+          <!-- stone mottle for the threshold + reveals -->
+          <filter id="stone" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="8" result="n"/>
+            <feGaussianBlur in="n" stdDeviation="0.6" result="sn"/>
+            <feColorMatrix in="sn" type="matrix"
+              values="0 0 0 0 0.12
+                      0 0 0 0 0.10
+                      0 0 0 0 0.08
+                      0 0 0 0.4 0" result="grain"/>
+            <feComposite in="grain" in2="SourceGraphic" operator="in"/>
+          </filter>
+          <!-- shadows / light bleeds -->
+          <filter id="soft9" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="9"/>
+          </filter>
+          <filter id="soft20" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="20"/>
+          </filter>
+          <!-- floor AO at the threshold -->
+          <linearGradient id="gApronAO" gradientUnits="userSpaceOnUse" x1="800" y1="2800" x2="800" y2="2980">
+            <stop offset="0" stop-color="#1A1A1A" stop-opacity=".15"/>
+            <stop offset="1" stop-color="#1A1A1A" stop-opacity="0"/>
+          </linearGradient>
+          <!-- warm sunlight raking across the apron (photo's sun dir.) -->
+          <linearGradient id="gStripe" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F6EAD0" stop-opacity=".28"/>
+            <stop offset="1" stop-color="#F6EAD0" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <!-- ===== ground plane: the apron extends the flagstone floor ===== -->
+        <polygon points="262,2796 1470,2796 2020,3200 -220,3200" fill="#CFC8BA" opacity=".38"/>
+        <polygon points="262,2796 1470,2796 2020,3200 -220,3200" fill="url(#gApronAO)"/>
+        <polygon points="262,2796 1470,2796 2020,3200 -220,3200" fill="#2A241C" opacity=".12" filter="url(#stone)"/>
+        <!-- raking sun stripes (match the photo's diagonal light) -->
+        <polygon points="620,2796 1000,2796 1500,3200 930,3200" fill="url(#gStripe)"/>
+        <polygon points="1130,2796 1290,2796 1730,3200 1490,3200" fill="url(#gStripe)" opacity=".6"/>
+
+        <!-- ===== stone threshold: top + front face, then ground contact ===== -->
+        <polygon points="280,2614 1440,2614 1490,2712 232,2712" fill="#CFC8BA"/>
+        <polygon points="280,2614 1440,2614 1490,2712 232,2712" fill="#2A241C" opacity=".22" filter="url(#stone)"/>
+        <polygon points="232,2712 1490,2712 1470,2796 262,2796" fill="#948D7F"/>
+        <polygon points="232,2712 1490,2712 1470,2796 262,2796" fill="#1A1A1A" opacity=".18" filter="url(#stone)"/>
+        <!-- contact shadow: door base biting into the slab -->
+        <rect x="300" y="2596" width="1000" height="40" fill="#1A1A1A" opacity=".3" filter="url(#soft9)"/>
+        <!-- broad soft shadow of the whole assembly on the floor -->
+        <ellipse cx="800" cy="2810" rx="740" ry="42" fill="#1A1A1A" opacity=".18" filter="url(#soft20)"/>
+        <!-- dark joint lines seating the frame INTO the masonry -->
+        <rect x="176" y="180" width="8" height="2440" fill="#1A1A1A" opacity=".28"/>
+        <rect x="1424" y="180" width="8" height="2440" fill="#1A1A1A" opacity=".28"/>
+        <rect x="180" y="172" width="1252" height="8" fill="#1A1A1A" opacity=".25"/>
+
+        <!-- ===== frame reveals: jambs + head, 120 deep, stone ===== -->
+        <polygon points="180,180 300,180 300,2614 180,2614" fill="#AFA899"/>
+        <polygon points="180,180 300,180 300,2614 180,2614" fill="#2A241C" opacity=".2" filter="url(#stone)"/>
+        <polygon points="1300,180 1420,180 1420,2614 1300,2614" fill="#AFA899"/>
+        <polygon points="1300,180 1420,180 1420,2614 1300,2614" fill="#2A241C" opacity=".2" filter="url(#stone)"/>
+        <polygon points="180,180 1420,180 1420,314 180,314" fill="#B8B1A2"/>
+        <polygon points="180,180 1420,180 1420,314 180,314" fill="#2A241C" opacity=".16" filter="url(#stone)"/>
+        <!-- inner edges: the shadowed cheeks of the reveals (-depth cue) -->
+        <polygon points="260,180 300,180 300,2614 260,2614" fill="#1A1A1A" opacity=".22"/>
+        <polygon points="1300,180 1340,180 1340,2614 1300,2614" fill="#1A1A1A" opacity=".22"/>
+        <polygon points="180,274 1420,274 1420,314 180,314" fill="#1A1A1A" opacity=".22"/>
+      </svg>
+
+      <!-- warm light waiting behind the leaf: revealed by the swing -->
+      <span class="threshold" aria-hidden="true"></span>
+
+      <!-- dynamic swing shadow: rotates away on its own hinge on open -->
+      <span class="gshadow" aria-hidden="true"></span>
+
+      <!-- THE LEAF — 1000 x 2300, burgundy timber, hinges LEFT -->
+      <span class="leaf" aria-hidden="true">
+        <svg viewBox="0 0 1000 2300">
+          <!-- sun falls from top-right (photo's light direction) -->
+          <linearGradient id="sun" x1="1" y1="0" x2=".1" y2="1">
+            <stop offset="0" stop-color="#F3E3C3" stop-opacity=".3"/>
+            <stop offset=".5" stop-color="#F3E3C3" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="leafEdge" x1="1" y1="0" x2=".88" y2="0">
+            <stop offset="0" stop-color="#1A1A1A" stop-opacity=".2"/>
+            <stop offset="1" stop-color="#1A1A1A" stop-opacity="0"/>
+          </linearGradient>
+          <!-- the timber leaf -->
+          <rect width="1000" height="2300" fill="#7A1F2B" filter="url(#wood)"/>
+          <rect width="1000" height="2300" fill="url(#sun)"/>
+          <rect width="1000" height="2300" fill="url(#leafEdge)"/>
+          <!-- two routed panels, full-scale (120mm margins) -->
+          <rect x="120" y="200"  width="760" height="780"  fill="#262019" opacity=".35"/>
+          <rect x="120" y="200"  width="760" height="780"  fill="none" stroke="#F0E8DE" stroke-opacity=".28"/>
+          <rect x="120" y="1120" width="760" height="1000" fill="#262019" opacity=".35"/>
+          <rect x="120" y="1120" width="760" height="1000" fill="none" stroke="#F0E8DE" stroke-opacity=".28"/>
+          <!-- three hinges on the LEFT (hinge) stile -->
+          <rect x="58" y="400"  width="34" height="130" fill="#2A241C"/>
+          <rect x="58" y="1080" width="34" height="130" fill="#2A241C"/>
+          <rect x="58" y="1760" width="34" height="130" fill="#2A241C"/>
+          <rect x="70" y="410"  width="4" height="110" fill="#544738"/>
+          <rect x="70" y="1090" width="4" height="110" fill="#544738"/>
+          <rect x="70" y="1770" width="4" height="110" fill="#544738"/>
+          <!-- flush timber pull on the leading stile -->
+          <rect x="844" y="1020" width="36" height="380" fill="#EFE8DA"/>
+          <rect x="844" y="1020" width="6"  height="380" fill="#1A1A1A" opacity=".35"/>
+          <rect x="848" y="1030" width="4"  height="360" fill="#544738"/>
+        </svg>
+      </span>
+
+      <!-- warm flood across the apron once the leaf is open -->
+      <span class="spill" aria-hidden="true"></span>
+
+      <!-- PENCIL overlay: opening outline + arch springing guide,
+           draws over the photo then settles. Static, non-rotating. -->
+      <svg class="portal" viewBox="0 0 1600 3200" aria-hidden="true">
+        <g class="ink-sheet">
+          <path pathLength="1" style="--d:.7s;--delay:1s"    d="M 180 2614 L 180 180"/>
+          <path pathLength="1" style="--d:.8s;--delay:1.3s"  d="M 180 180 L 1420 180"/>
+          <path pathLength="1" style="--d:.8s;--delay:1.7s"  d="M 1420 180 L 1420 2614"/>
+          <path pathLength="1" style="--d:.7s;--delay:2s"    d="M 1420 2614 L 180 2614"/>
+          <!-- construction: leaf edges + arch springing guide -->
+          <path pathLength="1" style="--d:.9s;--delay:2.2s;--o:.5"  d="M 300 314 L 1300 314 L 1300 2614 L 300 2614 Z"/>
+          <path pathLength="1" style="--d:.9s;--delay:2.5s;--o:.5"  d="M 180 180 Q 800 -140 1420 180"/>
+        </g>
+        <text class="sh-label" x="210" y="120">TIMBER GATE · 1000 × 2300</text>
+        <text class="sh-label" x="210" y="152">STONE THRESHOLD · REVEAL 120</text>
+        <text class="sh-cta" x="808" y="110" text-anchor="middle">OPEN → PROJECTS</text>
+      </svg>
+    </a>
+
+    <!-- Honesty + credit: the environment photo and the sketch are
+         temporary stand-ins, never Mohammed's portfolio work -->
+    <p class="honesty">
+      Temporary environment photo — © Kubra Nur Sahin, Pexels License ·
+      pencil overlay is concept art. Placeholder imagery, not my work.
+    </p>
+
+  </main>
+
+  <!-- the ONLY script: door click -> swing open -> navigate (~20 lines) -->
+  <script src="sketch.js?v=20261105e"></script>
+</body>
+</html>
