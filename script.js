@@ -442,33 +442,74 @@ if (indexRoot) {
 }
 
 /* ============================================================
-   LIGHTBOX — click a gallery image to open it big; click (or
-   press Esc) to close; arrow keys ←/→ step through the images.
-   A small "3 / 8" counter sits in front of the caption.
-   One element, reused. No libraries.
+   LIGHTBOX — upgraded (door task step 6). Still ONE lightbox,
+   same initLightbox call, gallery untouched. On top of open /
+   close / arrow keys it now adds: zoom (wheel, + / - / 0 keys,
+   double click / tap, pinch), pan by drag, a fullscreen button,
+   visible prev / next buttons, swipe, Esc, focus kept inside,
+   and the old "3 / 8 — caption" counter line. No libraries.
 ============================================================ */
 function initLightbox(doc) {
   const box = doc.createElement('div');
   box.className = 'lightbox';
   box.innerHTML =
     '<button class="lightbox-close" aria-label="Close">&#215;</button>' +
+    '<button class="lightbox-fs" aria-label="Toggle full screen">FULL</button>' +
+    '<button class="lightbox-nav lightbox-prev" aria-label="Previous image">&#8592;</button>' +
+    '<button class="lightbox-nav lightbox-next" aria-label="Next image">&#8594;</button>' +
     '<figure><img alt=""><figcaption></figcaption></figure>';
   doc.body.appendChild(box);
 
   const img = box.querySelector('img');
   const cap = box.querySelector('figcaption');
   const closeBtn = box.querySelector('.lightbox-close');
+  const fsBtn = box.querySelector('.lightbox-fs');
+  const prevBtn = box.querySelector('.lightbox-prev');
+  const nextBtn = box.querySelector('.lightbox-next');
   const figs = Array.from(doc.querySelectorAll('.gallery figure'));
   let idx = -1;                      // which gallery image is open
   let lastFocus = null;              // element to return focus to on close
 
+  /* ---- zoom + pan state: z = scale (1 .. 8), x/y = pan offsets ---- */
+  const Z_MAX = 8;
+  let z = 1, x = 0, y = 0;
+
+  function apply() {
+    img.style.transform = 'translate(' + x + 'px, ' + y + 'px) scale(' + z + ')';
+    img.classList.toggle('lb-zoomed', z > 1);   // grab cursor when zoomable
+  }
+  function reset() { z = 1; x = 0; y = 0; apply(); }
+
+  /* zoom while keeping the point under the cursor (or the pinch
+     midpoint) fixed; the visual centre = layout centre + pan      */
+  function zoomAt(factor, cx, cy) {
+    const rect = img.getBoundingClientRect();
+    const lx = rect.left + rect.width / 2 - x;
+    const ly = rect.top + rect.height / 2 - y;
+    const dz = Math.min(Z_MAX, Math.max(1, z * factor)) / z;
+    x = cx - lx - dz * ((cx - lx) - x);
+    y = cy - ly - dz * ((cy - ly) - y);
+    z *= dz;
+    if (z <= 1.001) { x = 0; y = 0; z = 1; }   // never below 100%
+    apply();
+  }
+  function zoomAtCentre(f) { zoomAt(f, window.innerWidth / 2, window.innerHeight / 2); }
+
   /* screen-reader/keyboard contract (audit fix): a full-screen dialog
-     announces itself and hands focus in and out                    */
+      announces itself and hands focus in and out                    */
   box.setAttribute('role', 'dialog');
   box.setAttribute('aria-modal', 'true');
   box.setAttribute('aria-label', 'Large image view');
+  /* Tab cycles the four visible buttons: focus never escapes */
   box.addEventListener('keydown', e => {
-    if (e.key === 'Tab') e.preventDefault();   // one focusable inside: keep it
+    if (e.key !== 'Tab') return;
+    const order = [closeBtn, fsBtn, prevBtn, nextBtn];
+    const i = order.indexOf(doc.activeElement);
+    e.preventDefault();
+    const n = e.shiftKey
+      ? (i <= 0 ? order.length - 1 : i - 1)
+      : (i < 0 || i === order.length - 1 ? 0 : i + 1);
+    order[n].focus();
   });
 
   function show() {
@@ -476,6 +517,7 @@ function initLightbox(doc) {
     if (!f) return;
     const im = f.querySelector('img');   // re-read: placeholders may have swapped in
     if (!im) return;
+    reset();                             // every image opens at 100 %
     img.src = im.currentSrc || im.src;
     img.alt = im.alt || '';
     /* Direction A captions live in .cap-row spans (code | title |
@@ -490,6 +532,8 @@ function initLightbox(doc) {
       : (fallback ? fallback.textContent : '');
     const where = figs.length > 1 ? (idx + 1) + ' / ' + figs.length + ' — ' : '';
     cap.textContent = where + text;
+    prevBtn.disabled = idx <= 0;             // visible buttons, off at the ends
+    nextBtn.disabled = idx >= figs.length - 1;
     box.classList.add('is-open');
   }
   function openAt(i) {
@@ -502,18 +546,97 @@ function initLightbox(doc) {
     box.classList.remove('is-open');
     box.style.opacity = '0';
     img.removeAttribute('src');      // (src = '' would re-request the page)
+    reset();
     if (lastFocus) { lastFocus.focus(); lastFocus = null; }
   }
+  function step(d) {
+    const n = Math.min(figs.length - 1, Math.max(0, idx + d));
+    if (n !== idx) { idx = n; show(); }
+  }
 
-  box.addEventListener('click', close);
+  /* backdrop click closes; the image itself now belongs to zoom
+     (double click) and pan, so clicking it no longer closes       */
+  box.addEventListener('click', function (e) { if (e.target === box) close(); });
+
   doc.addEventListener('keydown', e => {
     if (!box.classList.contains('is-open')) return;
     if (e.key === 'Escape') close();
-    if (e.key === 'ArrowRight' && idx < figs.length - 1) { idx++; show(); }
-    if (e.key === 'ArrowLeft' && idx > 0) { idx--; show(); }
+    if (e.key === 'ArrowRight') step(1);
+    if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === '+' || e.key === '=') zoomAtCentre(1.25);
+    if (e.key === '-' || e.key === '_') zoomAtCentre(0.8);
+    if (e.key === '0') reset();
   });
 
-  /* every gallery figure is clickable AND keyboard-operable now
+  /* wheel = zoom at the cursor; double click / tap = in or out */
+  img.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.clientX, e.clientY);
+  });
+  img.addEventListener('dblclick', function (e) {
+    zoomAt(z > 1 ? 1 / z : 2.5 / z, e.clientX, e.clientY);
+  });
+
+  /* ---- pointer drag: pan when zoomed in, swipe at 100 %,
+          two fingers = pinch zoom at their midpoint ---- */
+  const pointers = new Map();
+  let pinch = null, swipe = null;
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+  img.addEventListener('pointerdown', function (e) {
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const pts = Array.from(pointers.values());
+      pinch = { d: dist(pts[0], pts[1]) };
+    } else if (pointers.size === 1) {
+      swipe = { x: 0, y: 0 };
+    }
+    img.setPointerCapture(e.pointerId);
+  });
+  img.addEventListener('pointermove', function (e) {
+    const prev = pointers.get(e.pointerId);
+    if (!prev) return;
+    const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (pointers.size === 2 && pinch) {
+      const pts = Array.from(pointers.values());
+      const d = dist(pts[0], pts[1]);
+      zoomAt(d / pinch.d, (pts[0].x + pts[1].x) / 2, (pts[0].y + pts[1].y) / 2);
+      pinch.d = d;
+    } else if (z > 1) {
+      x += dx; y += dy;                   // pan (drag must not lag)
+      img.style.transition = 'none';
+      apply();
+    } else if (swipe) {
+      swipe.x += dx; swipe.y += dy;       // decided on release
+    }
+  });
+  function pointerEnd(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinch = null;
+    img.style.transition = '';            // fall back to the CSS easing
+    if (swipe && z <= 1 && Math.abs(swipe.x) > 50 && Math.abs(swipe.x) > Math.abs(swipe.y)) {
+      step(swipe.x < 0 ? 1 : -1);         // swipe left -> next, right -> previous
+    }
+    swipe = null;
+  }
+  img.addEventListener('pointerup', pointerEnd);
+  img.addEventListener('pointercancel', pointerEnd);
+
+  /* fullscreen toggle; the label flips with it */
+  fsBtn.addEventListener('click', function () {
+    if (doc.fullscreenElement) doc.exitFullscreen();
+    else box.requestFullscreen();
+  });
+  doc.addEventListener('fullscreenchange', function () {
+    fsBtn.textContent = doc.fullscreenElement ? 'EXIT' : 'FULL';
+  });
+
+  prevBtn.addEventListener('click', function () { step(-1); });
+  nextBtn.addEventListener('click', function () { step(1); });
+
+  /* every gallery figure is clickable AND keyboard-operable
      (tab to a thumbnail, press Enter/Space); the fixture list keeps
      its position, so ←/→ know where they are                       */
   figs.forEach((fig, i) => {

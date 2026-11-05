@@ -26,7 +26,7 @@
       project (big number, title, year/type, thumbnail, whole-section link,
       sheet code kept), fixed "1 / N" counter, IO fade/slide, proximity
       scroll-snap, reduced-motion opt-out, link to door.html#hall.
-- [ ] STEP 6 VIEWER — upgrade the existing initLightbox in place: zoom
+- [x] STEP 6 VIEWER — the existing initLightbox upgraded in place: zoom
       (wheel / +/- / double click / pinch), pan drag, fullscreen button,
       visible prev/next, swipe, Esc, focus trap, counter + caption kept.
 - [ ] STEP 7 PHONES — portrait scene images when the viewport is portrait;

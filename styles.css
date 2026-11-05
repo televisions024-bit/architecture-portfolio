@@ -298,6 +298,59 @@ figure { margin: 0; }
 }
 .lightbox-close:hover { color: var(--accent); }
 
+/* ---- Step 6 additions (door task): zoom/pan surface, visible
+        prev/next + fullscreen buttons; scaled image is clipped ---- */
+.lightbox { overflow: hidden; }
+.lightbox img {
+  touch-action: none;                    /* pointer events own the gestures */
+  transition: transform 0.25s ease;
+  cursor: zoom-in;
+}
+.lightbox img.lb-zoomed { cursor: grab; }
+.lightbox button { font-family: var(--font-body); }
+.lightbox-close, .lightbox-fs {
+  position: absolute;
+  top: 18px;
+  z-index: 5;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  cursor: pointer;
+}
+.lightbox-close { right: 24px; font-size: 22px; width: 44px; height: 44px; }
+.lightbox-fs {
+  right: 80px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  width: 56px;
+  height: 44px;
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  cursor: pointer;
+}
+.lightbox-prev { left: 18px; }
+.lightbox-next { right: 18px; }
+.lightbox-close:hover, .lightbox-fs:hover, .lightbox-nav:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.lightbox-nav[disabled] { opacity: 0.35; cursor: default; border-color: var(--rule); color: var(--ink); }
+@media (max-width: 719px) {
+  .lightbox-nav { top: auto; bottom: 92px; transform: none; }  /* thumbs of hands sit low */
+  .lightbox-close { right: 16px; }
+  .lightbox-fs { right: 72px; }
+}
+
 /* ---------- Placeholder block shown until real images exist ---------- */
 /* Replaced automatically once the file exists (script.js) */
 .ph {
