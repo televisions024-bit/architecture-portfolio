@@ -36,7 +36,7 @@
       a 500px minimum, so 375 was tested as a 500px canvas crop; true
       500 / 768 / 1440 verified by screenshot (door, hall, ?debug,
       projects incl. reduced motion, project page).
-- [ ] STEP 8 LINK-UP — one "Enter" link in index.html to door.html (nothing
-      else), cache-bust ?v= bump on touched pages, extend
-      check-placeholders.js with scene placeholders, run it, update TODO.md
-      and PROJECT.md section 10, tag `door-done`, final report.
+- [x] STEP 8 LINK-UP — one "Enter" cover link (verified against before-door:
+      one line only), cache-bust bump on projects/project/about, extended
+      check-placeholders.js (5 renders + 3 scenes missing, exits 1),
+      TODO.md + PROJECT.md section 10 updated, tag door-done.

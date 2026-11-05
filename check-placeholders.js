@@ -43,9 +43,33 @@ const strays = fs.existsSync('images/placeholders')
 strays.forEach(f => console.log('ORPHANED  images/placeholders/' + f +
   ' — no real file backs it up; safe to delete'));
 
-if (stillUsed || strays.length) {
-  console.log('\n' + (stillUsed ? stillUsed : 'No') + ' placeholder(s) still in use.' +
-    ' Do not publish while placeholders remain.');
+/* ---- scene placeholders (door.html) ------------------------------------
+   Every scene art file below is expected at 1920x1080 webp (plus the
+   optional 900x1600 -portrait variant). Free to miss: door.html shows a
+   flat PLACEHOLDER SCENE block until they exist.                          */
+const SCENES = [
+  ['images/scenes/door-closed.webp', 'images/scenes/door-closed-portrait.webp'],
+  ['images/scenes/door-open.webp',   'images/scenes/door-open-portrait.webp'],
+  ['images/scenes/hall.webp',        'images/scenes/hall-portrait.webp']
+];
+let sceneMisses = 0;
+for (const [real, portrait] of SCENES) {
+  if (fs.existsSync(real)) {
+    if (!fs.existsSync(portrait)) {
+      console.log('SCENE OK      ' + real +
+        '  (portrait variant ' + portrait + ' still missing — optional)');
+    }
+  } else {
+    console.log('SCENE MISSING ' + real +
+      '  — door.html shows its PLACEHOLDER block until the file lands');
+    sceneMisses++;
+  }
+}
+
+if (stillUsed || strays.length || sceneMisses) {
+  console.log('\n' + (stillUsed ? stillUsed : 'No') + ' render placeholder(s)' +
+    (sceneMisses ? ' and ' + sceneMisses + ' scene image(s) missing' : '') +
+    ' still in use. Do not publish while placeholders remain.');
   process.exit(1);
 }
 console.log('\nOK: every real render exists. You may now delete ' +
