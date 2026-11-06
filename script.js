@@ -179,15 +179,12 @@ function buildProjectPage(doc, data, slug, ixProjects) {
       const std = PLACEHOLDERS[src];
       if (!std) { img.replaceWith(ph); return; }
 
-      /* stand-in: swap the file in (its real size with it) and mark
-         it clearly */
+      /* stand-in: swap the file in (its real size with it). No corner
+         tag any more — Mohammed asked for the chips removed; the
+         invisible markers (classes, credits) are kept.           */
       img.src = std.file;
       img.width = std.w; img.height = std.h;
-      const fig = img.parentElement;             // the hero/gallery figure
-      if (fig) {
-        fig.classList.add('has-ph');             // gives the tag a positioning anchor
-        fig.appendChild(el('span', 'ph-tag', 'PLACEHOLDER - NOT MY WORK'));
-      }
+      const fig = img.parentElement;             // hero's credit row needs the figure
       /* captions name the photographer; an unrecorded creator shows
          "source pending" — never a guessed name, never "TODO"      */
       const credit = el('span', 'cap-note',
@@ -528,11 +525,6 @@ if (indexRoot) {
             if (!std) { img.replaceWith(todoBlock(featured.thumbnail)); return; }
             img.src = std.file;
             img.width = std.w; img.height = std.h;
-            media.appendChild(Object.assign(document.createElement('span'),
-              { className: 'ph-tag', textContent: 'PLACEHOLDER - NOT MY WORK' }));
-            media.title = 'Stand-in photo: ' +
-              (std.credit === 'SOURCE PENDING' ? 'source pending' : std.credit) +
-              ' — the real render is not placed yet';
             /* if the stand-in file is missing too, fall back */
             img.addEventListener('error', () =>
               img.replaceWith(todoBlock(featured.thumbnail)));
