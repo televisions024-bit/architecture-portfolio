@@ -6,11 +6,14 @@
 
 /* ---------- Design tokens (PROJECT.md section 5) ---------- */
 :root {
-  --bg:      #F5F3EF;   /* off-white background */
-  --ink:     #1A1A1A;   /* near-black text and lines */
-  --accent:  #7A1F2B;   /* burgundy — sparingly: labels, hover, thin rules */
-  --grey:    #5E5E5E;   /* secondary grey — darkened from #8A8A8A on 2026-11-01
-                           so every grey text passes AA (>=4.5:1) on cream */
+  --bg:      #F5F3ED;   /* warm white (TASK 01) — inner-page background */
+  --sand:    #E9E5DA;   /* sandstone (TASK 01) — Projects register background */
+  --ink:     #30312C;   /* charcoal (TASK 01) — ALL text; was #1A1A1A */
+  --accent:  #7A1F2B;   /* burgundy (TASK 01) — sparingly: sheet codes, links, active states */
+  --sage:    #A5A58D;   /* sage (TASK 01) — fills, rules, tints ONLY, never small text */
+  --olive:   #777B65;   /* olive (TASK 01) — fills, rules, tints ONLY, never small text */
+  --grey:    #30312C;   /* was #5E5E5E — TASK 01: all text is charcoal now;
+                            token kept so every --grey reference stays valid */
 
   /* 1px hairline rules showing the grid */
   --rule: rgba(26, 26, 26, 0.18);
@@ -59,45 +62,46 @@ body {
 
 img { max-width: 100%; display: block; }
 
-/* ---------- Decorative page backgrounds (added 2026-11-01) ----------
-   Fixed full-viewport pseudo-elements: never background-attachment:
-   fixed (that janks and breaks on phones). backgrounds.js supplies
-   the URLs and opacities from backgrounds.json; without JS these
-   layers show nothing, so the pages stay exactly as designed.
-   Cover: image full + flat off-white veil (text >= 4.5:1).
-   Inner pages: 6-10% visibility, behind all content.             */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -2;                                  /* image, below the veil */
-  background-image: var(--bg-image-phone, none);
-  background-size: cover;
-  background-position: center;
-  opacity: var(--bg-opacity, 0.08);
-  filter: grayscale(1);                         /* decorative = desaturated */
-  pointer-events: none;
-}
-@media (min-width: 720px) {
-  body::before { background-image: var(--bg-image, none); }
-}
-body::after {                                  /* flat veil: cover page only */
+/* TASK 01: page backgrounds — warm white by default (project +
+   about pages), sandstone on the Projects register. The header,
+   titleblock strip and sheet counter carry the same colour so
+   the strips read as part of the sheet.                       */
+body.register { background: var(--sand); }
+body.register .site-header,
+body.register .titleblock,
+body.register .proj-counter { background: var(--sand); }
+
+/* ---------- CSS-only drafting grid (TASK 01) ----------
+   Replaces the retired photographic page backgrounds
+   (backgrounds.js removed 2026-11-06). A 44px olive grid at
+   ~5% visual opacity, drawn where the spec allows it ONLY:
+   the Projects register (whole sheet) and the Drawings
+   section of project pages. Pure CSS, no images loaded.  */
+body.register::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: var(--bg);
-  opacity: var(--bg-veil, 0);
+  background-image:
+    linear-gradient(rgba(119, 123, 101, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(119, 123, 101, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
   pointer-events: none;
 }
-/* backgrounds.json can allow one colored background (grayscale: false) */
-body.bg-colorize::before { filter: none; }
-/* data-saver visitors get the plain page */
-@media (prefers-reduced-data: reduce) {
-  body::before, body::after { display: none; }
+.section[data-part^="DRAWINGS"] { position: relative; }
+.section[data-part^="DRAWINGS"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(119, 123, 101, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(119, 123, 101, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
 }
 @media print {
-  body::before, body::after { display: none; }   /* never print decorations */
+  body.register::before, .section[data-part^="DRAWINGS"]::before { display: none; }
 }
 
 /* Content width ruler + the hairline "grid" feel */
@@ -203,7 +207,7 @@ body.tb { padding-bottom: 72px; }   /* room so the strip never covers text */
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--ink);          /* TASK 01: all text charcoal; burgundy is for sheet codes/links only */
 }
 
 /* ---------- Generic section rhythm ---------- */
@@ -296,7 +300,7 @@ html.js .reveal.is-in {
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(245, 243, 239, 0.96);
+  background: rgba(245, 243, 237, 0.96);
   display: none;               /* shown by JS */
   z-index: 100;
   opacity: 0;
@@ -378,6 +382,8 @@ html.js .reveal.is-in {
 
 /* ---------- Placeholder block shown until real images exist ---------- */
 /* Replaced automatically once the file exists (script.js) */
+/* TASK 01: the temporary-image tag block gets its colour from the
+   sage/olive pair (fills only), so burgundy is free for codes/links. */
 .ph {
   display: flex;
   align-items: center;
@@ -387,32 +393,16 @@ html.js .reveal.is-in {
                             fill the whole figure and push the caption row
                             over the row below (Direction A bug, fixed
                             2026-11-01). min-height alone is correct.   */
-  border: 1px solid var(--rule);
-  border-left: 2px solid var(--accent);
-  color: var(--grey);
+  border: 1px solid rgba(119, 123, 101, 0.45);
+  border-left: 2px solid var(--olive);
+  color: var(--ink);
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   text-align: center;
-  background: #EFEDE8;
+  background: rgba(165, 165, 141, 0.14);
 }
 .ph span { word-break: break-all; padding: 10px; }
-
-/* ---------- Stand-in stock photos (TEMP, see images/PLACEHOLDERS.md) ----------
-   script.js swaps these in while a real render file is missing.        */
-figure.has-ph { position: relative; }           /* anchor for the corner tag */
-.ph-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--accent);                         /* burgundy, like every label */
-  background: var(--bg);
-  padding: 4px 8px;
-  border: 1px solid var(--rule);
-}
 
 /* ---------- Projects index as a DRAWING REGISTER (Direction A) ----------
    Rows like a sheet list, not cards: code | title | type | year | thumb.
@@ -443,7 +433,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   font-size: 12.5px;
   color: var(--grey);
 }
-/* the two dimension ticks at the ends of the hairline */
+/* the two dimension ticks at the ends of the hairline (olive, TASK 01) */
 .cap-row::before,
 .cap-row::after {
   content: '';
@@ -451,7 +441,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   top: -3px;
   width: 1px;
   height: 6px;
-  background: rgba(26, 26, 26, 0.4);
+  background: rgba(119, 123, 101, 0.55);
 }
 .cap-row::before { left: 0; }
 .cap-row::after  { right: 0; }
@@ -469,11 +459,12 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   text-transform: uppercase;
 }
 
-/* thin construction line with end ticks, used above the project title */
+/* thin construction line with end ticks, used above the project title
+   (olive rule — TASK 01: sage/olive for rules, never small text)      */
 .dim-line {
   position: relative;
   height: 1px;
-  background: rgba(26, 26, 26, 0.25);
+  background: rgba(119, 123, 101, 0.45);
   margin-bottom: 22px;
 }
 .dim-line::before,
@@ -483,7 +474,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   top: -3px;
   width: 1px;
   height: 7px;
-  background: rgba(26, 26, 26, 0.45);
+  background: rgba(119, 123, 101, 0.6);
 }
 .dim-line::before { left: 0; }
 .dim-line::after  { right: 0; }
@@ -570,7 +561,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 :root {
   --max-w: 1240px;
   --space-section: clamp(68px, 8vw, 112px);
-  --rule: rgba(26, 26, 26, .22);
+  --rule: rgba(48, 49, 44, .22);
 }
 
 :focus-visible {
@@ -579,7 +570,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 }
 
 .site-header {
-  background: #F5F3EF;
+  background: var(--bg);
 }
 .site-header .wrap {
   min-height: 62px;
@@ -759,7 +750,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   color: var(--ink);
   transition: background var(--t-fast) ease, padding-left var(--t-fast) ease;
 }
-.reg-mini:hover { background: rgba(26, 26, 26, 0.04); padding-left: 14px; }
+.reg-mini:hover { background: rgba(165, 165, 141, 0.22); padding-left: 14px; }  /* sage tint, TASK 01 */
 .reg-mini:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .reg-mini-num {
   font-family: var(--font-heading);
@@ -883,7 +874,6 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 
 /* Figure captions and temporary image warnings remain sheet-like. */
 .cap-row { padding-top: 10px; gap: 6px 14px; }
-.ph-tag { top: 10px; left: 10px; }
 
 .site-footer { margin-top: clamp(72px, 9vw, 120px); padding: 24px 0 42px; }
 .site-footer .wrap { font-size: 10px; letter-spacing: .08em; line-height: 1.8; }
