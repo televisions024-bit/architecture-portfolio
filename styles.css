@@ -225,22 +225,6 @@ body.tb { padding-bottom: 72px; }   /* room so the strip never covers text */
 
 /* ---------- Text helpers ---------- */
 p.measure { max-width: 62ch; }
-.metadata { border-top: 1px solid var(--rule); }
-.metadata div {
-  display: flex;
-  gap: 18px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--rule-soft);
-}
-.metadata dt {
-  min-width: 110px;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--grey);
-  padding-top: 3px;
-}
-.metadata dd { font-size: 15px; }
 
 /* ---------- Figures: full-width or two-column only ---------- */
 /* No rounded corners, no drop shadows (PROJECT.md section 5) */
@@ -506,7 +490,7 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   .section { padding-top: 24px !important; }
   .rule { margin-top: 24px !important; }
   .fade { opacity: 1 !important; transform: none !important; }  /* print even un-scrolled items */
-  figure, .metadata, .stage-row, .reg-mini { break-inside: avoid; }
+  figure, .stage-row, .reg-mini, .proj-next { break-inside: avoid; }
   a { color: inherit; text-decoration: none; }
   h2 { font-size: 20px !important; }
 }
@@ -828,11 +812,68 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
 .project-hero .label { margin: 12px 0 24px; }
 .project-hero .fig-wide { margin-top: 34px; }
 .project-hero .fig-wide img { width: 100%; max-height: 680px; object-fit: cover; object-position: center; }
-.metadata { max-width: 760px; }
-.metadata div { padding: 13px 0; }
-.metadata dt { min-width: 130px; }
 .measure { line-height: 1.9; }
 .two-col, .gallery { column-gap: clamp(16px, 2.5vw, 32px); row-gap: 34px; }
+
+/* ---------- Project page facts row (STEP 4a) ----------
+   Under the hero: Type · Location · Program · Year · Tools,
+   straight from the project's meta list. TODO values never
+   render, so the row shows only what is known so far.  */
+.proj-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 44px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-soft);
+}
+.proj-facts div { display: flex; gap: 10px; align-items: baseline; }
+.proj-facts dt {
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  min-width: 0;
+}
+.proj-facts dd { font-size: 13.5px; }
+
+/* ---------- Render rhythm (STEP 4c) ----------
+   The first and last renders are big (they span the full
+   grid), the ones between sit in pairs. Any count works. */
+.rhythm > figure:first-child,
+.rhythm > figure:last-child { grid-column: 1 / -1; }
+
+/* ---------- Next-project teaser (STEP 4e) ----------
+   No teaser on the last (or only) project; the register back
+   link is the only navigation there.                       */
+.proj-next {
+  display: grid;
+  grid-template-columns: minmax(180px, 340px) 1fr;
+  gap: clamp(16px, 3vw, 32px);
+  margin-top: 40px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.proj-next-media img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid var(--rule);
+  filter: saturate(.82);
+  transition: filter var(--t-fast) ease;
+}
+.proj-next:hover .proj-next-media img,
+.proj-next:focus-visible .proj-next-media img { filter: saturate(1); }
+.proj-next:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.proj-next .ph { min-height: 160px; aspect-ratio: 3 / 2; }
+.proj-next-name {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(20px, 2.6vw, 30px);
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  margin: 6px 0 8px;
+}
+.proj-next-text { align-self: end; }
 
 /* Figure captions and temporary image warnings remain sheet-like. */
 .cap-row { padding-top: 10px; gap: 6px 14px; }
@@ -865,7 +906,9 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   .stage-row { grid-template-columns: 1fr; gap: 5px; }
   .project-hero .fig-wide { margin-top: 24px; }
   .project-hero .fig-wide img { min-height: 240px; }
-  .metadata dt { min-width: 96px; }
+  .proj-facts { gap: 6px 24px; }
+  .proj-facts div { align-items: flex-start; }
+  .proj-next { grid-template-columns: 1fr; }   /* teaser stacks on phone */
   .site-footer .wrap { display: grid; grid-template-columns: 1fr; }
   .site-footer a:first-child { margin-left: 0; }
 }
