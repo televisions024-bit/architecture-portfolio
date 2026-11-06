@@ -242,7 +242,7 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   hw.appendChild(t1);
   const lead = cleanValue(data.hero && data.hero.lead);
   if (lead) hw.appendChild(el('p', 'label', lead));   // one-line description
-  const heroFig = el('figure', 'fig-wide reveal');
+  const heroFig = el('figure', 'fig-wide');   // no reveal: first-screen media must simply show (see styles.css note)
   heroFig.appendChild(image(data.hero.src, data.hero.alt, true));
   hw.appendChild(heroFig);
   hero.appendChild(hw);
@@ -489,7 +489,7 @@ if (indexRoot) {
         feat.className = 'proj-featured';
 
         const media = document.createElement('a');
-        media.className = 'feat-media reveal';
+        media.className = 'feat-media';   // no reveal: first-screen media must simply show
         media.href = 'project.html?p=' + encodeURIComponent(featured.slug);
 
         /* an IMAGE TODO block for a blank entry, written by hand */
@@ -1064,6 +1064,30 @@ function initFades(doc) {
         io.unobserve(en.target);
       }
     });
-  }, { threshold: 0.12 });
-  els.forEach(e => io.observe(e));
+  }, { threshold: 0 });  /* 0, not 0.12: .reveal is clipped to a 2% sliver
+     at start, so its intersection ratio can never exceed 0.02 — any
+     positive overlap must be enough. Was the blank-media bug part 2. */
+  els.forEach(e => {
+    /* already scrolled past (above the viewport) on load: IO will
+       never fire for them, so start them visible now          */
+    if (e.getBoundingClientRect().bottom < 0) {
+      e.classList.add('is-in');
+      io.unobserve(e);
+    } else {
+      io.observe(e);
+    }
+  });
+  /* safety net: some browsers under-report tiny/clipped areas, so
+     after 1500 ms force .is-in on anything still hidden that is
+     in the viewport or above it — media must never stay blank  */
+  setTimeout(() => {
+    els.forEach(e => {
+      if (e.classList.contains('is-in')) return;
+      const r = e.getBoundingClientRect();
+      if (r.top <= window.innerHeight) {
+        e.classList.add('is-in');
+        io.unobserve(e);
+      }
+    });
+  }, 1500);
 }

@@ -263,8 +263,14 @@ figure { margin: 0; }
    and "wipe" upwards when they enter the viewport (.is-in is
    added by the same IntersectionObserver in script.js).
    The hidden state only exists when JS is on (html.js class,
-   added by script.js) — with no JS the content is visible.   */
-html.js .reveal { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); }
+   added by script.js) — with no JS the content is visible.
+   The start polygon keeps a 2%-tall sliver at the TOP: a zero-
+   area clip starts Chrome's IntersectionObserver reporting the
+   element as never intersecting; and a sliver at the BOTTOM only
+   overlaps the viewport inside a few pixels of scrolling, so the
+   observer still never fires (both blanked images in testing).
+   A top sliver intersects the moment the element scrolls in.  */
+html.js .reveal { clip-path: polygon(0 0, 100% 0, 100% 2%, 0 2%); }
 html.js .reveal.is-in {
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   transition: clip-path var(--t-slow) var(--ease);
