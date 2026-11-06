@@ -237,42 +237,36 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     return w;
   }
 
-  /* ---- 1 — HERO: full-width render + title + one-liner ---- */
-  const hero = el('section', 'section project-hero');
-  hero.dataset.part = 'TITLE';
-  hero.style.paddingTop = '48px';
-  const hw = el('div', 'wrap');
-  hw.appendChild(el('div', 'dim-line'));   // hairline + ticks: the only decoration
-  const t1 = el('h1', 'proj-title', name || slug);
-  t1.style.cssText =
-    'font-family:var(--font-heading);font-weight:normal;' +
-    'font-size:clamp(30px,4vw,46px);margin-bottom:6px;';
-  hw.appendChild(t1);
-  const lead = cleanValue(data.hero && data.hero.lead);
-  if (lead) hw.appendChild(el('p', 'label', lead));   // one-line description
-  const heroFig = el('figure', 'fig-wide');   // no reveal: first-screen media must simply show (see styles.css note)
-  heroFig.appendChild(image(data.hero.src, data.hero.alt, true));
-  hw.appendChild(heroFig);
-  hero.appendChild(hw);
+  /* ---- 1 — CINEMATIC HERO (TASK 03) ---- */
+  const hero = el('section', 'project-hero');
+  const hm = el('div', 'hero-media');
+  const hi = image(data.hero.src, data.hero.alt, true);
+  hi.className = 'hero-img';
+  hm.appendChild(hi);
+  hero.appendChild(hm);
   root.appendChild(hero);
 
-  /* ---- facts row under the hero (from the meta list) ------ */
-  /* Only the five agreed keys show, in the JSON's own order,
-     and only when the value is real (TODO stays hidden).     */
-  const FACT_KEYS = ['Type', 'Location', 'Program', 'Year', 'Tools'];
+  /* ---- 2 — PROJECT IDENTITY (TASK 03) ---- */
+  const identity = el('section', 'project-identity');
+  const iw = el('div', 'wrap');
+  
+  const title = cleanValue(data.title) || slug;
+  iw.appendChild(el('h1', '', title));
+
   if (Array.isArray(data.meta)) {
-    const facts = el('dl', 'proj-facts fade');
-    facts.style.cssText = 'margin-top:26px;max-width:none;';
+    const grid = el('div', 'meta-grid');
     data.meta.forEach(m => {
       const v = cleanValue(m && m.value);
-      if (!v || !FACT_KEYS.includes(m && m.key)) return;
-      const line = el('div');
-      line.appendChild(el('dt', '', m.key));
-      line.appendChild(el('dd', '', v));
-      facts.appendChild(line);
+      if (!v) return;
+      const item = el('div', 'meta-item');
+      item.appendChild(el('span', 'meta-label', m.key));
+      item.appendChild(el('span', 'meta-value', v));
+      grid.appendChild(item);
     });
-    if (facts.children.length) hw.appendChild(facts);
+    if (grid.children.length) iw.appendChild(grid);
   }
+  identity.appendChild(iw);
+  root.appendChild(identity);
 
   /* ---- 2 — 01 BRIEF: 2-3 short factual sentences ----------
      The numbered text block is hidden entirely while its text
@@ -308,27 +302,42 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     }
   }
 
-  /* ---- 4 — DRAWINGS: plan → section → elevation flow.
-     If all drawings are TODO (files absent), show a single
-     dignified placeholder instead of a grid of error blocks.   */
-  const dw = section('DRAWINGS · PLAN → SECTION → ELEVATION', 'Drawings', 'DRAWINGS');
+  /* ---- 4 — DRAWINGS (TASK 03) ---- */
+  const dw = el('section', 'drawings-sheet');
+  dw.dataset.part = 'DRAWINGS';
+  const dwWrap = el('div', 'wrap');
+  
+  // Section heading
+  const dwH = el('div', 'section-header');
+  dwH.appendChild(el('p', 'label', 'DRAWINGS'));
+  dwH.appendChild(el('h2', '', 'Drawings'));
+  dwWrap.appendChild(dwH);
+
   const hasDrawings = data.drawings && data.drawings.some(d => d.src);
   if (!hasDrawings) {
-    /* Graceful empty state: one quiet note instead of N error blocks */
     const dwEmpty = el('p', 'drawings-pending fade',
       'Technical drawings will appear here once the files are placed in ' +
       'images/' + data.slug + '/drawings/');
     dwEmpty.style.cssText = 'margin-top:16px;color:var(--grey);font-size:14px;';
-    dw.appendChild(dwEmpty);
+    dwWrap.appendChild(dwEmpty);
   } else {
-    const drg = el('div', 'two-col fade');
-    drg.style.marginTop = '8px';
-    data.drawings.forEach((d, i) =>
-      drg.appendChild(figure(d.src, d.alt,
-        cleanValue(d.caption) || d.label || '',
-        { code: 'D-0' + (i + 1), note: cleanValue(d.scale) })));
-    dw.appendChild(drg);
+    const drg = el('div', 'drawing-grid fade');
+    data.drawings.forEach((d, i) => {
+      const item = el('div', 'drawing-item');
+      // Adaptive layout: Plans and Elevations are full-width
+      const label = (d.label || '').toUpperCase();
+      if (label.includes('PLAN') || label.includes('ELEVATION')) {
+        item.classList.add('full');
+      }
+      item.appendChild(figure(d.src, d.alt, 
+        cleanValue(d.caption) || d.label || '', 
+        { code: 'D-0' + (i + 1), note: cleanValue(d.scale) }));
+      drg.appendChild(item);
+    });
+    dwWrap.appendChild(drg);
   }
+  dw.appendChild(dwWrap);
+  root.appendChild(dw);
 
   /* ---- 5 — GALLERY: render RHYTHM — first big, then pairs,
      last big (any count works). Click opens the lightbox.  ---- */
@@ -339,72 +348,26 @@ function buildProjectPage(doc, data, slug, ixProjects) {
       { code: 'R-0' + (i + 1), note: cleanValue(g.scale) })));
   gw.appendChild(grid);
 
-  /* ---- 6 — CLOSING image + next/back links ----------------- */
-  /* The links are built from projects/index.json, not from the
-     project's own JSON, so they stay correct for every project.   */
-  const lw = section('END', null, 'END');
-  lw.appendChild(figure(data.closing.src, data.closing.alt,
-    data.closing.caption, { code: 'E-01', note: cleanValue(data.closing.scale) }));
-
-  const where = ixProjects.findIndex(p => p.slug === slug);
-  const nextEntry = ixProjects[where + 1];           // undefined at the end
-
-  /* Title block strip (Direction A): project name + its register sheet
-     code, both straight from index.json so new projects come free.
-     A TODO title falls back to the slug — the TODO text never shows.  */
-  const thisEntry = ixProjects.find(p => p.slug === slug);
-  const tbName = doc.getElementById('tb-name');
-  const tbCode = doc.getElementById('tb-code');
-  if (tbName && thisEntry) tbName.textContent = cleanValue(thisEntry.title) || slug;
-  if (tbCode && thisEntry && thisEntry.sheet) {
-    tbCode.textContent = 'SHEET ' + thisEntry.sheet;
+  /* ---- 6 — CLOSING (TASK 03) ---- */
+  if (data.closing && data.closing.src) {
+    const lw = el('section', 'section closing-outro');
+    lw.dataset.part = 'END';
+    const lwrap = el('div', 'wrap');
+    lwrap.appendChild(figure(data.closing.src, data.closing.alt,
+      data.closing.caption, { code: 'E-01', note: cleanValue(data.closing.scale) }));
+    lw.appendChild(lwrap);
+    root.appendChild(lw);
   }
-
-  /* Signature interaction (Direction A): as you scroll, the sheet code
-     in the strip shows which part of the sheet is being read —
-     SHEET A-01 · BRIEF, · DRAWINGS, ... One IntersectionObserver,
-     one text swap each time, no animation, no libraries. The update
-     is instant text, so reduced-motion visitors lose nothing.       */
-  if (tbCode && 'IntersectionObserver' in window) {
-    const base = tbCode.textContent;                  // "SHEET A-01"
-    const parts = root.querySelectorAll('section[data-part]');
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(en => {
-        if (en.isIntersecting) {
-          tbCode.textContent = base + ' · ' + en.target.dataset.part;
-        }
-      });
-    }, { rootMargin: '-35% 0px -60% 0px' });          // watches the middle band
-    parts.forEach(s => io.observe(s));
-  }
-
-  /* Open Graph (Direction A extra): share-link title/description/image
-     straight from the project JSON, so future projects are covered.  */
-  function setOG(prop, val) {
-    let m = doc.head.querySelector('meta[property="' + prop + '"]');
-    if (!m) {
-      m = doc.createElement('meta');
-      m.setAttribute('property', prop);
-      doc.head.appendChild(m);
-    }
-    m.setAttribute('content', val);
-  }
-  setOG('og:title', (name || slug) + ' — Mohammed Huzefa');
-  if (data.hero && data.hero.lead) setOG('og:description', data.hero.lead);
-  if (data.hero && data.hero.src) {
-    /* absolute URL, built from wherever the site is hosted */
-    setOG('og:image', new URL(data.hero.src, location.href).href);
-  }
-
-  /* Direction A closing navigation: back link to the register. */
+  
+  /* Navigation always appears at the end */
+  const navWrap = el('div', 'wrap');
   const navRow = el('div', 'proj-nav-row fade');
   const back = el('a', 'cover-link', '← Back to register');
   back.href = 'projects.html';
   navRow.appendChild(back);
-  lw.appendChild(navRow);
-
-  /* next-project teaser card: thumbnail + name straight from
-     index.json; hidden entirely on the last (or only) project.  */
+  
+  const where = ixProjects.findIndex(p => p.slug === slug);
+  const nextEntry = ixProjects[where + 1];
   if (nextEntry) {
     const teaser = el('a', 'proj-next fade');
     teaser.href = 'project.html?p=' + encodeURIComponent(nextEntry.slug);
@@ -412,10 +375,10 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     if (nextEntry.thumbnail) {
       const img = doc.createElement('img');
       img.src = nextEntry.thumbnail;
-      img.alt = '';                 /* the text block names it */
+      img.alt = '';
       img.setAttribute('loading', 'lazy');
       img.setAttribute('decoding', 'async');
-      img.width = 1920; img.height = 2880;  /* stand-in ratio; CSS crops */
+      img.width = 1920; img.height = 2880;
       img.addEventListener('error', () => img.replaceWith(elHTML('div', 'ph',
         '<span>IMAGE TODO:<br><span>' + nextEntry.thumbnail + '</span></span>')));
       media.appendChild(img);
@@ -431,8 +394,10 @@ function buildProjectPage(doc, data, slug, ixProjects) {
       txt.appendChild(el('span', 'reg-code', 'SHEET ' + nextEntry.sheet));
     }
     teaser.appendChild(txt);
-    lw.appendChild(teaser);
+    navRow.appendChild(teaser);
   }
+  navWrap.appendChild(navRow);
+  root.appendChild(navWrap);
 }
 
 /* ============================================================

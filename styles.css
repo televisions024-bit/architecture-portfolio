@@ -227,6 +227,47 @@ body.tb { padding-bottom: 72px; }   /* room so the strip never covers text */
 .rule { border: 0; border-top: 1px solid var(--rule); margin: var(--space-section) auto 0; width: calc(min(var(--max-w), 100% - 48px)); }
 @media (max-width: 719px) { .rule { width: calc(100% - 32px); } }
 
+/* ---------- Drawing Sheet (TASK 03) ----------
+   Dedicated area for architectural drawings.
+   Background: subtle olive drafting grid.
+   Adaptive layout: full-width for plans/elevations,
+   paired for sections/details.                         */
+.drawings-sheet {
+  background-image:
+    linear-gradient(rgba(119, 123, 101, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(119, 123, 101, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+  padding: clamp(64px, 8vw, 100px) 0;
+}
+.drawings-sheet .wrap {
+  position: relative;
+}
+.drawings-sheet .drawing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  margin-top: 32px;
+}
+.drawings-sheet .drawing-item {
+  width: 100%;
+}
+.drawings-sheet .drawing-item.full {
+  grid-column: 1 / -1;
+}
+.drawings-sheet figure {
+  width: 100%;
+}
+.drawings-sheet figure img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+@media (max-width: 719px) {
+  .drawings-sheet .drawing-grid { grid-template-columns: 1fr; }
+  .drawings-sheet .drawing-item.full { grid-column: auto; }
+}
+
+
 /* ---------- Text helpers ---------- */
 p.measure { max-width: 62ch; }
 
@@ -848,11 +889,66 @@ html.js .reveal.is-in {
 .stage-items { line-height: 1.8; }
 
 /* Project detail: stronger title and a wide, editorial hero image. */
-.project-hero { padding-top: clamp(40px, 6vw, 72px) !important; }
-.project-hero .proj-title { max-width: 16ch; font-size: clamp(38px, 6vw, 70px) !important; line-height: 1.02; letter-spacing: -.03em; }
-.project-hero .label { margin: 12px 0 24px; }
-.project-hero .fig-wide { margin-top: 34px; }
-.project-hero .fig-wide img { width: 100%; max-height: 680px; object-fit: cover; object-position: center; }
+/* ---------- Project Detail — Cinematic Hero (TASK 03) ----------
+   Full-width, edge-to-edge architectural image.
+   Responsive height ensures the image is dominant without
+   destructive cropping of the composition.                */
+.project-hero {
+  width: 100%;
+  position: relative;
+  background: var(--bg);
+}
+.project-hero .hero-media {
+  width: 100%;
+  height: clamp(70vh, 90svh, 100vh);
+  overflow: hidden;
+  display: block;
+}
+.project-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: opacity var(--t-base) ease;
+}
+@media (max-width: 719px) {
+  .project-hero .hero-media { height: 60svh; }
+}
+
+/* Project Identity — editorial block immediately below hero */
+.project-identity {
+  padding: clamp(48px, 8vw, 80px) 0;
+  border-bottom: 1px solid var(--rule);
+}
+.project-identity h1 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.project-identity .meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+.project-identity .meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.project-identity .meta-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.project-identity .meta-value {
+  font-size: 14px;
+  color: var(--ink);
+}
+
 .measure { line-height: 1.9; }
 .two-col, .gallery { column-gap: clamp(16px, 2.5vw, 32px); row-gap: 34px; }
 
@@ -918,6 +1014,26 @@ html.js .reveal.is-in {
 
 /* Figure captions and temporary image warnings remain sheet-like. */
 .cap-row { padding-top: 10px; gap: 6px 14px; }
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 24px;
+}
+.section-header .label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--grey);
+}
+.section-header h2 {
+  font-size: clamp(24px, 4vw, 32px);
+  margin-bottom: 0;
+}
+.closing-outro {
+  padding-bottom: clamp(64px, 10vw, 120px);
+}
+
 
 .site-footer { margin-top: clamp(72px, 9vw, 120px); padding: 24px 0 42px; }
 .site-footer .wrap { font-size: 10px; letter-spacing: .08em; line-height: 1.8; }
