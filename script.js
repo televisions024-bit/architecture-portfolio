@@ -13,6 +13,10 @@
 const projectRoot = document.getElementById('project-root');
 const indexRoot = document.getElementById('index-root');
 
+/* JS is on: tell the CSS so motion like .reveal may hide
+   content (without JS nothing is ever hidden).                */
+document.documentElement.classList.add('js');
+
 /* ============================================================
    PROJECT PAGE (?p=slug) — build the SIX sections from JSON
    (PROJECT.md section 6: hero, brief, concept, drawings,
@@ -873,12 +877,13 @@ if (aboutRoot) {
     });
 }
 /* ============================================================
-   GENTLE FADE-IN on scroll — the only allowed motion
-   (PROJECT.md section 5). Off when the visitor prefers
-   reduced motion (handled in styles.css).
+   GENTLE FADE-IN + WIPE-REVEAL on scroll — the allowed motion
+   (PROJECT.md section 5). One IntersectionObserver adds .is-in
+   to fading (.fade) and wiping (.reveal) elements. Off when
+   the visitor prefers reduced motion (handled in styles.css).
 ============================================================ */
 function initFades(doc) {
-  const els = doc.querySelectorAll('.fade');
+  const els = doc.querySelectorAll('.fade, .reveal');
   if (!('IntersectionObserver' in window)) {
     els.forEach(e => e.classList.add('is-in'));
     return;

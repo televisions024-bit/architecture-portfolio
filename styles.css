@@ -26,6 +26,14 @@
   --max-w: 1200px;           /* max content width */
   --side: 16px;              /* phone side padding (PROJECT.md) */
   --space-section: 96px;     /* section spacing on desktop */
+
+  /* Motion tokens: one easing curve + three durations.
+     Only transform, opacity and clip-path are ever animated,
+     and everything is instant under prefers-reduced-motion. */
+  --ease: cubic-bezier(.15, .85, .45, 1);
+  --t-fast: .3s;
+  --t-base: .5s;
+  --t-slow: 1s;
 }
 
 @media (min-width: 720px) {
@@ -253,6 +261,33 @@ figure { margin: 0; }
 .fade { opacity: 0; transform: translateY(6px); }
 .fade.is-in { opacity: 1; transform: none; transition: opacity 0.6s ease, transform 0.6s ease; }
 @media (prefers-reduced-motion: reduce) { .fade { opacity: 1; transform: none; } }
+
+/* ---------- Cross-page fade (STEP 2) ----------
+   Browser-level view transition between pages: the old page
+   fades out, the new one fades in slightly later. Disabled
+   entirely (no cross-fade) for reduced-motion visitors.      */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: vt-out var(--t-base) var(--ease) both; }
+  ::view-transition-new(root) { animation: vt-in var(--t-base) var(--ease) .15s both; }
+  @keyframes vt-out { to { opacity: 0; } }
+  @keyframes vt-in  { from { opacity: 0; } }
+}
+
+/* ---------- Bottom-up wipe reveal (STEP 2) ----------
+   .reveal images/blocks are covered by a clip from the bottom
+   and "wipe" upwards when they enter the viewport (.is-in is
+   added by the same IntersectionObserver in script.js).
+   The hidden state only exists when JS is on (html.js class,
+   added by script.js) — with no JS the content is visible.   */
+html.js .reveal { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); }
+html.js .reveal.is-in {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: clip-path var(--t-slow) var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal { clip-path: none; }
+}
 
 /* ---------- Gallery grid with lightbox ---------- */
 .gallery {
