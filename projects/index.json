@@ -1,5 +1,5 @@
 {
-  "_": "One entry per project, newest work last. This file drives BOTH projects.html (the drawing register) and the 'Next project' links at the bottom of every project page, so add every new project here. Thumbnail is shown as-is; missing files render as an IMAGE TODO block. The 'sheet' number is the drawing code shown in the title-block strip and the register - continue the sequence (A-01, A-02, ...) for every new project; the About page is always the sheet AFTER the last one.",
+  "_": "One entry per project, newest work last. This file drives BOTH projects.html (the drawing register) and the 'Next project' links at the bottom of every project page, so add every new project here. Thumbnail is shown as-is; missing files render as an IMAGE TODO block. The 'sheet' number is the drawing code shown in the title-block strip and the register - continue the sequence (A-01, A-02, ...) for every new project; the About page is always the sheet AFTER the last one. Optional keys: \"featured\": true makes this entry the dominant project on projects.html (otherwise the FIRST entry is featured automatically); \"category\": \"...\" shows next to the entry's type in the featured caption. Entries still starting with TODO stay hidden.",
 
   "projects": [
     {

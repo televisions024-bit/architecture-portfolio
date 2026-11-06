@@ -18,6 +18,47 @@ const indexRoot = document.getElementById('index-root');
 document.documentElement.classList.add('js');
 
 /* ============================================================
+   TEMPORARY stand-in photos: if a real render file is missing,
+   show a free-license stock photo instead of the IMAGE TODO
+   block, with a warning tag on the image and a photo credit in
+   the caption row. If the real render exists, the stand-in is
+   never used. Full credits live in images/PLACEHOLDERS.md.
+   When all real renders exist, delete this map + check script.
+   One map at the top: the project PAGE and the register both
+   use the same stand-ins.                                    */
+const PLACEHOLDERS = {
+  'images/library/renders/01-hero-exterior.webp':
+    { file: 'images/placeholders/placeholder-01-hero.webp',
+      credit: 'Galla_ph, Pexels' },
+  'images/library/renders/02-entrance-approach.webp':
+    { file: 'images/placeholders/placeholder-02-entrance.webp',
+      credit: 'Agung Pandit Wiguna, Pexels' },
+  'images/library/renders/03-reading-room.webp':
+    { file: 'images/placeholders/placeholder-03-reading-room.webp',
+      credit: 'Polina Zimmerman, Pexels' },
+  'images/library/renders/06-dusk-view.webp':
+    { file: 'images/placeholders/placeholder-04-dusk.webp',
+      credit: 'iramezatil, Pexels' },
+  'images/library/renders/07-detail.webp':
+    { file: 'images/placeholders/placeholder-05-detail.webp',
+      credit: 'Ricky Esquivel, Pexels' }
+};
+
+/* ============================================================
+   TODO VALUES NEVER RENDER — a value that starts with "TODO"
+   is hidden everywhere. A value may carry a real head and an
+   open TODO tail ("Public library — TODO: floors, key spaces");
+   only the real head is shown then, never the TODO text.     */
+function cleanValue(v) {
+  if (v === undefined || v === null) return '';
+  const s = String(v);
+  if (s.trim().toUpperCase().startsWith('TODO')) return '';
+  const cut = s.search(/TODO/i);
+  return (cut > 0 ? s.slice(0, cut) : s)
+    .replace(/[—–\-,:; ]+$/, '').trim();
+}
+
+/* ============================================================
    PROJECT PAGE (?p=slug) — build the SIX sections from JSON
    (PROJECT.md section 6: hero, brief, concept, drawings,
    gallery with lightbox, closing image + next/back links)
@@ -101,30 +142,6 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     n.innerHTML = html;
     return n;
   }
-
-  /* TEMPORARY stand-in photos: if a real render file is missing, show a
-     free-license stock photo instead of the IMAGE TODO block, with a
-     warning tag on the image and a photo credit on the caption row.
-     If the real render exists, the stand-in is never used.
-     Full credits live in images/PLACEHOLDERS.md.
-     When all real renders exist, delete this map + the check script.  */
-  const PLACEHOLDERS = {
-    'images/library/renders/01-hero-exterior.webp':
-      { file: 'images/placeholders/placeholder-01-hero.webp',
-        credit: 'Galla_ph, Pexels' },
-    'images/library/renders/02-entrance-approach.webp':
-      { file: 'images/placeholders/placeholder-02-entrance.webp',
-        credit: 'Agung Pandit Wiguna, Pexels' },
-    'images/library/renders/03-reading-room.webp':
-      { file: 'images/placeholders/placeholder-03-reading-room.webp',
-        credit: 'Polina Zimmerman, Pexels' },
-    'images/library/renders/06-dusk-view.webp':
-      { file: 'images/placeholders/placeholder-04-dusk.webp',
-        credit: 'iramezatil, Pexels' },
-    'images/library/renders/07-detail.webp':
-      { file: 'images/placeholders/placeholder-05-detail.webp',
-        credit: 'Ricky Esquivel, Pexels' }
-  };
 
   /* an <img>, lazy-loaded; if the file does not exist yet, swap in
      the stock stand-in (tagged "PLACEHOLDER - NOT MY WORK") for the
@@ -396,80 +413,176 @@ if (indexRoot) {
 
       const projects = ix.projects || [];
 
-      /* ---- Drawing register table (Direction A) ----
-         Each project is one <a> row. The .register and .reg-row rules
-         in styles.css define the grid; this renderer matches them.      */
-      const table = document.createElement('div');
-      table.className = 'register';
-      table.setAttribute('role', 'list');
-
       /* Graceful empty state */
       if (projects.length === 0) {
-        table.appendChild(Object.assign(document.createElement('p'),
+        w.appendChild(Object.assign(document.createElement('p'),
           { className: 'reg-empty',
             textContent: 'No projects are registered yet.' }));
+      } else {
+        /* ---- Dominant featured project (editorial register) ----
+           The entry with "featured": true in index.json, otherwise
+           the first one. Full-viewport image, big number, name in
+           caps, facts row (Location · Year · Program from that
+           project's own JSON — TODO values stay hidden) and one
+           "View project" link. Other projects follow as a quiet
+           numbered list.                                            */
+        const featured = projects.find(p => p.featured === true) || projects[0];
+        const featNum = projects.indexOf(featured) + 1;
+
+        const feat = document.createElement('article');
+        feat.className = 'proj-featured';
+
+        const media = document.createElement('a');
+        media.className = 'feat-media reveal';
+        media.href = 'project.html?p=' + encodeURIComponent(featured.slug);
+
+        /* an IMAGE TODO block for a blank entry, written by hand */
+        function todoBlock(src) {
+          return Object.assign(document.createElement('div'),
+            { className: 'ph',
+              innerHTML: '<span>IMAGE TODO' +
+                (src ? ':<br><span>' + src + '</span>' : '') + '</span>' });
+        }
+
+        if (featured.thumbnail) {
+          const img = document.createElement('img');
+          img.src = featured.thumbnail;
+          img.alt = '';            /* decorative: the caption names it */
+          img.setAttribute('fetchpriority', 'high');  /* dominant image */
+          img.setAttribute('decoding', 'async');
+          /* provisional canvas ratio (the current stand-in); CSS
+             sets the real layout, these two just kill the jump  */
+          img.width = 1920; img.height = 2880;
+          /* missing file -> stock stand-in (tagged) -> TODO block */
+          img.addEventListener('error', function onErr() {
+            img.removeEventListener('error', onErr);
+            const std = PLACEHOLDERS[featured.thumbnail];
+            if (!std) { img.replaceWith(todoBlock(featured.thumbnail)); return; }
+            img.src = std.file;
+            media.appendChild(Object.assign(document.createElement('span'),
+              { className: 'ph-tag', textContent: 'PLACEHOLDER - NOT MY WORK' }));
+            media.title = 'Stand-in photo: ' + std.credit +
+              ' — the real render is not placed yet';
+            /* if the stand-in file is missing too, fall back */
+            img.addEventListener('error', () =>
+              img.replaceWith(todoBlock(featured.thumbnail)));
+          });
+          media.appendChild(img);
+        } else {
+          media.appendChild(todoBlock(''));
+        }
+        feat.appendChild(media);
+
+        /* caption block on paper, under the image */
+        const cap = document.createElement('div');
+        cap.className = 'feat-cap wrap fade';
+        cap.dataset.index = String(featNum);
+
+        /* number + sheet code on one hairline-separated row */
+        const top = document.createElement('div');
+        top.className = 'feat-top';
+        top.appendChild(Object.assign(document.createElement('span'),
+          { className: 'feat-num',
+            textContent: String(featNum).padStart(2, '0') }));
+        if (featured.sheet) {
+          top.appendChild(Object.assign(document.createElement('span'),
+            { className: 'reg-code', textContent: 'SHEET ' + featured.sheet }));
+        }
+        cap.appendChild(top);
+
+        /* name in caps — TODO never renders, skip the line then */
+        const name = cleanValue(featured.title);
+        if (name) {
+          cap.appendChild(Object.assign(document.createElement('h2'),
+            { className: 'feat-title', textContent: name }));
+        }
+
+        /* category · type under the name (same TODO rule)        */
+        const kind = [featured.category, featured.type]
+          .map(cleanValue).filter(Boolean).join(' · ');
+        if (kind) {
+          cap.appendChild(Object.assign(document.createElement('p'),
+            { className: 'feat-type', textContent: kind }));
+        }
+
+        /* facts row: Location · Year · Program, read from the
+           project's OWN json (not index.json) and hidden while
+           TODO. The row fills quietly when the file arrives.    */
+        cap.appendChild(Object.assign(document.createElement('dl'),
+          { className: 'feat-facts' }));
+        fetch('projects/' + encodeURIComponent(featured.slug) + '.json')
+          .then(r => r.ok ? r.json() : null)
+          .then(pj => {
+            const dl = cap.querySelector('.feat-facts');
+            if (!pj || !Array.isArray(pj.meta) || !dl) return;
+            ['Location', 'Year', 'Program'].forEach(key => {
+              const m = pj.meta.find(x => x && x.key === key);
+              const v = m ? cleanValue(m.value) : '';
+              if (!v) return;             /* TODO or absent -> hidden */
+              const line = document.createElement('div');
+              line.appendChild(Object.assign(document.createElement('dt'),
+                { textContent: key }));
+              line.appendChild(Object.assign(document.createElement('dd'),
+                { textContent: v }));
+              dl.appendChild(line);
+            });
+          })
+          .catch(() => { /* no json -> the facts row stays empty */ });
+
+        const link = document.createElement('a');
+        link.className = 'cover-link';
+        link.href = media.href;
+        link.textContent = 'View project →';
+        cap.appendChild(link);
+
+        feat.appendChild(cap);
+        w.appendChild(feat);
+
+        /* ---- quiet numbered list of the remaining projects ----
+           With a single project nothing extra is rendered here.  */
+        projects.forEach((p, n0) => {
+          const n = n0 + 1;
+          if (p === featured) return;
+          if (!w.querySelector('.reg-list')) {
+            const list = document.createElement('div');
+            list.className = 'reg-list wrap';
+            list.setAttribute('role', 'list');
+            w.appendChild(list);
+          }
+          const row = document.createElement('a');
+          row.className = 'reg-mini fade';
+          row.href = 'project.html?p=' + encodeURIComponent(p.slug);
+          row.setAttribute('role', 'listitem');
+          row.dataset.index = String(n);
+          row.appendChild(Object.assign(document.createElement('span'),
+            { className: 'reg-mini-num',
+              textContent: String(n).padStart(2, '0') }));
+          const miniName = cleanValue(p.title);
+          if (miniName) {
+            row.appendChild(Object.assign(document.createElement('span'),
+              { className: 'reg-mini-title', textContent: miniName }));
+          }
+          const miniType = cleanValue(p.type);
+          if (miniType) {
+            row.appendChild(Object.assign(document.createElement('span'),
+              { className: 'reg-mini-type', textContent: miniType }));
+          }
+          const miniYear = cleanValue(p.year);
+          if (miniYear) {
+            row.appendChild(Object.assign(document.createElement('span'),
+              { className: 'reg-mini-year', textContent: miniYear }));
+          }
+          row.appendChild(Object.assign(document.createElement('span'),
+            { className: 'reg-code', textContent: p.sheet || '' }));
+          w.querySelector('.reg-list').appendChild(row);
+        });
       }
 
-      projects.forEach((p, i) => {
-        const row = document.createElement('a');
-        row.className = 'reg-row fade';
-        row.href = 'project.html?p=' + encodeURIComponent(p.slug);
-        row.setAttribute('role', 'listitem');
-        row.dataset.index = String(i + 1);
-
-        /* Col 1: SHEET code */
-        row.appendChild(Object.assign(document.createElement('div'),
-          { className: 'reg-code', textContent: p.sheet || '—' }));
-
-        /* Col 2: Title + mobile sub-line */
-        const colTitle = document.createElement('div');
-        colTitle.className = 'reg-title-col';
-        colTitle.appendChild(Object.assign(document.createElement('div'),
-          { className: 'reg-title', textContent: p.title }));
-        const sub = [p.type, p.year].filter(Boolean).join(' · ');
-        if (sub) {
-          colTitle.appendChild(Object.assign(document.createElement('div'),
-            { className: 'reg-sub', textContent: sub }));
-        }
-        row.appendChild(colTitle);
-
-        /* Col 3: Type (desktop only, hidden on mobile via CSS) */
-        row.appendChild(Object.assign(document.createElement('div'),
-          { className: 'reg-type', textContent: p.type || '' }));
-
-        /* Col 4: Year (desktop only) */
-        row.appendChild(Object.assign(document.createElement('div'),
-          { className: 'reg-year', textContent: p.year || '' }));
-
-        /* Col 5: Thumbnail — missing file shows a quiet grey block.
-           No TODO text in the register; the entry stays readable.  */
-        const colThumb = document.createElement('div');
-        colThumb.className = 'reg-thumb-col';
-        if (p.thumbnail) {
-          const img = document.createElement('img');
-          img.className = 'reg-thumb';
-          img.src = p.thumbnail;
-          img.alt = '';   /* decorative: row text already names the project */
-          img.setAttribute('loading', 'lazy');
-          img.addEventListener('error', () => img.replaceWith(
-            Object.assign(document.createElement('div'),
-              { className: 'reg-thumb reg-thumb-ph' })
-          ));
-          colThumb.appendChild(img);
-        } else {
-          colThumb.appendChild(Object.assign(document.createElement('div'),
-            { className: 'reg-thumb reg-thumb-ph' }));
-        }
-        row.appendChild(colThumb);
-
-        table.appendChild(row);
-      });
-
-      w.appendChild(table);
       indexRoot.appendChild(w);
       initFades(document);
 
-      /* Sheet counter "1 / N" */
+      /* Sheet counter "1 / N" — follows the numbers of the featured
+         caption block and the quiet list rows                     */
       if (projects.length > 0) {
         const counter = document.createElement('div');
         counter.className = 'proj-counter';
@@ -479,7 +592,7 @@ if (indexRoot) {
         document.body.appendChild(counter);
 
         if ('IntersectionObserver' in window) {
-          const rows = table.querySelectorAll('.reg-row');
+          const marks = indexRoot.querySelectorAll('[data-index]');
           const io = new IntersectionObserver(entries => {
             entries.forEach(en => {
               if (en.isIntersecting) {
@@ -488,7 +601,7 @@ if (indexRoot) {
               }
             });
           }, { rootMargin: '-40% 0px -50% 0px' });
-          rows.forEach(r => io.observe(r));
+          marks.forEach(r => io.observe(r));
         }
       }
     })
