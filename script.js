@@ -159,6 +159,13 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     img.src = src;
     img.alt = alt || '';
     if (!eager) img.setAttribute('loading', 'lazy'); // lazy-load everything but the hero
+    img.setAttribute('decoding', 'async');          // never block the main thread
+    if (eager) img.setAttribute('fetchpriority', 'high');   // the hero is first screen
+    /* width/height kill the layout jump while the file loads; CSS
+       sets the real layout on top (crop / max-height). The ratio
+       matches the current stand-in photos (2:3). When real renders
+       land with a very different ratio, update or drop these two. */
+    img.width = 1920; img.height = 2880;
 
     const ph = elHTML('div', 'ph',
       '<span>IMAGE TODO:<br><span>' + src + '</span></span>');
