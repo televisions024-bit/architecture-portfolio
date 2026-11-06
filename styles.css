@@ -664,105 +664,143 @@ html.js .reveal.is-in {
 .feat-media { display: block; position: relative; }
 .feat-media img {
   width: 100%;
-  height: 100vh;         /* full viewport (mobile-safe below) */
+  height: clamp(70vh, 100svh, 120vh); /* responsive dominance; not blindly 100vh */
   object-fit: cover;
   object-position: center;
+  transition: opacity var(--t-base) ease;
 }
 @supports (height: 100svh) {
-  .feat-media img { height: 100svh; }
+  .feat-media img { height: clamp(70svh, 100svh, 120svh); }
 }
 /* the pending IMAGE TODO block spans the viewport too, quietly */
 .feat-media .ph {
-  height: 100vh;
+  height: clamp(70vh, 100svh, 120vh);
   min-height: 0;
   border-left: 0;
   border-right: 0;
 }
 @supports (height: 100svh) {
-  .feat-media .ph { height: 100svh; }
+  .feat-media .ph { height: clamp(70svh, 100svh, 120svh); }
+}
+/* a clean "paper edge" transition between image and caption */
+.feat-media::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--rule);
+  z-index: 2;
 }
 
-.feat-cap { padding-top: 20px; padding-bottom: 40px; }
+.feat-cap {
+  padding-top: 32px;
+  padding-bottom: 64px;
+  max-width: 800px;
+  margin: 0 auto; /* center the editorial block on desktop */
+}
+@media (max-width: 719px) {
+  .feat-cap { padding-top: 24px; padding-bottom: 32px; }
+}
 .feat-top {
   display: flex;
   align-items: baseline;
-  gap: 18px;
-  padding-bottom: 10px;
+  gap: 24px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--rule);
 }
 .feat-num {
   font-family: var(--font-heading);
-  font-size: clamp(42px, 6vw, 76px);
-  line-height: 1;
+  font-size: clamp(48px, 7vw, 84px);
+  line-height: 0.9;
   font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
-.feat-top .reg-code { align-self: center; }
+.feat-top .reg-code {
+  align-self: center;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+}
 .feat-title {
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: clamp(22px, 3.4vw, 42px);
-  line-height: 1.06;
-  letter-spacing: .02em;
-  text-transform: uppercase;       /* name in caps (Direction A) */
-  max-width: 18ch;
-  margin-top: 18px;
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: 1.1;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  max-width: 15ch;
+  margin-top: 24px;
+  margin-bottom: 8px;
 }
 .feat-type {
-  font-size: 10px;
-  letter-spacing: .16em;
+  font-size: 11px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--grey);
-  margin-top: 10px;
+  margin-top: 4px;
+  margin-bottom: 24px;
 }
 .feat-facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 44px;
-  margin-top: 20px;
-  padding-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 24px 40px;
+  margin-top: 32px;
+  padding-top: 24px;
   border-top: 1px solid var(--rule-soft);
 }
-.feat-facts div { display: flex; gap: 10px; align-items: baseline; }
-.feat-facts dt {
-  font-size: 10px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--grey);
+.feat-facts div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
-.feat-facts dd { font-size: 13.5px; }
-.feat-cap .cover-link { margin-top: 22px; display: inline-block; }
+.feat-facts dt {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 500;
+  background: rgba(165, 165, 141, 0.15); /* sage tint */
+  padding: 2px 6px;
+  width: fit-content;
+  border-radius: 1px;
+}
+.feat-facts dd {
+  font-size: 13px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.feat-cap .cover-link { margin-top: 32px; display: inline-block; }
 
 /* Quiet numbered list of the other projects */
 .reg-list {
   border-top: 1px solid var(--rule);
-  margin-top: clamp(24px, 4vw, 48px);
-  padding-bottom: 30px;
+  margin-top: clamp(48px, 6vw, 80px);
+  padding-bottom: 48px;
 }
 .reg-mini {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) max-content max-content max-content;
-  gap: clamp(10px, 2vw, 22px);
+  grid-template-columns: 64px minmax(0, 1fr) max-content max-content max-content;
+  gap: clamp(12px, 2vw, 32px);
   align-items: baseline;
-  padding: 16px 4px;
+  padding: 20px 4px;
   margin: 0 -4px;
   border-bottom: 1px solid var(--rule-soft);
   text-decoration: none;
   color: var(--ink);
   transition: background var(--t-fast) ease, padding-left var(--t-fast) ease;
 }
-.reg-mini:hover { background: rgba(165, 165, 141, 0.22); padding-left: 14px; }  /* sage tint, TASK 01 */
+.reg-mini:hover { background: rgba(165, 165, 141, 0.18); padding-left: 20px; }  /* sage tint, TASK 01 */
 .reg-mini:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .reg-mini-num {
   font-family: var(--font-heading);
-  font-size: 15px;
+  font-size: 16px;
   color: var(--grey);
   font-variant-numeric: tabular-nums;
 }
 .reg-mini-title {
   font-family: var(--font-heading);
   font-weight: 400;
-  font-size: clamp(16px, 1.8vw, 20px);
-  line-height: 1.3;
+  font-size: clamp(18px, 2vw, 24px);
+  line-height: 1.2;
   letter-spacing: -.01em;
 }
 .reg-mini-type,
@@ -772,7 +810,13 @@ html.js .reveal.is-in {
   text-transform: uppercase;
   color: var(--grey);
 }
-.reg-mini .reg-code { justify-self: end; }
+.reg-mini .reg-code {
+  justify-self: end;
+  transition: color var(--t-fast) ease;
+}
+.reg-mini:hover .reg-code {
+  color: var(--accent); /* subtle burgundy shift on row hover */
+}
 
 /* Scroll-snap, proximity only, and only once JS is on. Off under
    reduced motion (the media query keeps it out entirely).        */
@@ -881,32 +925,11 @@ html.js .reveal.is-in {
 .tb-row { height: 48px; }
 
 @media (max-width: 719px) {
-  .site-header .wrap { min-height: 58px; align-items: center; }
-  .brand { font-size: 14px; }
-  .site-nav { gap: 13px; }
-  .site-nav a { font-size: 9px; letter-spacing: .11em; }
-  .page-intro { grid-template-columns: 1fr; gap: 18px; padding-top: 46px; }
-  .page-intro-note { justify-self: start; }
-  /* Register: featured stays dominant; the quiet list drops the
-     type and year spans (they are TODO-empty for now anyway)   */
-  .reg-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .reg-header-right { padding-bottom: 0; }
-  .reg-mini {
-    grid-template-columns: 34px minmax(0, 1fr) max-content;
-  }
-  .reg-mini-type,
-  .reg-mini-year { display: none; }
-  .feat-facts { gap: 6px 24px; }
-  .feat-facts div { align-items: flex-start; }
-  .index-title { font-size: 26px; }
-  .stage-row { grid-template-columns: 1fr; gap: 5px; }
-  .project-hero .fig-wide { margin-top: 24px; }
-  .project-hero .fig-wide img { min-height: 240px; }
-  .proj-facts { gap: 6px 24px; }
-  .proj-facts div { align-items: flex-start; }
-  .proj-next { grid-template-columns: 1fr; }   /* teaser stacks on phone */
-  .site-footer .wrap { display: grid; grid-template-columns: 1fr; }
-  .site-footer a:first-child { margin-left: 0; }
+  .feat-cap { padding-left: 24px; padding-right: 24px; text-align: left; }
+  .feat-top { gap: 12px; }
+  .feat-num { font-size: 42px; }
+  .feat-title { font-size: 26px; margin-top: 12px; }
+  .feat-facts { grid-template-columns: 1fr 1fr; gap: 16px 24px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
