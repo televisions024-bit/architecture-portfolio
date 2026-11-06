@@ -1,0 +1,587 @@
+/* ============================================================
+   entrance.css — Architectural Entrance Scene Styles
+   MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO (2024-27)
+   Namespaced under .es-scene to protect site-wide styling.
+
+   Palette (Direction A / Drawing Sheet):
+   - Accent: #7A1F2B (burgundy architectural frames & markers)
+   - Ink:    #1A1A1A (near-black architectural text)
+   - Paper:  #F5F3EF (cream / lime-plaster off-white)
+   - Plaster background fallback: #E4DCCB
+   ============================================================ */
+
+:root {
+  --es-accent: #7A1F2B;
+  --es-accent-hover: #962837;
+  --es-ink: #1A1A1A;
+  --es-paper: #F5F3EF;
+  --es-glow: rgba(255, 240, 215, 0.08);   /* subtle warm hover brightening */
+  --es-dim: rgba(20, 12, 8, 0.16);        /* gentle sibling dimming on hover */
+  --font-heading: "Fraunces", Georgia, serif;
+  --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* Reset & root bounds */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #E4DCCB;
+  color: var(--es-ink);
+  overflow: hidden;
+}
+
+.es-scene * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.es-scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--font-body);
+  background: #E4DCCB;
+}
+
+/* Accessibility: screen-reader utility for desktop title */
+.es-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link (first in tab order) */
+.es-skip {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+  padding: 8px 16px;
+  background: var(--es-paper);
+  color: var(--es-accent);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--es-accent);
+  transform: translateY(-150%);
+  transition: transform 0.2s ease;
+}
+
+.es-skip:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--es-accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   DESKTOP TITLE BOX — ivory paper chip, same look as door.html
+   top bar. Hidden whenever the mobile header takes over.
+   ============================================================ */
+.es-title-box {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 12px;
+  background: var(--es-paper);
+  color: var(--es-ink);
+  pointer-events: none;
+}
+
+.es-title-who {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--es-ink);
+}
+
+.es-title-sub {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--es-ink);
+}
+
+/* ============================================================
+   AI CREDIT — ivory paper chip, bottom-left on desktop; a plain
+   in-flow strip between image and nav rows on mobile so it can
+   never cover a label or the touch list.
+   ============================================================ */
+.es-credit {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 20;
+  max-width: min(380px, calc(100vw - 32px));
+  padding: 6px 10px;
+  background: var(--es-paper);
+  color: var(--es-ink);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0.03em;
+}
+
+/* ============================================================
+   MOBILE-ONLY TITLE BAND
+   Restrained header rendered only on small / portrait viewports.
+   Desktop relies on the architectural inscription on the wall.
+   ============================================================ */
+.es-mobile-header {
+  display: none;
+}
+
+/* ============================================================
+   STAGE & ARCHITECTURAL PHOTOGRAPH
+   Coordinates and geometry match 16:9 photographic proportions
+   ============================================================ */
+.es-stage {
+  position: relative;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+}
+
+.es-stage .es-stage-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  transition: filter 400ms ease;
+}
+
+.es-stage-box.is-dimmed {
+  filter: brightness(0.70) contrast(1.04);
+}
+
+.es-camera {
+  position: absolute;
+  inset: 0;
+}
+
+.es-camera picture,
+.es-picture,
+.es-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============================================================
+   INTERACTIVE PORTAL REGIONS
+   ============================================================ */
+.es-region {
+  position: absolute;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  z-index: 2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: filter 350ms ease;
+}
+
+/* Warm brighten veil over active opening */
+.es-region::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--es-glow);
+  opacity: 0;
+  transition: opacity 320ms ease;
+  pointer-events: none;
+}
+
+/* Soft dimming veil over non-hovered openings */
+.es-region::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--es-dim);
+  opacity: 0;
+  transition: opacity 320ms ease;
+  pointer-events: none;
+}
+
+/* Hover emphasis */
+@media (hover: hover) {
+  .es-stage .es-stage-box:hover .es-region:not(:hover)::after {
+    opacity: 1;
+  }
+  .es-region:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Keyboard focus emphasis */
+.es-stage .es-stage-box:focus-within .es-region:not(:focus-within)::after {
+  opacity: 1;
+}
+
+.es-region:focus-visible {
+  outline: none;
+}
+
+.es-region:focus-visible::before {
+  opacity: 1;
+}
+
+.es-region:focus-visible .es-mark {
+  outline: 2px solid var(--es-accent);
+  outline-offset: 6px;
+}
+
+/* ============================================================
+   SQUARE-AND-DOT SELECTION MARKER
+   ============================================================ */
+.es-mark {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+  pointer-events: none;
+}
+
+.es-mark::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+  transform: translate(calc(-50% + var(--es-dotdx, 0%)), -50%);
+  transition: width 300ms ease, transform 300ms ease;
+}
+
+.es-region:hover .es-mark,
+.es-region:focus-visible .es-mark {
+  border-color: #FFFFFF;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+  transform: translate(-50%, -50%) scale(1.24);
+}
+
+.es-region:hover .es-mark::before,
+.es-region:focus-visible .es-mark::before {
+  width: 32%;
+}
+
+/* ============================================================
+   MINIMAL UPPERCASE OPENING LABELS
+   Anchored directly beneath the square selection marker
+   ============================================================ */
+.es-label {
+  position: absolute;
+  transform: translate(-50%, 22px);
+  display: inline-block;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 3px rgba(10, 8, 6, 0.75), 0 2px 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  transition: color 240ms ease, letter-spacing 240ms ease, transform 240ms ease;
+}
+
+.es-label .es-num {
+  color: #E8B4B8;
+  margin-right: 2px;
+}
+
+.es-region:hover .es-label,
+.es-region:focus-visible .es-label {
+  color: #FFFFFF;
+  letter-spacing: 0.26em;
+  transform: translate(-50%, 24px);
+}
+
+.es-region:hover .es-label .es-num,
+.es-region:focus-visible .es-label .es-num {
+  color: #FFFFFF;
+}
+
+/* ============================================================
+   PORTAL ILLUMINATION (APPROACH A)
+   Warm interior light fills the clicked opening
+   ============================================================ */
+.es-portal-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(255, 238, 205, 0.85) 0%, rgba(245, 215, 170, 0.55) 50%, rgba(122, 31, 43, 0.15) 85%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.es-region.is-illuminated .es-portal-glow {
+  opacity: 1;
+}
+
+.es-region.is-illuminated {
+  filter: brightness(1.2);
+}
+
+/* ============================================================
+   WARM LIGHT REVEAL (APPROACH A)
+   Expands radially from the center of the clicked opening
+   ============================================================ */
+.es-light-reveal {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0;
+  background: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), #FFF8EB 0%, #FDF3E3 22%, #F5F3EF 52%, #EDE9E1 85%);
+  clip-path: circle(0% at var(--cx, 50%) var(--cy, 50%));
+  transition: clip-path 650ms cubic-bezier(0.22, 1, 0.36, 1), opacity 280ms ease;
+}
+
+.es-light-reveal.is-expanding {
+  opacity: 1;
+  clip-path: circle(150% at var(--cx, 50%) var(--cy, 50%));
+}
+
+/* End-frame solid veil settling on #F5F3EF before navigation */
+.es-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--es-paper);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 45;
+  transition: opacity 280ms ease;
+}
+
+.es-screen.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE ADAPTATION
+   Restrained title band + contain-fit stage + touch navigation rows
+   ============================================================ */
+.es-navlist {
+  display: none;
+}
+
+@media (max-width: 640px), (orientation: portrait) {
+  .es-mobile-header {
+    display: block;
+    width: 100%;
+    padding: 22px 20px 14px 20px;
+    background: #E4DCCB;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.12);
+  }
+
+  /* one title only on mobile: the header above replaces the desktop chip */
+  .es-title-box {
+    display: none;
+  }
+
+  /* credit joins the flow between the image strip and the nav rows */
+  .es-credit {
+    position: static;
+    max-width: none;
+    padding: 10px 20px;
+    background: var(--es-paper);
+    border-top: 1px solid rgba(26, 26, 26, 0.15);
+    text-align: center;
+  }
+
+  .es-mobile-title {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--es-ink);
+    margin-bottom: 4px;
+  }
+
+  .es-mobile-sub {
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--es-accent);
+  }
+
+  .es-stage {
+    flex: 0 0 auto;
+    background: #1A1A1A;
+  }
+
+  .es-img {
+    pointer-events: none;
+  }
+
+  .es-region {
+    pointer-events: none;
+  }
+
+  .es-navlist {
+    display: block;
+    flex: 1 1 auto;
+    background: var(--es-paper);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .es-navlist .es-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 64px;
+    padding: 0 24px;
+    background: none;
+    border: 0;
+    border-top: 1px solid rgba(26, 26, 26, 0.15);
+    color: var(--es-ink);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  .es-navlist .es-row:last-child {
+    border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+  }
+
+  .es-navlist .es-row .es-row-num {
+    color: var(--es-accent);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    font-weight: 500;
+  }
+
+  .es-navlist .es-row:hover,
+  .es-navlist .es-row:active {
+    background-color: rgba(122, 31, 43, 0.05);
+    color: var(--es-accent);
+  }
+
+  .es-navlist .es-row:focus-visible {
+    outline: 2px solid var(--es-accent);
+    outline-offset: -2px;
+  }
+}
+
+/* ============================================================
+   PREFERS-REDUCED-MOTION
+   Instant navigation, no expanding masks or scaling
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .es-light-reveal {
+    display: none !important;
+  }
+  .es-portal-glow,
+  .es-stage-box,
+  .es-mark,
+  .es-mark::before,
+  .es-label,
+  .es-region::before,
+  .es-region::after,
+  .es-screen {
+    transition: none !important;
+  }
+}
+
+/* ============================================================
+   DEBUG MODE (?debug=1)
+   ============================================================ */
+body.es-debug .es-region {
+  outline: 2px dashed var(--es-accent);
+}
+
+body.es-debug .es-region::after {
+  content: attr(data-rect);
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  background: rgba(245, 243, 239, 0.95);
+  color: var(--es-accent);
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 3px 6px;
+  border: 1px solid var(--es-accent);
+}
+
+body.es-debug .es-mark {
+  outline: 1px solid rgba(255, 255, 255, 0.85);
+}
+
+/* ============================================================
+   NO-SCRIPT FALLBACK
+   ============================================================ */
+.es-noscript {
+  padding: 60px 24px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--es-paper);
+}
+
+.es-noscript ul {
+  list-style: none;
+  padding: 0;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.es-noscript li {
+  margin-bottom: 16px;
+}
+
+.es-noscript a {
+  color: var(--es-accent);
+  text-decoration: underline;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 12px;
+}

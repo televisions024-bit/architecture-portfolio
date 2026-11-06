@@ -1,5 +1,18 @@
 # TODO.md — remaining work
 
+## STAGE 1 — ARCHITECTURAL ENTRANCE HOMEPAGE (2026-11-05, refined with Approach A — awaiting review)
+- [x] Backup original index.html to index-v1.html (rollback path preserved)
+- [x] Optimize assets/images/entrance-scene.png (2.1MB) to assets/images/entrance-scene.webp (134KB, 93.6% reduction; original preserved)
+- [x] Integrate entrance scene into index.html using entrance.css and entrance.js
+- [x] Implement 3 openings: 01 — Projects, 02 — About, 03 — Contact with square-and-dot markers and hover brighten/dim veils
+- [x] Refinement (Approach A): Replaced camera zoom with expanding warm light reveal from portal center settling on #F5F3EF
+- [x] Typography refinement: Removed duplicate desktop HTML title; wall inscription serves as visual title (semantic h1 for SR); added mobile-only header
+- [x] Opening labels: Anchored directly below square selection markers across all screen widths
+- [x] Implement Escape key cancellation (restores quiet hall) and prefers-reduced-motion bypass
+- [x] Responsive layout: full-bleed cover on desktop/landscape, contain-fit stage + touch rows on mobile/portrait
+- [ ] Mohammed reviews refined entrance at desktop (1440x900), tablet (768x1024), and mobile (390x844)
+
+
 ## DOOR WALK-THROUGH + SCROLLING PROJECTS (2026-11-05, done — see PLAN-DOOR.md)
 - [x] Engine built door.html + door.js + door.css with scenes.json data (tags door-1..door-7; resume file PLAN-DOOR.md)
 - [x] Scenes DRAWN in HTML/CSS (tag door-html) - no image files needed; Mohammed may still supply scene photos (door-closed/door-open/hall.webp 1920x1080 + optional -portrait variants): a photo simply covers the drawn scene and shows the AI-credit line; tune hotspot rects with door.html?debug=1 — until then door.html shows PLACEHOLDER SCENE blocks; tune hotspot rectangles with door.html?debug=1 if needed

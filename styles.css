@@ -669,27 +669,117 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   line-height: 1.75;
 }
 
-/* Drawing register: a measured index, not a stack of UI cards. */
+/* Drawing register: a measured index, not a stack of UI cards.
+   The register header sits above the table with the entrance
+   back-link on the right. Each row is a grid: SHEET | TITLE col |
+   TYPE | YEAR | THUMB. On mobile: TYPE and YEAR columns hide and
+   appear as a sub-line under the title instead.               */
 #projects-root, #index-root { min-height: 54vh; }
 #index-root > .wrap { padding-top: clamp(42px, 6vw, 76px); }
 #index-root .label { margin-bottom: 10px; }
 .index-title { font-size: clamp(34px, 4.5vw, 52px); letter-spacing: -.025em; margin-bottom: 28px; }
+
+/* Register header: h2 on the left, back-link on the right */
+.reg-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 0;
+}
+.reg-header-right {
+  padding-bottom: 6px;   /* aligns link baseline with h2 bottom */
+  flex-shrink: 0;
+}
+
+/* Register table */
 .register { margin-top: 0; border-top: 1px solid var(--ink); }
+.reg-empty {
+  padding: 32px 0;
+  color: var(--grey);
+  font-size: 14px;
+}
+
+/* Each row is an <a> — the whole row is the click target */
 .reg-row {
+  display: grid;
+  align-items: center;
   min-height: 94px;
-  grid-template-columns: 76px minmax(180px, 1fr) minmax(170px, 230px) 72px 128px;
+  grid-template-columns: 76px minmax(180px, 1fr) minmax(140px, 220px) 64px 128px;
   gap: clamp(10px, 1.8vw, 22px);
   padding: 14px 12px;
   margin: 0 -12px;
-  transition: background .2s ease, padding .2s ease;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s ease, padding-left .2s ease;
 }
-.reg-row:hover { padding-left: 18px; }
-.reg-code { font-size: 10px; }
-.reg-title { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.25; }
-.reg-type, .reg-year { font-size: 10px; }
-.reg-thumb { width: 128px; height: 70px; filter: saturate(.78); transition: filter .2s ease; }
+.reg-row:hover { background: rgba(26,26,26,.04); padding-left: 18px; }
+.reg-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Col 1: sheet code */
+.reg-code {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Col 2: title column */
+.reg-title-col { display: flex; flex-direction: column; gap: 4px; }
+.reg-title {
+  font-family: var(--font-heading);
+  font-size: clamp(17px, 1.8vw, 21px);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -.01em;
+}
+/* Sub-line: type · year — shown on mobile, hidden on desktop */
+.reg-sub {
+  display: none;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* Cols 3 & 4: type and year (desktop only) */
+.reg-type, .reg-year {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+
+/* Col 5: thumbnail column */
+.reg-thumb-col { display: flex; align-items: center; justify-content: flex-end; }
+.reg-thumb {
+  display: block;
+  width: 128px;
+  height: 70px;
+  object-fit: cover;
+  filter: saturate(.78);
+  transition: filter .2s ease;
+}
 .reg-row:hover .reg-thumb { filter: saturate(1); }
-.reg-row .ph { height: auto; min-height: 70px; }
+/* Quiet grey block when thumbnail is absent (no TODO text in the register) */
+.reg-thumb-ph {
+  background: #DEDAD4;
+}
+
+/* Project detail — closing navigation row (Direction A) */
+.proj-nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.proj-nav-row > :only-child { margin-right: auto; }
 
 /* About page: clear intro, quiet column structure and readable rhythm. */
 .about-layout { padding-top: clamp(42px, 6vw, 72px); }
@@ -729,15 +819,20 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   .site-nav a { font-size: 9px; letter-spacing: .11em; }
   .page-intro { grid-template-columns: 1fr; gap: 18px; padding-top: 46px; }
   .page-intro-note { justify-self: start; }
+  /* Register: collapse to 3-col grid on mobile (sheet | title | thumb)
+     Type and year columns hide; they appear in the .reg-sub line instead */
+  .reg-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .reg-header-right { padding-bottom: 0; }
   .reg-row {
-    grid-template-columns: auto minmax(0, 1fr) 84px;
+    grid-template-columns: 52px minmax(0, 1fr) 84px;
     padding: 13px 4px;
     margin: 0 -4px;
   }
   .reg-row:hover { padding-left: 8px; }
+  .reg-type, .reg-year { display: none; }   /* hidden: appear in reg-sub instead */
+  .reg-sub { display: block; }              /* visible on mobile only */
   .reg-thumb { width: 84px; height: 58px; }
-  .reg-row .ph { height: auto; min-height: 58px; }
-  .reg-type, .reg-year { font-size: 9px; letter-spacing: .1em; }
+  .reg-thumb-ph { width: 84px; height: 58px; }
   .stage-row { grid-template-columns: 1fr; gap: 5px; }
   .project-hero .fig-wide { margin-top: 24px; }
   .project-hero .fig-wide img { min-height: 240px; }
@@ -750,81 +845,8 @@ figure.has-ph { position: relative; }           /* anchor for the corner tag */
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
-/* ============================================================
-   SCROLLING PROJECTS INDEX — door task, 05 NOV 2026
-   One tall section per project, adapted from a reference studio
-   layout: big sheet number, title, year/type, big thumbnail —
-   and the WHOLE section is the link. Sheet codes from
-   projects/index.json stay on every slot. A small fixed
-   "1 / N" counter follows the scroll (IntersectionObserver,
-   no animation). Proximity scroll-snap settles gently near a
-   slot edge; reduced-motion visitors get NO snap and NO fades.
-##============ */
-/* Snap is switch-proofed: html gets .snap-on only after the visitor's
-   first REAL scroll (script.js), so the browser never snap-jumps the
-   page on load and reduced-motion visitors never snap at all.      */
-html.snap-on { scroll-snap-type: y proximity; }
 
-.proj-slot {
-  display: block;
-  min-height: 78vh;
-  padding: clamp(48px, 9vh, 120px) 0 56px;
-  border-bottom: 1px solid var(--rule);
-  text-decoration: none;
-  color: var(--ink);
-  scroll-snap-align: start;
-}
-.proj-slot .wrap { padding-top: 0; }
-
-/* head row: big number left, sheet code right */
-.slot-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 8px;
-}
-.proj-num {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: clamp(56px, 9vw, 120px);
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  transition: color 0.2s ease;
-}
-.proj-slot:hover .proj-num { color: var(--accent); }   /* the one hover accent */
-.slot-head .reg-code { white-space: nowrap; }
-
-.proj-title {
-  font-family: var(--font-heading);
-  font-weight: 400;
-  font-size: clamp(30px, 4.6vw, 58px);
-  line-height: 1.04;
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
-}
-/* type / year line under the title (may still be TODO land — shown as-is
-   exactly like the old register did) */
-.proj-meta {
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--grey);
-  margin-bottom: 28px;
-}
-
-/* big thumbnail with a hairline frame; fades in on first view (.fade) */
-.proj-thumb {
-  width: 100%;
-  max-height: 72vh;
-  object-fit: cover;
-  object-position: center;
-  border: 1px solid var(--rule);
-  background: #EFEDE8;
-}
-.proj-slot .ph { min-height: 40vh; }
-
-/* fixed counter, sits just above the title-block strip */
+/* Fixed sheet counter: "1 / N" above the title-block strip */
 .proj-counter {
   position: fixed;
   left: var(--side);
@@ -838,21 +860,6 @@ html.snap-on { scroll-snap-type: y proximity; }
   padding: 5px 9px;
   border: 1px solid var(--rule);
 }
-
-@media (max-width: 719px) {
-  .proj-slot { min-height: 66vh; padding: 44px 0 40px; }
-  .proj-num { font-size: clamp(48px, 14vw, 72px); }
-  .proj-title { font-size: clamp(26px, 7vw, 34px); }
-  .proj-slot .ph { min-height: 30vh; }
-  .proj-counter { bottom: 52px; }        /* above the 40px phone strip */
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html.snap-on { scroll-snap-type: none; }  /* no snapping */
-  .proj-slot { scroll-snap-align: auto; }
-}
-
 @media print {
   .proj-counter { display: none !important; }
-  .proj-slot { min-height: 0; break-inside: avoid; }
 }

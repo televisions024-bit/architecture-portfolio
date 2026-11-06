@@ -246,16 +246,26 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     cw.appendChild(dg);
   }
 
-  /* ---- 4 — DRAWINGS: the plan -> section -> render flow.
-     The JSON lists drawings in that order (plans first, then
-     sections, then elevations); each gets a caption row.      */
+  /* ---- 4 — DRAWINGS: plan → section → elevation flow.
+     If all drawings are TODO (files absent), show a single
+     dignified placeholder instead of a grid of error blocks.   */
   const dw = section('DRAWINGS · PLAN → SECTION → ELEVATION', 'Drawings', 'DRAWINGS');
-  const drg = el('div', 'two-col fade');
-  drg.style.marginTop = '8px';
-  data.drawings.forEach((d, i) =>
-    drg.appendChild(figure(d.src, d.alt, d.caption,
-      { code: 'D-0' + (i + 1), note: d.label || '' })));
-  dw.appendChild(drg);
+  const hasDrawings = data.drawings && data.drawings.some(d => d.src);
+  if (!hasDrawings) {
+    /* Graceful empty state: one quiet note instead of N error blocks */
+    const dwEmpty = el('p', 'drawings-pending fade',
+      'Technical drawings will appear here once the files are placed in ' +
+      'images/' + data.slug + '/drawings/');
+    dwEmpty.style.cssText = 'margin-top:16px;color:var(--grey);font-size:14px;';
+    dw.appendChild(dwEmpty);
+  } else {
+    const drg = el('div', 'two-col fade');
+    drg.style.marginTop = '8px';
+    data.drawings.forEach((d, i) =>
+      drg.appendChild(figure(d.src, d.alt, d.caption,
+        { code: 'D-0' + (i + 1), note: d.label || '' })));
+    dw.appendChild(drg);
+  }
 
   /* ---- 5 — GALLERY: 2-col grid, click opens the lightbox -- */
   const gw = section('RENDERS', 'Renders', 'RENDERS');
@@ -321,28 +331,33 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     setOG('og:image', new URL(data.hero.src, location.href).href);
   }
 
-  const back = el('a', 'cover-link fade', 'Back to all projects');
+  /* Direction A closing navigation: flex row, back link left, next right.
+     Next link reads "NEXT SHEET A-xx — title" so it feels like
+     turning to the next drawing sheet in a set.                       */
+  const navRow = el('div', 'proj-nav-row fade');
+  const back = el('a', 'cover-link', '← Back to register');
   back.href = 'projects.html';
-  back.style.display = 'inline-block';
-  back.style.marginTop = '32px';
-  lw.appendChild(back);
+  navRow.appendChild(back);
 
-  if (nextEntry) {                                   // hidden on the last project
-    const next = el('a', 'cover-link fade', 'Next project');
+  if (nextEntry) {                                     // hidden on the last project
+    const nextLabel = nextEntry.sheet
+      ? 'Next sheet ' + nextEntry.sheet + ' →'
+      : 'Next project →';
+    const next = el('a', 'cover-link', nextLabel);
     next.href = 'project.html?p=' + nextEntry.slug;
-    next.style.display = 'inline-block';
-    next.style.marginTop = '32px';
-    next.style.marginLeft = '24px';
-    lw.appendChild(next);
+    navRow.appendChild(next);
   }
+  lw.appendChild(navRow);
 }
 
 /* ============================================================
-   PROJECTS INDEX (projects.html) — a DRAWING REGISTER (Direction A):
-   one thin row per project — sheet code | title | type | year | thumb
-   — straight from projects/index.json. The whole row is the link;
-   hover highlights it in burgundy. Stacks on the phone.
-============================================================ ═*/
+   PROJECTS INDEX (projects.html) — DIRECTION A DRAWING REGISTER
+   Compact table rows: SHEET | TITLE | TYPE | YEAR | THUMB
+   Built from projects/index.json. The whole row is a link.
+   On mobile: type/year columns hide; they appear as a sub-line
+   under the title. Thumbnail shrinks. Register header has a
+   back link to the entrance (index.html).
+============================================================ */
 if (indexRoot) {
   document.title = 'Projects — Mohammed Huzefa';
   fetch('projects/index.json')
@@ -355,101 +370,130 @@ if (indexRoot) {
       const w = document.createElement('div');
       w.className = 'wrap';
 
-      /* the register header keeps its Direction A intro */
-      w.appendChild(Object.assign(document.createElement('p'),
+      /* ---- Register header: eyebrow label + h2 + entrance back-link ---- */
+      const hdr = document.createElement('div');
+      hdr.className = 'reg-header';
+      const hdrLeft = document.createElement('div');
+      hdrLeft.appendChild(Object.assign(document.createElement('p'),
         { className: 'label', textContent: 'DRAWING REGISTER' }));
-      w.appendChild(Object.assign(document.createElement('h2'),
+      hdrLeft.appendChild(Object.assign(document.createElement('h2'),
         { className: 'index-title', textContent: 'All projects' }));
+      const hdrRight = document.createElement('div');
+      hdrRight.className = 'reg-header-right';
+      const entranceLink = document.createElement('a');
+      entranceLink.href = 'index.html';
+      entranceLink.className = 'cover-link';
+      entranceLink.textContent = '← Entrance';
+      entranceLink.title = 'Back to the entrance';
+      hdrRight.appendChild(entranceLink);
+      hdr.appendChild(hdrLeft);
+      hdr.appendChild(hdrRight);
+      w.appendChild(hdr);
 
       const projects = ix.projects || [];
 
-      /* One tall section per project (door task layout): big number,
-         title, year/type, big thumbnail — and the WHOLE section is a
-         link to the project page. Sheet codes stay in the head row. */
-      const list = document.createElement('div');
-      list.className = 'proj-list';
+      /* ---- Drawing register table (Direction A) ----
+         Each project is one <a> row. The .register and .reg-row rules
+         in styles.css define the grid; this renderer matches them.      */
+      const table = document.createElement('div');
+      table.className = 'register';
+      table.setAttribute('role', 'list');
+
+      /* Graceful empty state */
+      if (projects.length === 0) {
+        table.appendChild(Object.assign(document.createElement('p'),
+          { className: 'reg-empty',
+            textContent: 'No projects are registered yet.' }));
+      }
 
       projects.forEach((p, i) => {
-        const slot = document.createElement('a');
-        slot.className = 'proj-slot fade';
-        slot.href = 'project.html?p=' + encodeURIComponent(p.slug);
-        slot.dataset.index = String(i + 1);       // for the 1 / N counter
+        const row = document.createElement('a');
+        row.className = 'reg-row fade';
+        row.href = 'project.html?p=' + encodeURIComponent(p.slug);
+        row.setAttribute('role', 'listitem');
+        row.dataset.index = String(i + 1);
 
-        const cw = document.createElement('div'); // same wrap width as everything else
-        cw.className = 'wrap';
+        /* Col 1: SHEET code */
+        row.appendChild(Object.assign(document.createElement('div'),
+          { className: 'reg-code', textContent: p.sheet || '—' }));
 
-        /* head: big number left, sheet code right */
-        const head = document.createElement('div');
-        head.className = 'slot-head';
-        head.appendChild(Object.assign(document.createElement('span'),
-          { className: 'proj-num', textContent: String(i + 1).padStart(2, '0') }));
-        head.appendChild(Object.assign(document.createElement('span'),
-          { className: 'reg-code', textContent: 'SHEET ' + (p.sheet || '—') }));
-        cw.appendChild(head);
+        /* Col 2: Title + mobile sub-line */
+        const colTitle = document.createElement('div');
+        colTitle.className = 'reg-title-col';
+        colTitle.appendChild(Object.assign(document.createElement('div'),
+          { className: 'reg-title', textContent: p.title }));
+        const sub = [p.type, p.year].filter(Boolean).join(' · ');
+        if (sub) {
+          colTitle.appendChild(Object.assign(document.createElement('div'),
+            { className: 'reg-sub', textContent: sub }));
+        }
+        row.appendChild(colTitle);
 
-        /* title + the type / year line (TODO text shows as-is, like before) */
-        cw.appendChild(Object.assign(document.createElement('h3'),
-          { className: 'proj-title', textContent: p.title }));
-        cw.appendChild(Object.assign(document.createElement('p'),
-          { className: 'proj-meta', textContent: [p.type, p.year].filter(Boolean).join(' · ') || '\u00A0' }));
+        /* Col 3: Type (desktop only, hidden on mobile via CSS) */
+        row.appendChild(Object.assign(document.createElement('div'),
+          { className: 'reg-type', textContent: p.type || '' }));
 
-        /* big thumbnail; missing file -> the usual IMAGE TODO block */
-        const img = document.createElement('img');
-        img.className = 'proj-thumb';
-        img.src = p.thumbnail;
-        img.alt = p.title + ' — thumbnail';
-        img.setAttribute('loading', 'lazy');
-        const ph = document.createElement('div');
-        ph.className = 'ph';
-        ph.innerHTML = '<span>THUMB TODO:<br><span>' + p.thumbnail + '</span></span>';
-        img.addEventListener('error', () => img.replaceWith(ph));
-        cw.appendChild(img);
+        /* Col 4: Year (desktop only) */
+        row.appendChild(Object.assign(document.createElement('div'),
+          { className: 'reg-year', textContent: p.year || '' }));
 
-        slot.appendChild(cw);
-        list.appendChild(slot);
+        /* Col 5: Thumbnail — missing file shows a quiet grey block.
+           No TODO text in the register; the entry stays readable.  */
+        const colThumb = document.createElement('div');
+        colThumb.className = 'reg-thumb-col';
+        if (p.thumbnail) {
+          const img = document.createElement('img');
+          img.className = 'reg-thumb';
+          img.src = p.thumbnail;
+          img.alt = '';   /* decorative: row text already names the project */
+          img.setAttribute('loading', 'lazy');
+          img.addEventListener('error', () => img.replaceWith(
+            Object.assign(document.createElement('div'),
+              { className: 'reg-thumb reg-thumb-ph' })
+          ));
+          colThumb.appendChild(img);
+        } else {
+          colThumb.appendChild(Object.assign(document.createElement('div'),
+            { className: 'reg-thumb reg-thumb-ph' }));
+        }
+        row.appendChild(colThumb);
+
+        table.appendChild(row);
       });
 
-      w.appendChild(list);
+      w.appendChild(table);
       indexRoot.appendChild(w);
       initFades(document);
 
-      /* fixed small counter "1 / N": updates with an IntersectionObserver
-         as a slot crosses the middle of the screen. Works with 1 project
-         (counter just says 1 / 1) and with 20.                              */
-      const counter = document.createElement('div');
-      counter.className = 'proj-counter';
-      counter.textContent = '1 / ' + projects.length;
-      document.body.appendChild(counter);
+      /* Sheet counter "1 / N" */
+      if (projects.length > 0) {
+        const counter = document.createElement('div');
+        counter.className = 'proj-counter';
+        counter.setAttribute('aria-live', 'polite');
+        counter.setAttribute('aria-atomic', 'true');
+        counter.textContent = '1 / ' + projects.length;
+        document.body.appendChild(counter);
 
-      if ('IntersectionObserver' in window) {
-        const slots = list.querySelectorAll('.proj-slot');
-        const io = new IntersectionObserver(entries => {
-          entries.forEach(en => {
-            if (en.isIntersecting) {
-              counter.textContent = en.target.dataset.index + ' / ' + projects.length;
-            }
-          });
-        }, { rootMargin: '-40% 0px -50% 0px' });    // watches the middle band
-        slots.forEach(s => io.observe(s));
+        if ('IntersectionObserver' in window) {
+          const rows = table.querySelectorAll('.reg-row');
+          const io = new IntersectionObserver(entries => {
+            entries.forEach(en => {
+              if (en.isIntersecting) {
+                counter.textContent =
+                  en.target.dataset.index + ' / ' + projects.length;
+              }
+            });
+          }, { rootMargin: '-40% 0px -50% 0px' });
+          rows.forEach(r => io.observe(r));
+        }
       }
-
-      /* scroll-snap wakes up on the visitor's FIRST real scroll only,
-         so the browser never snap-jumps the page while it loads */
-      const wake = () => {
-        document.documentElement.classList.add('snap-on');
-        window.removeEventListener('scroll', wake);
-        window.removeEventListener('wheel', wake);
-        window.removeEventListener('touchmove', wake);
-      };
-      window.addEventListener('scroll', wake, { passive: true });
-      window.addEventListener('wheel', wake, { passive: true });
-      window.addEventListener('touchmove', wake, { passive: true });
     })
     .catch(err => {
       indexRoot.innerHTML =
         '<section class="section"><div class="wrap"><p style="padding:48px">' +
         'Could not load projects/index.json (' + err.message + ').' +
-        ' Run a small local server — see README.md for how.</p></div></section>';
+        ' Run a small local server — see README.md for how.' +
+        '</p></div></section>';
     });
 }
 

@@ -1,0 +1,858 @@
+/* ============================================================
+   styles.css — one shared stylesheet for the whole site
+   Design rules come from PROJECT.md section 5. Follow exactly.
+   Colors/spacing are variables so you only edit them here.
+   ============================================================ */
+
+/* ---------- Design tokens (PROJECT.md section 5) ---------- */
+:root {
+  --bg:      #F5F3EF;   /* off-white background */
+  --ink:     #1A1A1A;   /* near-black text and lines */
+  --accent:  #7A1F2B;   /* burgundy — sparingly: labels, hover, thin rules */
+  --grey:    #5E5E5E;   /* secondary grey — darkened from #8A8A8A on 2026-11-01
+                           so every grey text passes AA (>=4.5:1) on cream */
+
+  /* 1px hairline rules showing the grid */
+  --rule: rgba(26, 26, 26, 0.18);
+  --rule-soft: rgba(26, 26, 26, 0.09);
+
+  /* Type: exactly two fonts (decided): Fraunces for headings, Inter for body.
+     Both load from Google Fonts with display=swap in the three inner pages
+     (the cover is DONE and untouched, it keeps these system fallbacks). */
+  --font-heading: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+
+  /* Layout */
+  --max-w: 1200px;           /* max content width */
+  --side: 16px;              /* phone side padding (PROJECT.md) */
+  --space-section: 96px;     /* section spacing on desktop */
+}
+
+@media (min-width: 720px) {
+  :root { --side: 24px; }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* smooth scrolling only for people who have not asked for reduced
+   motion (audit fix: the view jump from e.g. footer"Credits" counts) */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ---------- Decorative page backgrounds (added 2026-11-01) ----------
+   Fixed full-viewport pseudo-elements: never background-attachment:
+   fixed (that janks and breaks on phones). backgrounds.js supplies
+   the URLs and opacities from backgrounds.json; without JS these
+   layers show nothing, so the pages stay exactly as designed.
+   Cover: image full + flat off-white veil (text >= 4.5:1).
+   Inner pages: 6-10% visibility, behind all content.             */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;                                  /* image, below the veil */
+  background-image: var(--bg-image-phone, none);
+  background-size: cover;
+  background-position: center;
+  opacity: var(--bg-opacity, 0.08);
+  filter: grayscale(1);                         /* decorative = desaturated */
+  pointer-events: none;
+}
+@media (min-width: 720px) {
+  body::before { background-image: var(--bg-image, none); }
+}
+body::after {                                  /* flat veil: cover page only */
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg);
+  opacity: var(--bg-veil, 0);
+  pointer-events: none;
+}
+/* backgrounds.json can allow one colored background (grayscale: false) */
+body.bg-colorize::before { filter: none; }
+/* data-saver visitors get the plain page */
+@media (prefers-reduced-data: reduce) {
+  body::before, body::after { display: none; }
+}
+@media print {
+  body::before, body::after { display: none; }   /* never print decorations */
+}
+
+/* Content width ruler + the hairline "grid" feel */
+.wrap {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--side, 24px);
+}
+@media (max-width: 719px) {
+  .wrap { padding: 0 var(--side); }   /* 16px side padding on phone */
+}
+
+/* ---------- Shared header / navigation ---------- */
+/* Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) */
+.site-header {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  z-index: 10;
+}
+.site-header .wrap {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+.brand {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  color: var(--ink);
+}
+.brand span { color: var(--accent); }
+.site-nav a {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  margin-left: 20px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+.site-nav a:hover { border-bottom-color: var(--accent); color: var(--accent); }
+
+/* ---------- Title block strip (Direction A "Drawing Sheet") ---------- */
+/* Slim fixed strip at the bottom of every page EXCEPT the cover:
+   page name | sheet code | scale + date. Hairline rule on top.
+   The sheet code is filled by script.js from projects/index.json,
+   so new projects get their code automatically.                 */
+body.tb { padding-bottom: 72px; }   /* room so the strip never covers text */
+.titleblock {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--rule);
+  z-index: 20;
+}
+.tb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 44px;
+  overflow: hidden;
+}
+.tb-name {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;      /* long titles shorten, never wrap */
+}
+.tb-code {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.tb-side {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  white-space: nowrap;
+}
+@media (max-width: 719px) {
+  body.tb { padding-bottom: 56px; }
+  .tb-row { height: 40px; }            /* max 40px tall on the phone */
+  .tb-side { display: none; }          /* phone: name + sheet code only */
+  .tb-code { font-size: 10px; }
+}
+
+/* ---------- Small uppercase letter-spaced labels ---------- */
+/* e.g. "PLAN", "SECTION", metadata keys */
+.label {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- Generic section rhythm ---------- */
+.section { padding-top: var(--space-section); }
+.section > .wrap > .label { margin-bottom: 6px; }
+.section h2 {
+  font-family: var(--font-heading);
+  font-weight: normal;
+  font-size: 30px;
+  margin-bottom: 28px;
+}
+@media (max-width: 719px) {
+  .section { padding-top: 64px; }
+  .section h2 { font-size: 24px; }
+}
+/* thin rule that shows the grid */
+.rule { border: 0; border-top: 1px solid var(--rule); margin: var(--space-section) auto 0; width: calc(min(var(--max-w), 100% - 48px)); }
+@media (max-width: 719px) { .rule { width: calc(100% - 32px); } }
+
+/* ---------- Text helpers ---------- */
+p.measure { max-width: 62ch; }
+.metadata { border-top: 1px solid var(--rule); }
+.metadata div {
+  display: flex;
+  gap: 18px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.metadata dt {
+  min-width: 110px;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  padding-top: 3px;
+}
+.metadata dd { font-size: 15px; }
+
+/* ---------- Figures: full-width or two-column only ---------- */
+/* No rounded corners, no drop shadows (PROJECT.md section 5) */
+figure { margin: 0; }
+
+.fig-wide { width: 100%; }
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 719px) {
+  .two-col { grid-template-columns: 1fr; }  /* single column on phone */
+}
+
+/* Gentle fade-in on scroll (the only allowed motion) */
+.fade { opacity: 0; transform: translateY(6px); }
+.fade.is-in { opacity: 1; transform: none; transition: opacity 0.6s ease, transform 0.6s ease; }
+@media (prefers-reduced-motion: reduce) { .fade { opacity: 1; transform: none; } }
+
+/* ---------- Gallery grid with lightbox ---------- */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 719px) {
+  .gallery { grid-template-columns: 1fr; }
+}
+.gallery figure { cursor: zoom-in; }
+.gallery img { width: 100%; height: auto; }
+@media (max-width: 719px) { .gallery img { height: auto; } }
+
+/* Lightbox: click to open, click anywhere or Esc to close */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(245, 243, 239, 0.96);
+  display: none;               /* shown by JS */
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+.lightbox.is-open { display: flex; align-items: center; justify-content: center; opacity: 1; }
+.lightbox figure { max-width: 92vw; max-height: 88vh; text-align: center; }
+.lightbox img {
+  max-width: 92vw;
+  max-height: 78vh;
+  width: auto;
+  margin: 0 auto;
+}
+.lightbox figcaption { color: var(--ink); font-size: 13px; padding-top: 12px; }
+.lightbox-close {
+  position: absolute;
+  top: 18px; right: 24px;
+  background: none;
+  border: 0;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+}
+.lightbox-close:hover { color: var(--accent); }
+
+/* ---- Step 6 additions (door task): zoom/pan surface, visible
+        prev/next + fullscreen buttons; scaled image is clipped ---- */
+.lightbox { overflow: hidden; }
+.lightbox img {
+  touch-action: none;                    /* pointer events own the gestures */
+  transition: transform 0.25s ease;
+  cursor: zoom-in;
+}
+.lightbox img.lb-zoomed { cursor: grab; }
+.lightbox button { font-family: var(--font-body); }
+.lightbox-close, .lightbox-fs {
+  position: absolute;
+  top: 18px;
+  z-index: 5;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  cursor: pointer;
+}
+.lightbox-close { right: 24px; font-size: 22px; width: 44px; height: 44px; }
+.lightbox-fs {
+  right: 80px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  width: 56px;
+  height: 44px;
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  cursor: pointer;
+}
+.lightbox-prev { left: 18px; }
+.lightbox-next { right: 18px; }
+.lightbox-close:hover, .lightbox-fs:hover, .lightbox-nav:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.lightbox-nav[disabled] { opacity: 0.35; cursor: default; border-color: var(--rule); color: var(--ink); }
+@media (max-width: 719px) {
+  .lightbox-nav { top: auto; bottom: 92px; transform: none; }  /* thumbs of hands sit low */
+  .lightbox-close { right: 16px; }
+  .lightbox-fs { right: 72px; }
+}
+
+/* ---------- Placeholder block shown until real images exist ---------- */
+/* Replaced automatically once the file exists (script.js) */
+.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 220px;     /* was also height:100% — that made the placeholder
+                            fill the whole figure and push the caption row
+                            over the row below (Direction A bug, fixed
+                            2026-11-01). min-height alone is correct.   */
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent);
+  color: var(--grey);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  background: #EFEDE8;
+}
+.ph span { word-break: break-all; padding: 10px; }
+
+/* ---------- Stand-in stock photos (TEMP, see images/PLACEHOLDERS.md) ----------
+   script.js swaps these in while a real render file is missing.        */
+figure.has-ph { position: relative; }           /* anchor for the corner tag */
+.ph-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);                         /* burgundy, like every label */
+  background: var(--bg);
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+}
+
+/* ---------- Projects index as a DRAWING REGISTER (Direction A) ----------
+   Rows like a sheet list, not cards: code | title | type | year | thumb.
+   Driven by projects/index.json; 'sheet' gives the drawing code.
+   Hover highlights the row (burgundy). On the phone each row stacks:
+   code + title on top, type/year under it, thumbnail at the right.   */
+.index-title {
+  font-family: var(--font-heading);
+  font-weight: normal;
+  font-size: 30px;
+  margin-bottom: 36px;
+}
+@media (max-width: 719px) { .index-title { font-size: 24px; } }
+
+.register { margin-top: 32px; border-top: 1px solid var(--rule); }
+.reg-row {
+  display: grid;
+  grid-template-columns: 88px 1fr 220px 90px 112px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  text-decoration: none;
+  color: var(--ink);
+}
+/* hover = the burgundy drawing-pencil highlight */
+.reg-row:hover { background: rgba(122, 31, 43, 0.045); }
+.reg-row:hover .reg-title,
+.reg-row:hover .reg-code { color: var(--accent); }
+
+.reg-code {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);            /* sheet codes: the sparing burgundy */
+}
+.reg-title {
+  font-family: var(--font-heading);
+  font-weight: normal;
+  font-size: 17px;
+}
+.reg-type,
+.reg-year {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+/* on desktop the wrapper disappears and type/year get their own columns */
+.reg-meta { display: contents; }
+.reg-thumb {
+  width: 112px; height: 64px;
+  object-fit: cover;
+  border: 1px solid var(--rule);   /* framed like a small print */
+}
+/* pending thumbnails: the generic 220px IMAGE TODO block must behave
+   like the slot it replaces (112x64) or every register row renders
+   as a tall broken grey strip (a Finding from the audit) (audit fix)   */
+.reg-row .ph {
+  min-height: 0;
+  height: 64px;
+  overflow: hidden;
+}
+@media (max-width: 719px) {
+  .reg-row {
+    grid-template-columns: auto 1fr 88px;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "code title thumb"
+      "code meta  thumb";
+    gap: 4px 12px;
+    padding: 12px 0;
+  }
+  .reg-code  { grid-area: code; align-self: start; padding-top: 3px; }
+  .reg-title { grid-area: title; font-size: 16px; }
+  .reg-meta  { display: flex; gap: 10px; grid-area: meta; }
+  .reg-thumb { grid-area: thumb; width: 88px; height: 56px; }
+  .reg-row .ph { height: 56px; }
+}
+
+/* ---------- Caption rows + construction lines (Direction A) ---------- */
+/* Every image gets ONE hairline caption row: sheet no. | short title
+   | scale note. Tiny vertical ticks sit at both ends of the rule —
+   these dimension marks are the page's only decoration.            */
+.cap-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  position: relative;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  font-size: 12.5px;
+  color: var(--grey);
+}
+/* the two dimension ticks at the ends of the hairline */
+.cap-row::before,
+.cap-row::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 6px;
+  background: rgba(26, 26, 26, 0.4);
+}
+.cap-row::before { left: 0; }
+.cap-row::after  { right: 0; }
+.cap-code {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cap-title { flex: 1 1 auto; }
+.cap-note {
+  margin-left: auto;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* thin construction line with end ticks, used above the project title */
+.dim-line {
+  position: relative;
+  height: 1px;
+  background: rgba(26, 26, 26, 0.25);
+  margin-bottom: 22px;
+}
+.dim-line::before,
+.dim-line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 7px;
+  background: rgba(26, 26, 26, 0.45);
+}
+.dim-line::before { left: 0; }
+.dim-line::after  { right: 0; }
+
+/* ---------- Print: pages print as clean sheets (Direction A) ---------- */
+@media print {
+  .site-header, .site-footer, .titleblock, .lightbox, .reg-thumb { display: none !important; }
+  body.tb { padding-bottom: 0 !important; }
+  body { background: #fff; }
+  .section { padding-top: 24px !important; }
+  .rule { margin-top: 24px !important; }
+  .fade { opacity: 1 !important; transform: none !important; }  /* print even un-scrolled items */
+  figure, .metadata, .stage-row, .reg-row { break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+  h2 { font-size: 20px !important; }
+}
+
+/* ---------- About page (about.html) ---------- */
+/* Compact version of the section rhythm (the brief asked for
+   a tight page, not the airy 96px project-page spacing).       */
+.section-tight { padding-top: 48px; }
+.stage-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 16px;
+  border-top: 1px solid var(--rule-soft);
+  padding: 10px 0;
+}
+.stage-label { padding-top: 2px; }
+.stage-items {
+  list-style: none;
+  font-size: 15px;
+}
+.stage-items li { padding: 1px 0; }
+.stage-items li a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.stage-items li a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+@media (max-width: 719px) {
+  .stage-row { grid-template-columns: 1fr; gap: 4px; }  /* stacks on the phone */
+}
+.about .cover-link { margin-top: 28px; }                 /* PDF link spacing */
+
+/* ---------- Shared cover-link styles (audit fix) ----------
+   The cover defines .cover-link in its own inline <style> (and keeps
+   doing so), but project END links and the about PDF link reuse the
+   class — without these shared rules they render as browser-blue
+   links and break the ink/burgundy language. Same values, minus the
+   cover-only margin-top.                                        */
+.cover-link {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 3px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.cover-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  margin-top: var(--space-section);
+  border-top: 1px solid var(--rule);
+  padding: 28px 0 40px;
+}
+.site-footer .wrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--grey);
+}
+.site-footer a { color: var(--ink); text-decoration: none; }
+.site-footer a:hover { color: var(--accent); }
+
+/* ============================================================
+   UI REFINEMENT — 02 NOV 2026
+   Keeps the Drawing Sheet language; improves hierarchy, rhythm,
+   responsive behaviour and keyboard clarity. Cover is untouched.
+============================================================ */
+:root {
+  --max-w: 1240px;
+  --space-section: clamp(68px, 8vw, 112px);
+  --rule: rgba(26, 26, 26, .22);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.site-header {
+  background: #F5F3EF;
+}
+.site-header .wrap {
+  min-height: 62px;
+  align-items: center;
+}
+.brand {
+  font-size: 16px;
+  letter-spacing: .075em;
+}
+.site-nav { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 30px); }
+.site-nav a {
+  margin-left: 0;
+  padding: 7px 0 5px;
+  font-size: 10px;
+  letter-spacing: .19em;
+  transition: color .18s ease, border-color .18s ease;
+}
+.site-nav a[aria-current="page"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.site-nav a[aria-disabled="true"] { opacity: .48; cursor: default; }
+
+/* Page introductions: a stronger title hierarchy without adding cards. */
+.page-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr);
+  align-items: end;
+  gap: 32px;
+  padding: clamp(54px, 8vw, 100px) 0 28px;
+  border-bottom: 1px solid var(--rule);
+}
+.page-intro .label { margin-bottom: 12px; }
+.page-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(42px, 7vw, 84px);
+  line-height: .98;
+  letter-spacing: -.035em;
+}
+.page-intro-note {
+  max-width: 34ch;
+  justify-self: end;
+  color: var(--grey);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+/* Drawing register: a measured index, not a stack of UI cards. */
+#projects-root, #index-root { min-height: 54vh; }
+#index-root > .wrap { padding-top: clamp(42px, 6vw, 76px); }
+#index-root .label { margin-bottom: 10px; }
+.index-title { font-size: clamp(34px, 4.5vw, 52px); letter-spacing: -.025em; margin-bottom: 28px; }
+.register { margin-top: 0; border-top: 1px solid var(--ink); }
+.reg-row {
+  min-height: 94px;
+  grid-template-columns: 76px minmax(180px, 1fr) minmax(170px, 230px) 72px 128px;
+  gap: clamp(10px, 1.8vw, 22px);
+  padding: 14px 12px;
+  margin: 0 -12px;
+  transition: background .2s ease, padding .2s ease;
+}
+.reg-row:hover { padding-left: 18px; }
+.reg-code { font-size: 10px; }
+.reg-title { font-size: clamp(17px, 1.8vw, 21px); line-height: 1.25; }
+.reg-type, .reg-year { font-size: 10px; }
+.reg-thumb { width: 128px; height: 70px; filter: saturate(.78); transition: filter .2s ease; }
+.reg-row:hover .reg-thumb { filter: saturate(1); }
+.reg-row .ph { height: auto; min-height: 70px; }
+
+/* About page: clear intro, quiet column structure and readable rhythm. */
+.about-layout { padding-top: clamp(42px, 6vw, 72px); }
+.about-intro { max-width: 68ch; font-size: clamp(16px, 1.5vw, 19px); line-height: 1.85; }
+.about-intro + .about-intro { margin-top: 10px; }
+.about .section-tight { padding-top: clamp(38px, 5vw, 62px); }
+.about .section-tight > .label { display: block; margin-bottom: 12px; }
+.about .section-tight > .measure { line-height: 1.85; }
+.stage-row { grid-template-columns: minmax(120px, 190px) minmax(0, 1fr); gap: 24px; padding: 14px 0; }
+.stage-items { line-height: 1.8; }
+
+/* Project detail: stronger title and a wide, editorial hero image. */
+.project-hero { padding-top: clamp(40px, 6vw, 72px) !important; }
+.project-hero .proj-title { max-width: 16ch; font-size: clamp(38px, 6vw, 70px) !important; line-height: 1.02; letter-spacing: -.03em; }
+.project-hero .label { margin: 12px 0 24px; }
+.project-hero .fig-wide { margin-top: 34px; }
+.project-hero .fig-wide img { width: 100%; max-height: 680px; object-fit: cover; object-position: center; }
+.metadata { max-width: 760px; }
+.metadata div { padding: 13px 0; }
+.metadata dt { min-width: 130px; }
+.measure { line-height: 1.9; }
+.two-col, .gallery { column-gap: clamp(16px, 2.5vw, 32px); row-gap: 34px; }
+
+/* Figure captions and temporary image warnings remain sheet-like. */
+.cap-row { padding-top: 10px; gap: 6px 14px; }
+.ph-tag { top: 10px; left: 10px; }
+
+.site-footer { margin-top: clamp(72px, 9vw, 120px); padding: 24px 0 42px; }
+.site-footer .wrap { font-size: 10px; letter-spacing: .08em; line-height: 1.8; }
+.site-footer a { margin-left: 14px; text-underline-offset: 4px; }
+.tb-row { height: 48px; }
+
+@media (max-width: 719px) {
+  .site-header .wrap { min-height: 58px; align-items: center; }
+  .brand { font-size: 14px; }
+  .site-nav { gap: 13px; }
+  .site-nav a { font-size: 9px; letter-spacing: .11em; }
+  .page-intro { grid-template-columns: 1fr; gap: 18px; padding-top: 46px; }
+  .page-intro-note { justify-self: start; }
+  .reg-row {
+    grid-template-columns: auto minmax(0, 1fr) 84px;
+    padding: 13px 4px;
+    margin: 0 -4px;
+  }
+  .reg-row:hover { padding-left: 8px; }
+  .reg-thumb { width: 84px; height: 58px; }
+  .reg-row .ph { height: auto; min-height: 58px; }
+  .reg-type, .reg-year { font-size: 9px; letter-spacing: .1em; }
+  .stage-row { grid-template-columns: 1fr; gap: 5px; }
+  .project-hero .fig-wide { margin-top: 24px; }
+  .project-hero .fig-wide img { min-height: 240px; }
+  .metadata dt { min-width: 96px; }
+  .site-footer .wrap { display: grid; grid-template-columns: 1fr; }
+  .site-footer a:first-child { margin-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+/* ============================================================
+   SCROLLING PROJECTS INDEX — door task, 05 NOV 2026
+   One tall section per project, adapted from a reference studio
+   layout: big sheet number, title, year/type, big thumbnail —
+   and the WHOLE section is the link. Sheet codes from
+   projects/index.json stay on every slot. A small fixed
+   "1 / N" counter follows the scroll (IntersectionObserver,
+   no animation). Proximity scroll-snap settles gently near a
+   slot edge; reduced-motion visitors get NO snap and NO fades.
+##============ */
+/* Snap is switch-proofed: html gets .snap-on only after the visitor's
+   first REAL scroll (script.js), so the browser never snap-jumps the
+   page on load and reduced-motion visitors never snap at all.      */
+html.snap-on { scroll-snap-type: y proximity; }
+
+.proj-slot {
+  display: block;
+  min-height: 78vh;
+  padding: clamp(48px, 9vh, 120px) 0 56px;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  scroll-snap-align: start;
+}
+.proj-slot .wrap { padding-top: 0; }
+
+/* head row: big number left, sheet code right */
+.slot-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.proj-num {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(56px, 9vw, 120px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  transition: color 0.2s ease;
+}
+.proj-slot:hover .proj-num { color: var(--accent); }   /* the one hover accent */
+.slot-head .reg-code { white-space: nowrap; }
+
+.proj-title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: clamp(30px, 4.6vw, 58px);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+/* type / year line under the title (may still be TODO land — shown as-is
+   exactly like the old register did) */
+.proj-meta {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 28px;
+}
+
+/* big thumbnail with a hairline frame; fades in on first view (.fade) */
+.proj-thumb {
+  width: 100%;
+  max-height: 72vh;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid var(--rule);
+  background: #EFEDE8;
+}
+.proj-slot .ph { min-height: 40vh; }
+
+/* fixed counter, sits just above the title-block strip */
+.proj-counter {
+  position: fixed;
+  left: var(--side);
+  bottom: 62px;
+  z-index: 21;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--bg);
+  padding: 5px 9px;
+  border: 1px solid var(--rule);
+}
+
+@media (max-width: 719px) {
+  .proj-slot { min-height: 66vh; padding: 44px 0 40px; }
+  .proj-num { font-size: clamp(48px, 14vw, 72px); }
+  .proj-title { font-size: clamp(26px, 7vw, 34px); }
+  .proj-slot .ph { min-height: 30vh; }
+  .proj-counter { bottom: 52px; }        /* above the 40px phone strip */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.snap-on { scroll-snap-type: none; }  /* no snapping */
+  .proj-slot { scroll-snap-align: auto; }
+}
+
+@media print {
+  .proj-counter { display: none !important; }
+  .proj-slot { min-height: 0; break-inside: avoid; }
+}

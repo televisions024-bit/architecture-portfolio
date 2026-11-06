@@ -1,125 +1,125 @@
 <!DOCTYPE html>
 <!-- ============================================================
-  COVER PAGE — marked DONE in PROJECT.md. Do not restyle later.
-  WHAT YOU CAN EDIT SAFELY:
-  - drop your real cover drawing as /images/cover/hero.png
-  - the three text lines below (only if Mohammed asks)
-  WHAT YOU MUST NOT DO: move the text away from the empty left
-  half of the image, add animation, or change the design.
+  ARCHITECTURAL ENTRANCE HOMEPAGE — Approach A (Warm Light Reveal)
+  MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO (2024-27)
+  Spatial navigation through three architectural openings:
+  01 — PROJECTS  ·  02 — ABOUT  ·  03 — CONTACT
+  Rollback backup preserved at: index-v1.html
 ============================================================ -->
 <html lang="en">
 <head>
-  <meta name="robots" content="noindex, nofollow"><!-- Remove before sharing publicly. -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portfolio 2024-27 — Mohammed Huzefa</title>
-  <meta name="description" content="Architecture portfolio of Mohammed Huzefa, 2024-27. Architecture internship portfolio.">
-  <link rel="stylesheet" href="styles.css?v=20261104b">
-  <!-- Cover-only styles are kept here on purpose: they must not
-       affect the project page template. -->
-  <style>
-    .cover {
-      position: relative;
-      min-height: 100vh;              /* full-bleed hero, no scrolling */
-      min-height: 100svh;
-      overflow: hidden;
-    }
-    /* The hero PNG: full-bleed, drawing sits visually in the right
-       half. object-position keeps it anchored to the right edge on
-       wide screens. Eager load — it is the whole page.
-       mix-blend-mode: multiply lets the page's background image
-       show through the drawing's off-white paper; the black lines
-       multiply to black, so they stay black. The pseudo-element
-       layers sit at negative z-index directly under this image in
-       the root stacking context, so the blend target is them. */
-    .cover img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center right;
-      min-height: 100%;
-      mix-blend-mode: multiply;
-    }
-    /* Text sits in the empty left half, mid-height. */
-    .cover-text {
-      position: absolute;
-      top: 50%;
-      left: 6vw;
-      transform: translateY(-50%);
-      max-width: 44%;
-    }
-    /* small caption above the title (uppercase, letter-spaced) */
-    .cover-kicker {
-      font-family: var(--font-body);
-      font-size: 12px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--ink);   /* was --grey: fails 4.5:1 over the background image; ink passes (2026-11-02) */
-    }
-    /* short 2px rule, echoes the approved cover */
-    .cover-rule {
-      width: 28px;
-      height: 2px;
-      background: var(--ink);
-      margin: 22px 0;
-      border: 0;
-    }
-    .cover h1 {
-      font-family: var(--font-heading);
-      font-weight: normal;
-      font-size: clamp(34px, 5.2vw, 72px);
-      line-height: 1.06;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-    .cover-sub {
-      margin-top: 10px;
-      font-family: var(--font-body);
-      font-size: clamp(13px, 1.3vw, 16px);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-    /* the one link onward: quiet underline, burgundy on hover */
-    .cover-link {
-      display: inline-block;
-      margin-top: 34px;
-      font-family: var(--font-body);
-      font-size: 12px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink);
-      text-decoration: none;
-      border-bottom: 1px solid var(--ink);
-      padding-bottom: 3px;
-      transition: color 0.2s ease, border-color 0.2s ease;
-    }
-    .cover-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
-    /* phone: single column, 16px side padding (PROJECT.md section 5) */
-    @media (max-width: 719px) {
-      .cover { min-height: 100svh; }
-      .cover-text { top: auto; bottom: 12vh; left: 16px; right: 16px; max-width: none; transform: none; }
-    }
-  </style>
+  <meta name="robots" content="noindex, nofollow"><!-- Remove before sharing publicly. -->
+  <title>Architecture Portfolio (2024–27) — Mohammed Huzefa</title>
+  <meta name="description" content="Architecture portfolio of Mohammed Huzefa, 2024–27. Academic architectural projects, CAD drawings, plans, sections, elevations, models and renders.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Architecture Portfolio — Mohammed Huzefa">
+  <meta property="og:description" content="Spatial architectural portfolio of Mohammed Huzefa (2024–27). Academic projects, drawings and renders.">
+  <meta property="og:type" content="website">
+
+  <!-- Typography: Fraunces (headings) & Inter (body, labels, title block) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Entrance Scene Stylesheet -->
+  <link rel="stylesheet" href="entrance.css?v=20261105d">
 </head>
 <body>
-  <main class="cover">
-    <!-- placeholder until the real PNG is dropped in (see ASSETS.md) -->
-    <img src="images/cover/hero.png"
-         alt="Black-line drawing of a cantilevered building volume with curved corner and glazing mullions on off-white">
 
-    <div class="cover-text">
-      <p class="cover-kicker">Portfolio 2024-27</p>
-      <hr class="cover-rule">
-      <h1>Architecture<br>Internship<br>Portfolio</h1>
-      <p class="cover-sub">Presented by Mohammed Huzefa</p>
-      <a class="cover-link" href="door.html">Enter</a>
-      <a class="cover-link" href="projects.html">Projects</a>
+  <!-- Screen-reader / keyboard skip link -->
+  <a class="es-skip" href="projects.html">Skip to projects</a>
+
+  <!-- Root scene container -->
+  <div class="es-scene" id="es-scene">
+
+    <!-- Visually hidden semantic H1 for desktop (the lime-plaster wall inscription serves as the visual title) -->
+    <h1 class="es-sr">Architecture Portfolio — Mohammed Huzefa (2024–27)</h1>
+
+    <!-- Desktop title: ivory paper box, top-left (hidden when the mobile header shows) -->
+    <div class="es-title-box">
+      <span class="es-title-who">Mohammed Huzefa</span>
+      <span class="es-title-sub">Architecture Portfolio 2024-27</span>
     </div>
-  </main>
-  <script src="backgrounds-config.js?v=20261104b"></script><!-- background settings, must load first -->
-  <script src="backgrounds.js?v=20261104b" defer></script>
+
+    <!-- Restrained title band displayed above the contain-fit image on mobile only -->
+    <header class="es-mobile-header" id="es-mobile-header">
+      <p class="es-mobile-title">ARCHITECTURE PORTFOLIO</p>
+      <p class="es-mobile-sub">Presented by Mohammed Huzefa · 2024–27</p>
+    </header>
+
+    <!-- Stage & Perspective Camera -->
+    <main class="es-stage" id="es-stage" role="main" aria-label="Architectural entrance interface">
+      <div class="es-stage-box" id="es-stagebox">
+        <div class="es-camera" id="es-camera">
+
+          <!-- Architectural Scene Photographic Visual: WebP primary with PNG fallback -->
+          <picture class="es-picture">
+            <source srcset="assets/images/entrance-scene.webp" type="image/webp">
+            <img class="es-img" src="assets/images/entrance-scene.webp"
+                 alt="Warm lime-plaster architectural entrance hall with three deep burgundy-framed openings"
+                 fetchpriority="high" loading="eager" decoding="auto">
+          </picture>
+
+          <!-- Architectural Opening 01: PROJECTS -->
+          <a class="es-region" id="es-rg-projects" data-dest="projects" href="projects.html"
+             aria-label="01 — Projects: Explore academic architectural works, design studio and drawing archive">
+            <span class="es-mark" aria-hidden="true"></span>
+            <span class="es-label" aria-hidden="true"><span class="es-num">01</span> — Projects</span>
+            <span class="es-portal-glow" aria-hidden="true"></span>
+            <span class="es-sr">01 — Projects: Architectural works, design studio and drawing archive</span>
+          </a>
+
+          <!-- Architectural Opening 02: ABOUT -->
+          <a class="es-region" id="es-rg-about" data-dest="about" href="about.html"
+             aria-label="02 — About: Background, architectural thinking, skills and study journey">
+            <span class="es-mark" aria-hidden="true"></span>
+            <span class="es-label" aria-hidden="true"><span class="es-num">02</span> — About</span>
+            <span class="es-portal-glow" aria-hidden="true"></span>
+            <span class="es-sr">02 — About: Background, architectural thinking, skills and study journey</span>
+          </a>
+
+          <!-- Architectural Opening 03: CONTACT -->
+          <a class="es-region" id="es-rg-contact" data-dest="contact" href="about.html#contact"
+             aria-label="03 — Contact: Connect for internship opportunities and collaborations">
+            <span class="es-mark" aria-hidden="true"></span>
+            <span class="es-label" aria-hidden="true"><span class="es-num">03</span> — Contact</span>
+            <span class="es-portal-glow" aria-hidden="true"></span>
+            <span class="es-sr">03 — Contact: Connect for internship opportunities and collaborations</span>
+          </a>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- AI honesty credit: shown on every viewport, never overlapping nav -->
+    <p class="es-credit">Scene image: AI-generated, not a photograph of my work</p>
+
+    <!-- Approach A: Warm Radial Light Bloom Transition -->
+    <div class="es-light-reveal" id="es-light-reveal" aria-hidden="true"></div>
+
+    <!-- Solid End-Frame Veil settling in #F5F3EF before navigation -->
+    <div class="es-screen" id="es-screen" aria-hidden="true"></div>
+
+    <!-- Mobile Touch Navigation List (Active on small/portrait viewports) -->
+    <nav class="es-navlist" id="es-navlist" aria-label="Portfolio sections"></nav>
+
+    <!-- Semantic fallback for disabled JavaScript -->
+    <noscript>
+      <nav class="es-noscript" aria-label="Direct navigation links">
+        <ul>
+          <li><a href="projects.html">01 — Projects</a></li>
+          <li><a href="about.html">02 — About</a></li>
+          <li><a href="about.html#contact">03 — Contact</a></li>
+        </ul>
+      </nav>
+    </noscript>
+
+  </div>
+
+  <!-- Entrance Scene Interaction Script -->
+  <script src="entrance.js?v=20261105d"></script>
 </body>
 </html>

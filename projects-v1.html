@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  PROJECTS INDEX — a DRAWING REGISTER (Direction A): one thin row
+  per project, built by script.js from projects/index.json
+  (sheet code | title | type | year | small thumbnail).
+  To add a project: see the new project's .json + index.json —
+  never hard-code anything here.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta name="robots" content="noindex, nofollow"><!-- Remove before sharing publicly. -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects — Mohammed Huzefa</title>
+  <!-- Open Graph: how the link looks when shared by reviewers -->
+  <meta property="og:title" content="Projects — Mohammed Huzefa">
+  <meta property="og:description" content="Drawing register of architecture projects, 2024-27 — Mohammed Huzefa.">
+  <meta property="og:type" content="website">
+  <!-- Fonts (decided): Fraunces headings / Inter body, display=swap, system fallbacks in styles.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20261105">
+</head>
+<body class="tb">
+  <!-- Navigation is ONLY About / Projects / Contact (PROJECT.md section 4) -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MOHAMMED <span>H.</span></a>
+      <nav class="site-nav">
+        <!-- Contact page comes later (see TODO.md); About is live on about.html -->
+        <a href="about.html">About</a>
+        <a href="projects.html" aria-current="page">Projects</a>
+        <a href="#" aria-disabled="true" onclick="return false" title="coming later">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Register rows are built from projects/index.json by script.js -->
+  <main id="index-root"></main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>MOHAMMED HUZEFA — ARCHITECTURE PORTFOLIO 2024-27</span>
+      <span><a href="door.html#hall" title="Back to the hall scene">Enter</a> <a href="about.html#credits">Credits</a> <a href="index.html">Cover</a></span>
+    </div>
+  </footer>
+
+  <!-- Title block strip (Direction A): slim fixed bar, sheet code filled
+       by script.js from projects/index.json (A-00 = this register/cover) -->
+  <div class="titleblock">
+    <div class="wrap tb-row">
+      <span class="tb-name" id="tb-name">Project Register</span>
+      <span class="tb-code" id="tb-code">SHEET A-00 · INDEX</span>
+      <span class="tb-side">SCALE 1:200 · OCT 2026</span>
+    </div>
+  </div>
+
+  <script src="backgrounds-config.js?v=20261104b"></script><!-- background settings, must load first -->
+  <script src="script.js?v=20261105"></script>
+<script src="backgrounds.js?v=20261104b" defer></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- ============================================================
+  STANDALONE EXPERIMENT — architectural entrance scene.
+  Not linked from the main site yet. Fully self-contained:
+  styles in entrance.css, logic in entrance.js, geometry +
+  destinations in the CONFIG block at the top of entrance.js.
+
+  The background image is the architecture; the three openings
+  get invisible interactive HTML regions (Projects/About/Contact)
+  with a square-and-dot marker, hover emphasis and a camera zoom
+  on click. tip: open with index.html?debug=1 to see the regions.
+============================================================ -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><!-- standalone experiment -->
+  <title>Experiments — Entrance scene</title>
+  <link rel="stylesheet" href="entrance.css">
+</head>
+<body>
+
+  <!-- scene wrapper: one namespaced root so integration is copy-safe -->
+  <div class="es-scene" id="es-scene">
+
+    <main class="es-stage" id="es-stage">
+      <div class="es-stage-box" id="es-stagebox">
+        <div class="es-camera" id="es-camera">
+        <img class="es-img" src="../../assets/images/entrance-scene.webp"
+             alt="A warm plaster hall with three tall burgundy-framed openings" decoding="auto">
+
+        <!-- interactive region 1: PROJECTS -->
+        <a class="es-region" id="es-rg-projects" data-dest="projects" href="../../projects.html">
+          <span class="es-mark" aria-hidden="true"></span>
+          <span class="es-sr">Projects — architectural works, studies and explorations</span>
+        </a>
+
+        <!-- interactive region 2: ABOUT -->
+        <a class="es-region" id="es-rg-about" data-dest="about" href="../../about.html">
+          <span class="es-mark" aria-hidden="true"></span>
+          <span class="es-sr">About — my journey, interests and approach</span>
+        </a>
+
+        <!-- interactive region 3: CONTACT -->
+        <a class="es-region" id="es-rg-contact" data-dest="contact" href="../../about.html#contact">
+          <span class="es-mark" aria-hidden="true"></span>
+          <span class="es-sr">Contact — connect for collaborations</span>
+        </a>
+      </div>
+      </div>
+    </main>
+
+    <!-- full-screen fade that leads the browser to the destination page -->
+    <div class="es-screen" id="es-screen" aria-hidden="true"></div>
+
+    <!-- mobile: big touch rows built by entrance.js from the same CONFIG -->
+    <nav class="es-navlist" id="es-navlist" aria-label="Portfolio sections"></nav>
+
+    <!-- no-JS fallback: the same destinations as plain links -->
+    <noscript>
+      <ul class="es-noscript">
+        <li><a href="../../projects.html">Projects</a></li>
+        <li><a href="../../about.html">About</a></li>
+        <li><a href="../../about.html#contact">Contact</a></li>
+      </ul>
+    </noscript>
+  </div>
+
+  <script src="entrance.js"></script>
+</body>
+</html>

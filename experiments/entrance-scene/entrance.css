@@ -1,0 +1,237 @@
+/* ============================================================
+   entrance.css — standalone experiment (namespaced: es-).
+   Nothing outside .es-scene is touched, so this can never clash
+   with the main site styles when integrated later.
+
+   Palette is the house palette; edit below if interest changes:
+   - accent  #7A1F2B (burgundy frames, focus)
+   - ink     #1A1A1A
+   - warm veil/screen for the zoom-out to the next page
+   ============================================================ */
+:root {
+  --es-accent: #7A1F2B;
+  --es-ink: #1A1A1A;
+  --es-screen: rgba(26, 22, 18, 1);   /* warm near-black end frame   */
+  --es-glow: rgba(255, 240, 215, 0.07); /* hover brighten veil       */
+  --es-dim: rgba(28, 14, 8, 0.12);    /* sibling dim veil            */
+}
+
+/* reset + base (scoped to the scene) */
+body:has(> .es-scene) { margin: 0; overflow: hidden; }  /* standalone page only */
+.es-scene * { box-sizing: border-box; margin: 0; padding: 0; }
+.es-scene {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: #E4DCCB;                 /* plaster-ish fallback behind the image */
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                    /* no scrolled chrome: the scene IS the page */
+}
+.es-scene button { font: inherit; }
+
+/* screen-reader-only helper for the accessible region names */
+.es-sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   STAGE — the image's own aspect ratio, sized by entrance.js to
+   COVER the viewport and centred, so % coordinates in CONFIG
+   stay glued to the image at any window size (desktop + tablet).
+   ============================================================ */
+/* stage: the full-viewport cell that holds the composition box */
+.es-stage {
+  position: relative;
+  flex: 1 1 auto;
+  height: 100vh;
+  height: 100svh;
+}
+.es-stage .es-stage-box {              /* actual sized/centred box */
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+}
+.es-camera { position: absolute; inset: 0; }
+
+/* the photograph — the foundation, never redrawn */
+.es-img {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============================================================
+   REGIONS — one <a> per opening, positioned by entrance.js in %
+   of the image. Hover/focus emphasis happens on two cheap veil
+   layers (transform/opacity only, no blur, no glow).
+   ============================================================ */
+.es-region {
+  position: absolute;                  /* left/top/w/h inline from CONFIG */
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  z-index: 2;
+}
+/* brighten veil: the hovered / focused opening gets slightly warmer */
+.es-region::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--es-glow);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+/* dim veil: NON-hovered openings fall slightly back */
+.es-region::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--es-dim);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+/* hover emphasis (hover-capable devices only, never locked to it) */
+@media (hover: hover) {
+  .es-stage .es-stage-box:hover .es-region:not(:hover)::after { opacity: 1; }
+  .es-region:hover::before { opacity: 1.0; }
+}
+/* keyboard: same emphasis scales from focus */
+.es-stage .es-stage-box:focus-within .es-region:not(:focus-within)::after { opacity: 1; }
+.es-region:focus-visible { outline: none; }
+.es-region:focus-visible::before { opacity: 1.0; }
+.es-region:focus-visible .es-mark {
+  outline: 2px solid var(--es-accent);
+  outline-offset: 6px;
+}
+
+/* ============================================================
+   MARKER — the square-and-dot selection mark, positioned onto the
+   matching mark baked into the photograph (entrance.js sets the
+   exact % size/position from CONFIG so the two coincide).
+   ============================================================ */
+.es-mark {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 2px;
+  transform: translate(-50%, -50%);
+  transition: transform 300ms ease, border-color 300ms ease;
+  pointer-events: none;
+}
+.es-mark::before {                     /* the dot (dx shifts it onto a quirky baked dot) */
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 24%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  transform: translate(calc(-50% + var(--es-dotdx, 0%)), -50%);
+  transition: width 300ms ease;
+}
+.es-region:hover .es-mark,
+.es-region:focus-visible .es-mark {
+  border-color: #fff;
+  transform: translate(-50%, -50%) scale(1.28);
+}
+.es-region:hover .es-mark::before,
+.es-region:focus-visible .es-mark::before { width: 30%; }
+@media (prefers-reduced-motion: reduce) {
+  .es-mark, .es-mark::before, .es-region::before, .es-region::after { transition: none; }
+}
+
+/* ============================================================
+   CAMERA ZOOM — the camera is a separate inner box so the centring
+   transform above is never disturbed (same trick as door.html).
+   entrance.js sets transform + transition on click.
+   ============================================================ */
+
+/* full-screen end-frame veil ahead of navigating away */
+.es-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--es-screen);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 320ms ease;
+}
+.es-screen.is-on { opacity: 1; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .es-screen { transition: none; }
+}
+
+/* ============================================================
+   MOBILE — portrait gets the full composition (contain, not a
+   blind shrink) plus LARGE touch rows for the three destinations,
+   so nothing depends on hover or tiny targets.
+   ============================================================ */
+.es-navlist { display: none; }
+
+@media (max-width: 640px), (orientation: portrait) {
+  /* the strip with the composition stays on top (whole picture) */
+  .es-stage { flex: 0 0 auto; }
+  .es-img { pointer-events: none; }    /* the tiny strip regions stand down */
+  .es-region { pointer-events: none; }
+
+  /* big, clearly-touchable rows take over navigation */
+  .es-navlist {
+    display: block;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+  .es-navlist .es-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 64px;                  /* >= 44px target, generous */
+    padding: 0 20px;
+    background: none;
+    border: 0;
+    border-top: 1px solid rgba(26, 26, 26, 0.18);
+    color: var(--es-ink);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .es-navlist .es-row:last-child { border-bottom: 1px solid rgba(26, 26, 26, 0.18); }
+  .es-navlist .es-num { color: var(--es-accent); font-size: 11px; letter-spacing: 0.18em; }
+  .es-navlist .es-row:hover { color: var(--es-accent); }
+  .es-navlist .es-row:focus-visible { outline: 2px solid var(--es-accent); outline-offset: -4px; }
+
+  /* the full-screen fade still runs before the rows navigate */
+  .es-scene .es-row { cursor: pointer; }
+}
+
+/* ============================================================
+   DEBUG (?debug=1) — outlines every region with its exact %
+   rect so CONFIG in entrance.js can be tuned against the image.
+   ============================================================ */
+body.es-debug .es-region { outline: 2px dashed var(--es-accent); }
+body.es-debug .es-region::after {
+  content: attr(data-rect);
+  position: absolute;
+  top: 6px; left: 6px;
+  z-index: 3;
+  background: rgba(245, 243, 239, 0.92);
+  color: var(--es-accent);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  padding: 2px 5px;
+}
+body.es-debug .es-mark { outline: 1px solid rgba(255, 255, 255, 0.65); }
+
+/* no-JS fallback list (only rendered when JavaScript is off) */
+.es-noscript { font-size: 13px; }
