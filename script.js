@@ -23,25 +23,29 @@ document.documentElement.classList.add('js');
    block, with a warning tag on the image and a photo credit in
    the caption row. If the real render exists, the stand-in is
    never used. Full credits live in images/PLACEHOLDERS.md.
+   credit "SOURCE PENDING" = the FILE was replaced by Mohammed but
+   its creator/licence is not recorded yet: pages show "source
+   pending" (never a photographer name, never "TODO") and
+   check-placeholders.js flags the entry until a real credit lands.
    When all real renders exist, delete this map + check script.
    One map at the top: the project PAGE and the register both
    use the same stand-ins.                                    */
 const PLACEHOLDERS = {
   'images/library/renders/01-hero-exterior.webp':
     { file: 'images/placeholders/placeholder-01-hero.webp',
-      credit: 'Galla_ph, Pexels' },
+      w: 800, h: 600, credit: 'SOURCE PENDING' },
   'images/library/renders/02-entrance-approach.webp':
     { file: 'images/placeholders/placeholder-02-entrance.webp',
-      credit: 'Agung Pandit Wiguna, Pexels' },
+      w: 1125, h: 750, credit: 'SOURCE PENDING' },
   'images/library/renders/03-reading-room.webp':
     { file: 'images/placeholders/placeholder-03-reading-room.webp',
-      credit: 'Polina Zimmerman, Pexels' },
+      w: 500, h: 625, credit: 'SOURCE PENDING' },
   'images/library/renders/06-dusk-view.webp':
     { file: 'images/placeholders/placeholder-04-dusk.webp',
-      credit: 'iramezatil, Pexels' },
+      w: 1920, h: 2879, credit: 'iramezatil, Pexels' },
   'images/library/renders/07-detail.webp':
     { file: 'images/placeholders/placeholder-05-detail.webp',
-      credit: 'Ricky Esquivel, Pexels' }
+      w: 500, h: 333, credit: 'SOURCE PENDING' }
 };
 
 /* ============================================================
@@ -162,10 +166,11 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     img.setAttribute('decoding', 'async');          // never block the main thread
     if (eager) img.setAttribute('fetchpriority', 'high');   // the hero is first screen
     /* width/height kill the layout jump while the file loads; CSS
-       sets the real layout on top (crop / max-height). The ratio
-       matches the current stand-in photos (2:3). When real renders
-       land with a very different ratio, update or drop these two. */
-    img.width = 1920; img.height = 2880;
+       sets the real layout on top (crop / max-height). Default 3:2
+       for real renders; when a stand-in swaps in, its real stored
+       size (w/h in PLACEHOLDERS) is set on the img, so nothing
+       jumps or stretches.                                           */
+    img.width = 1920; img.height = 1280;
 
     const ph = elHTML('div', 'ph',
       '<span>IMAGE TODO:<br><span>' + src + '</span></span>');
@@ -174,14 +179,20 @@ function buildProjectPage(doc, data, slug, ixProjects) {
       const std = PLACEHOLDERS[src];
       if (!std) { img.replaceWith(ph); return; }
 
-      /* stand-in: swap the file in and mark it clearly */
+      /* stand-in: swap the file in (its real size with it) and mark
+         it clearly */
       img.src = std.file;
+      img.width = std.w; img.height = std.h;
       const fig = img.parentElement;             // the hero/gallery figure
       if (fig) {
         fig.classList.add('has-ph');             // gives the tag a positioning anchor
         fig.appendChild(el('span', 'ph-tag', 'PLACEHOLDER - NOT MY WORK'));
       }
-      const credit = el('span', 'cap-note', 'Photo: ' + std.credit);
+      /* captions name the photographer; an unrecorded creator shows
+         "source pending" — never a guessed name, never "TODO"      */
+      const credit = el('span', 'cap-note',
+        std.credit === 'SOURCE PENDING' ? 'source pending'
+                                        : 'Photo: ' + std.credit);
       if (capRow) capRow.appendChild(credit);
       else {                                     // hero has no caption row — add one
         const row = el('div', 'cap-row');
@@ -506,18 +517,21 @@ if (indexRoot) {
           img.alt = '';            /* decorative: the caption names it */
           img.setAttribute('fetchpriority', 'high');  /* dominant image */
           img.setAttribute('decoding', 'async');
-          /* provisional canvas ratio (the current stand-in); CSS
-             sets the real layout, these two just kill the jump  */
-          img.width = 1920; img.height = 2880;
+          /* provisional canvas ratio (3:2, the real renders' default);
+             CSS sets the real layout, these two kill the jump. When a
+             stand-in swaps in below, its own stored w/h replaces them */
+          img.width = 1920; img.height = 1280;
           /* missing file -> stock stand-in (tagged) -> TODO block */
           img.addEventListener('error', function onErr() {
             img.removeEventListener('error', onErr);
             const std = PLACEHOLDERS[featured.thumbnail];
             if (!std) { img.replaceWith(todoBlock(featured.thumbnail)); return; }
             img.src = std.file;
+            img.width = std.w; img.height = std.h;
             media.appendChild(Object.assign(document.createElement('span'),
               { className: 'ph-tag', textContent: 'PLACEHOLDER - NOT MY WORK' }));
-            media.title = 'Stand-in photo: ' + std.credit +
+            media.title = 'Stand-in photo: ' +
+              (std.credit === 'SOURCE PENDING' ? 'source pending' : std.credit) +
               ' — the real render is not placed yet';
             /* if the stand-in file is missing too, fall back */
             img.addEventListener('error', () =>

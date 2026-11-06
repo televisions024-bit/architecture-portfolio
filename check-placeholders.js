@@ -12,15 +12,15 @@ const fs = require('fs');
 /* [real render file, stand-in file, credit] — mirrors PLACEHOLDERS in script.js */
 const PAIRS = [
   ['images/library/renders/01-hero-exterior.webp',
-   'images/placeholders/placeholder-01-hero.webp', 'Galla_ph, Pexels'],
+   'images/placeholders/placeholder-01-hero.webp', 'SOURCE PENDING'],
   ['images/library/renders/02-entrance-approach.webp',
-   'images/placeholders/placeholder-02-entrance.webp', 'Agung Pandit Wiguna, Pexels'],
+   'images/placeholders/placeholder-02-entrance.webp', 'SOURCE PENDING'],
   ['images/library/renders/03-reading-room.webp',
-   'images/placeholders/placeholder-03-reading-room.webp', 'Polina Zimmerman, Pexels'],
+   'images/placeholders/placeholder-03-reading-room.webp', 'SOURCE PENDING'],
   ['images/library/renders/06-dusk-view.webp',
    'images/placeholders/placeholder-04-dusk.webp', 'iramezatil, Pexels'],
   ['images/library/renders/07-detail.webp',
-   'images/placeholders/placeholder-05-detail.webp', 'Ricky Esquivel, Pexels']
+   'images/placeholders/placeholder-05-detail.webp', 'SOURCE PENDING']
 ];
 
 let stillUsed = 0;
@@ -28,7 +28,10 @@ for (const [real, standIn, credit] of PAIRS) {
   if (fs.existsSync(real)) continue;                 // real render landed — fine
   if (fs.existsSync(standIn)) {
     console.log('STILL IN USE  ' + standIn +
-                '  (standing in for ' + real + ')  Photo: ' + credit);
+                '  (standing in for ' + real + ')  ' +
+                (credit === 'SOURCE PENDING'
+                  ? 'CREDIT PENDING — creator/licence not recorded yet'
+                  : 'Photo: ' + credit));
   } else {
     console.log('MISSING BOTH   ' + real + ' and its stand-in ' + standIn);
   }
