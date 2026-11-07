@@ -243,6 +243,10 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   const hm = el('div', 'hero-media');
   const hi = image(data.hero.src, data.hero.alt, true);
   hi.className = 'hero-img';
+  /* TASK 03 FIX 2: optional per-project crop point ("50% 40%") from the
+     JSON; absent or TODO keeps the CSS default centered framing. */
+  const focus = cleanValue(data.hero && data.hero.focus);
+  if (focus) hi.style.objectPosition = focus;
   hm.appendChild(hi);
   hero.appendChild(hm);
   root.appendChild(hero);
@@ -250,21 +254,21 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   /* ---- 2 — PROJECT IDENTITY (TASK 03) ---- */
   const identity = el('section', 'project-identity');
   const iw = el('div', 'wrap');
-  
+
   const title = cleanValue(data.title) || capSlug;
   iw.appendChild(el('h1', '', title));
 
+  /* TASK 03 FIX 2: one facts line directly under the title —
+     Location · Year · Program (the keys the first screen needs).
+     Any TODO value is skipped, so the line never invents content. */
   if (Array.isArray(data.meta)) {
-    const grid = el('div', 'meta-grid');
+    const FACT_KEYS = ['Location', 'Year', 'Program'];
+    const facts = [];
     data.meta.forEach(m => {
       const v = cleanValue(m && m.value);
-      if (!v) return;
-      const item = el('div', 'meta-item');
-      item.appendChild(el('span', 'meta-label', m.key));
-      item.appendChild(el('span', 'meta-value', v));
-      grid.appendChild(item);
+      if (v && FACT_KEYS.includes(m && m.key)) facts.push(m.key + ' ' + v);
     });
-    if (grid.children.length) iw.appendChild(grid);
+    if (facts.length) iw.appendChild(el('p', 'meta-line', facts.join('  ·  ')));
   }
   identity.appendChild(iw);
   root.appendChild(identity);

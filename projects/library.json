@@ -4,10 +4,11 @@
   "hero": {
     "src": "images/library/renders/01-hero-exterior.webp",
     "alt": "TODO: describe the hero exterior render in one line",
-    "lead": "TODO: one-line description of the project shown under the title"
+    "lead": "TODO: one-line description of the project shown under the title",
+    "focus": "50% 40%"
   },
 
-  "_": "Fill every TODO below. Values starting with TODO are open; delete TODO: and write the real content. Add or remove images inside the lists following the same shape. Optional \"scale\": \"1:200\" on any drawing/render/diagram becomes the note on its caption row.",
+  "_": "Fill every TODO below. Values starting with TODO are open; delete TODO: and write the real content. Add or remove images inside the lists following the same shape. Optional \"scale\": \"1:200\" on any drawing/render/diagram becomes the note on its caption row. Optional \"focus\": \"50% 40%\" inside this hero sets where the crop keeps its point (CSS object-position); omit it for the default \"50% 50%\".",
 
   "meta": [
     { "key": "Location", "value": "TODO: city / site" },
