@@ -338,16 +338,16 @@ html.js .reveal.is-in {
 @media (max-width: 719px) { .gallery img { height: auto; } }
 
 /* Lightbox: click to open, click anywhere or Esc to close */
+/* FIX 3b: the veil is the opaque sheet colour — nothing ghosting through.
+   z-index above the sticky header (10); fades removed (Direction A). */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(245, 243, 237, 0.96);
+  background: var(--bg);
   display: none;               /* shown by JS */
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 180ms ease;
+  z-index: 110;
 }
-.lightbox.is-open { display: flex; align-items: center; justify-content: center; opacity: 1; }
+.lightbox.is-open { display: flex; align-items: center; justify-content: center; }
 .lightbox figure { max-width: 92vw; max-height: 88vh; text-align: center; }
 .lightbox img {
   max-width: 92vw;
@@ -378,12 +378,13 @@ html.js .reveal.is-in {
 }
 .lightbox img.lb-zoomed { cursor: grab; }
 .lightbox button { font-family: var(--font-body); }
+/* FIX 3c: every control keeps a charcoal (>=3:1) outline on the sheet */
 .lightbox-close, .lightbox-fs {
   position: absolute;
   top: 18px;
   z-index: 5;
   background: var(--bg);
-  border: 1px solid var(--rule);
+  border: 1px solid var(--ink);
   color: var(--ink);
   cursor: pointer;
 }
@@ -395,6 +396,23 @@ html.js .reveal.is-in {
   width: 56px;
   height: 44px;
 }
+/* visible zoom controls next to FULL and the close button;
+   44px targets, charcoal text + border, same steps as the +/− keys */
+.lightbox-zoom, .lightbox-fit {
+  position: absolute;
+  top: 18px;
+  z-index: 5;
+  min-width: 44px;
+  height: 44px;
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-size: 16px;
+  cursor: pointer;
+}
+.lightbox-zoom[data-zoom="in"]  { right: 144px; }
+.lightbox-zoom[data-zoom="out"] { right: 200px; }
+.lightbox-fit { right: 256px; width: 56px; font-size: 10px; letter-spacing: 0.18em; }
 .lightbox-nav {
   position: absolute;
   top: 50%;
@@ -404,21 +422,39 @@ html.js .reveal.is-in {
   height: 44px;
   font-size: 18px;
   background: var(--bg);
-  border: 1px solid var(--rule);
+  border: 1px solid var(--ink);
   color: var(--ink);
   cursor: pointer;
 }
 .lightbox-prev { left: 18px; }
 .lightbox-next { right: 18px; }
-.lightbox-close:hover, .lightbox-fs:hover, .lightbox-nav:hover {
+.lightbox-close:hover, .lightbox-fs:hover, .lightbox-zoom:hover,
+.lightbox-fit:hover, .lightbox-nav:hover {
   color: var(--accent);
   border-color: var(--accent);
 }
 .lightbox-nav[disabled] { opacity: 0.35; cursor: default; border-color: var(--rule); color: var(--ink); }
+/* FIX 3c: the gesture hint stays visible, 12px charcoal text */
+.lightbox-hint {
+  position: absolute;
+  left: 0; right: 0; bottom: 10px;
+  z-index: 6;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink);
+}
 @media (max-width: 719px) {
-  .lightbox-nav { top: auto; bottom: 92px; transform: none; }  /* thumbs of hands sit low */
+  .lightbox-nav { top: auto; bottom: 44px; transform: none; }  /* thumbs of hands sit low */
   .lightbox-close { right: 16px; }
   .lightbox-fs { right: 72px; }
+  .lightbox-zoom[data-zoom="in"]  { right: 140px; }
+  .lightbox-zoom[data-zoom="out"] { right: 196px; }
+  .lightbox-fit { right: 252px; }
+  .lightbox figure { margin-bottom: 120px; }   /* caption + counter stay clear of nav/hint */
+}
+/* FIX 3d: no fades for reduced-motion visitors; keys and focus trap unchanged */
+@media (prefers-reduced-motion: reduce) {
+  .lightbox img { transition: none; }
 }
 
 /* ---------- Placeholder block shown until real images exist ---------- */

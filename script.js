@@ -672,8 +672,12 @@ function initLightbox(doc) {
   box.innerHTML =
     '<button class="lightbox-close" aria-label="Close">&#215;</button>' +
     '<button class="lightbox-fs" aria-label="Toggle full screen">FULL</button>' +
+    '<button class="lightbox-zoom" data-zoom="in" aria-label="Zoom in">+</button>' +
+    '<button class="lightbox-zoom" data-zoom="out" aria-label="Zoom out">&minus;</button>' +
+    '<button class="lightbox-fit" aria-label="Fit to screen">FIT</button>' +
     '<button class="lightbox-nav lightbox-prev" aria-label="Previous image">&#8592;</button>' +
     '<button class="lightbox-nav lightbox-next" aria-label="Next image">&#8594;</button>' +
+    '<span class="lightbox-hint">Scroll or pinch to zoom &middot; drag to pan</span>' +
     '<figure><img alt=""><figcaption></figcaption></figure>';
   doc.body.appendChild(box);
 
@@ -681,6 +685,9 @@ function initLightbox(doc) {
   const cap = box.querySelector('figcaption');
   const closeBtn = box.querySelector('.lightbox-close');
   const fsBtn = box.querySelector('.lightbox-fs');
+  const zoomInBtn = box.querySelector('.lightbox-zoom[data-zoom="in"]');
+  const zoomOutBtn = box.querySelector('.lightbox-zoom[data-zoom="out"]');
+  const fitBtn = box.querySelector('.lightbox-fit');
   const prevBtn = box.querySelector('.lightbox-prev');
   const nextBtn = box.querySelector('.lightbox-next');
   const figs = Array.from(doc.querySelectorAll('.gallery figure'));
@@ -717,10 +724,10 @@ function initLightbox(doc) {
   box.setAttribute('role', 'dialog');
   box.setAttribute('aria-modal', 'true');
   box.setAttribute('aria-label', 'Large image view');
-  /* Tab cycles the four visible buttons: focus never escapes */
+  /* Tab cycles every visible button: focus never escapes */
   box.addEventListener('keydown', e => {
     if (e.key !== 'Tab') return;
-    const order = [closeBtn, fsBtn, prevBtn, nextBtn];
+    const order = [closeBtn, fsBtn, zoomInBtn, zoomOutBtn, fitBtn, prevBtn, nextBtn];
     const i = order.indexOf(doc.activeElement);
     e.preventDefault();
     const n = e.shiftKey
@@ -733,7 +740,11 @@ function initLightbox(doc) {
     const f = figs[idx];
     if (!f) return;
     const im = f.querySelector('img');   // re-read: placeholders may have swapped in
-    if (!im) return;
+    /* FIX 3a: open with the picture the thumbnail is really showing —
+       currentSrc already points at a swapped-in stand-in. naturalWidth 0
+       means nothing is loaded yet (failed or still streaming), so the
+       lightbox must NOT open at all (never a broken/TODO frame). */
+    if (!im || !im.naturalWidth) return;
     reset();                             // every image opens at 100 %
     img.src = im.currentSrc || im.src;
     img.alt = im.alt || '';
@@ -754,6 +765,8 @@ function initLightbox(doc) {
     box.classList.add('is-open');
   }
   function openAt(i) {
+    const im = figs[i] && figs[i].querySelector('img');
+    if (!im || !im.naturalWidth) return;   // not fully loaded -> do not open (FIX 3a)
     lastFocus = doc.activeElement;   // remember the thumbnail that opened it
     idx = i;
     show();
@@ -761,7 +774,6 @@ function initLightbox(doc) {
   }
   function close() {
     box.classList.remove('is-open');
-    box.style.opacity = '0';
     img.removeAttribute('src');      // (src = '' would re-request the page)
     reset();
     if (lastFocus) { lastFocus.focus(); lastFocus = null; }
@@ -849,6 +861,12 @@ function initLightbox(doc) {
   doc.addEventListener('fullscreenchange', function () {
     fsBtn.textContent = doc.fullscreenElement ? 'EXIT' : 'FULL';
   });
+
+  /* FIX 3c: the same zoom steps the +/− keys use, as visible buttons;
+     "FIT" is the keyboard's 0 — back to 100 % and centered. */
+  zoomInBtn.addEventListener('click', function () { zoomAtCentre(1.25); });
+  zoomOutBtn.addEventListener('click', function () { zoomAtCentre(0.8); });
+  fitBtn.addEventListener('click', function () { reset(); });
 
   prevBtn.addEventListener('click', function () { step(-1); });
   nextBtn.addEventListener('click', function () { step(1); });
