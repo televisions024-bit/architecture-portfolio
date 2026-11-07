@@ -1,5 +1,11 @@
 # TODO.md — remaining work
 
+## TASK 03 POLISH (2026-11-07, done — tags task03-fix-1/2/3)
+- [x] Title block restored (project name + SHEET A-01 from index.json; capitalized-slug fallback)
+- [x] First-screen identity: hero ~72svh/min 420px (60svh portrait tablets), title + Location · Year · Program facts line visible at 1440x900 and 768x1024; per-project "focus" key documented
+- [x] Lightbox: opens only on a loaded image (currentSrc, naturalWidth guard; R-01), opaque #F5F3ED veil above header/footer, visible +/−/FIT + hint, charcoal outline arrows, no caption/control overlap at 420px, reduced-motion instant
+- [ ] Mohammed reviews project.html at 1440x900 / 768x1024 / 420x860 (screenshots in test-shots/); lightbox zoom/pinch/keys exercised live (not scriptable)
+
 ## STAGE 1 — ARCHITECTURAL ENTRANCE HOMEPAGE (2026-11-05, refined with Approach A — awaiting review)
 - [x] Backup original index.html to index-v1.html (rollback path preserved)
 - [x] Optimize assets/images/entrance-scene.png (2.1MB) to assets/images/entrance-scene.webp (134KB, 93.6% reduction; original preserved)

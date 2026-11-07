@@ -934,11 +934,12 @@ html.js .reveal.is-in {
   position: relative;
   background: var(--bg);
 }
+/* FIX 2: ~72svh hero on desktop, shrinking on short screens (sticky header
+   + fixed 72px sheet strip + identity block take about 320px together) so
+   title and facts line stay on the first screen; never below 420px. */
 .project-hero .hero-media {
   width: 100%;
-  /* TASK 03 FIX 2: ~72svh so the identity block (title + facts line)
-     is visible on the FIRST screen on desktop; never shorter than 420px. */
-  height: max(72svh, 420px);
+  height: max(420px, min(72svh, calc(100svh - 320px)));
   overflow: hidden;
   display: block;
 }
@@ -958,9 +959,12 @@ html.js .reveal.is-in {
   .project-hero .hero-media { height: 60svh; }
 }
 
-/* Project Identity — editorial block immediately below hero */
+/* Project Identity — editorial block immediately below hero.
+   FIX 2: tighter top padding so title + facts line stay on the
+   FIRST screen at 1440x900 / 768x1024; the generous rhythm is
+   kept at the bottom of the block. */
 .project-identity {
-  padding: clamp(48px, 8vw, 80px) 0;
+  padding: clamp(36px, 4vw, 56px) 0 clamp(48px, 8vw, 80px);
   border-bottom: 1px solid var(--rule);
 }
 .project-identity h1 {
