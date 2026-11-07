@@ -128,10 +128,11 @@ function showProjectNotFound(root, why) {
 function buildProjectPage(doc, data, slug, ixProjects) {
   const root = doc.getElementById('project-root');
   root.innerHTML = '';
-  /* the project name; TODO values never render — the URL slug
-     is the quiet stand-in name until real content is written.  */
+  /* the project name; TODO values never render — the capitalized
+     URL slug is the quiet stand-in name until real content is written. */
+  const capSlug = slug.charAt(0).toUpperCase() + slug.slice(1);
   const name = cleanValue(data.title);
-  doc.title = (name || slug) + ' — Mohammed Huzefa';
+  doc.title = (name || capSlug) + ' — Mohammed Huzefa';
 
   /* helpers ------------------------------------------------- */
 
@@ -250,7 +251,7 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   const identity = el('section', 'project-identity');
   const iw = el('div', 'wrap');
   
-  const title = cleanValue(data.title) || slug;
+  const title = cleanValue(data.title) || capSlug;
   iw.appendChild(el('h1', '', title));
 
   if (Array.isArray(data.meta)) {
@@ -389,7 +390,8 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     const txt = el('div', 'proj-next-text');
     txt.appendChild(el('p', 'label', 'NEXT PROJECT'));
     txt.appendChild(el('p', 'proj-next-name',
-      cleanValue(nextEntry.title) || nextEntry.slug));
+      cleanValue(nextEntry.title) ||
+      (nextEntry.slug.charAt(0).toUpperCase() + nextEntry.slug.slice(1))));
     if (nextEntry.sheet) {
       txt.appendChild(el('span', 'reg-code', 'SHEET ' + nextEntry.sheet));
     }
@@ -398,6 +400,17 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   }
   navWrap.appendChild(navRow);
   root.appendChild(navWrap);
+
+  /* Title block strip (Direction A): the project name + its register sheet
+     code, straight from index.json (RESTORE — Task 03 dropped this block in
+     commit b42e7c7; the strip otherwise shows only "Project" and "SHEET —").
+     A TODO title falls back to the capitalized slug — TODO text never shows. */
+  const thisEntry = ixProjects.find(p => p.slug === slug);
+  const tbName = doc.getElementById('tb-name');
+  const tbCode = doc.getElementById('tb-code');
+  if (tbName) tbName.textContent = (thisEntry && cleanValue(thisEntry.title)) || title;
+  const sheet = thisEntry && cleanValue(thisEntry.sheet);
+  if (tbCode && sheet) tbCode.textContent = 'SHEET ' + sheet;
 }
 
 /* ============================================================
