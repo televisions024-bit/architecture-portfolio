@@ -666,6 +666,42 @@ if (indexRoot) {
    visible prev / next buttons, swipe, Esc, focus kept inside,
    and the old "3 / 8 — caption" counter line. No libraries.
 ============================================================ */
+/* a helper to wait for an image to be ready (original or stand-in).
+   returns true if it loads, false if it becomes a TODO block or timeouts.
+   Lives at top level because the lightbox's openAt() uses it too.      */
+async function whenLoaded(img) {
+  if (!img) return false;
+  if (img.complete && img.naturalWidth > 0) return true;
+  return new Promise(resolve => {
+    let done = false;
+    // single guard: cleanup first (timers, interval, listeners), then resolve
+    const finish = ok => {
+      if (done) return;
+      done = true;
+      clearTimeout(timeout);
+      clearInterval(poll);
+      img.removeEventListener('load', check);
+      img.removeEventListener('error', check);
+      img.removeEventListener('unload', onUnload);
+      resolve(ok);
+    };
+    const timeout = setTimeout(() => finish(false), 1500);
+    const poll = setInterval(() => {
+      if (img.naturalWidth > 0) finish(true);
+      else if (!img.parentElement) finish(false);  // swapped to an IMAGE TODO block
+    }, 50);
+    const check = () => {
+      if (img.naturalWidth > 0) finish(true);
+      else if (!img.parentElement) finish(false);
+    };
+    // named function so cleanup can remove this exact handler
+    function onUnload() { finish(false); }
+    img.addEventListener('load', check);
+    img.addEventListener('error', check);
+    img.addEventListener('unload', onUnload);
+  });
+}
+
 function initLightbox(doc) {
   const box = doc.createElement('div');
   box.className = 'lightbox';
@@ -739,12 +775,8 @@ function initLightbox(doc) {
   function show() {
     const f = figs[idx];
     if (!f) return;
-    const im = f.querySelector('img');   // re-read: placeholders may have swapped in
-    /* FIX 3a: open with the picture the thumbnail is really showing —
-       currentSrc already points at a swapped-in stand-in. naturalWidth 0
-       means nothing is loaded yet (failed or still streaming), so the
-       lightbox must NOT open at all (never a broken/TODO frame). */
-    if (!im || !im.naturalWidth) return;
+    const im = f.querySelector('img');
+    if (!im) return;
     reset();                             // every image opens at 100 %
     img.src = im.currentSrc || im.src;
     img.alt = im.alt || '';
@@ -764,9 +796,15 @@ function initLightbox(doc) {
     nextBtn.disabled = idx >= figs.length - 1;
     box.classList.add('is-open');
   }
-  function openAt(i) {
-    const im = figs[i] && figs[i].querySelector('img');
-    if (!im || !im.naturalWidth) return;   // not fully loaded -> do not open (FIX 3a)
+  async function openAt(i) {
+    const f = figs[i];
+    if (!f) return;
+    const im = f.querySelector('img');
+    if (!im) return;
+    
+    const loaded = await whenLoaded(im);
+    if (!loaded) return;
+
     lastFocus = doc.activeElement;   // remember the thumbnail that opened it
     idx = i;
     show();
