@@ -134,6 +134,33 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   const name = cleanValue(data.title);
   doc.title = (name || capSlug) + ' — Mohammed Huzefa';
 
+  /* Open Graph metadata from the project data (restored from
+     script-v1.js for Task 04e). The static fallbacks in
+     project.html stay untouched for no-JS and first paint;
+     only real values overwrite them here.
+     NOTE: client-side OG edits are for the live DOM and
+     JS-aware crawlers only — share bots that read the raw
+     HTML still show the static fallback.                     */
+  function setOG(prop, val) {
+    let m = doc.head.querySelector('meta[property="' + prop + '"]');
+    if (!m) {
+      m = doc.createElement('meta');
+      m.setAttribute('property', prop);
+      doc.head.appendChild(m);
+    }
+    m.setAttribute('content', val);
+  }
+  setOG('og:title', (name || capSlug) + ' — Mohammed Huzefa');
+  /* description/image: TODO values never render, a hero src that
+     is still swapped for a stand-in (in PLACEHOLDERS) is not a
+     usable share image — both keep the static fallbacks.       */
+  const lead = data.hero && cleanValue(data.hero.lead);
+  if (lead) setOG('og:description', lead);
+  const heroSrc = data.hero && cleanValue(data.hero.src);
+  if (heroSrc && !PLACEHOLDERS[heroSrc]) {
+    setOG('og:image', new URL(heroSrc, location.href).href);
+  }
+
   /* helpers ------------------------------------------------- */
 
   // create a simple element, like el('p', 'measure', 'text')
@@ -415,6 +442,24 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   if (tbName) tbName.textContent = (thisEntry && cleanValue(thisEntry.title)) || title;
   const sheet = thisEntry && cleanValue(thisEntry.sheet);
   if (tbCode && sheet) tbCode.textContent = 'SHEET ' + sheet;
+
+  /* Section-aware sheet code (restored from script-v1.js, Task 04e):
+     sections carry data-part (BRIEF/CONCEPT/DRAWINGS/RENDERS/END).
+     One IntersectionObserver watches the middle band of the
+     viewport; entering a section swaps the strip code instantly —
+     "SHEET A-01 · DRAWINGS". Instant text, reduced-motion safe.
+     No tagged sections / no IO / TODO sheet -> base code stays.  */
+  if (tbCode && 'IntersectionObserver' in window) {
+    const base = tbCode.textContent;                  // "SHEET A-01"
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.isIntersecting) {
+          tbCode.textContent = base + ' · ' + en.target.dataset.part;
+        }
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });          // watches the middle band
+    root.querySelectorAll('section[data-part]').forEach(s => io.observe(s));
+  }
 }
 
 /* ============================================================
