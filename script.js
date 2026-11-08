@@ -437,13 +437,13 @@ if (indexRoot) {
       const w = document.createElement('div');
       w.className = 'wrap';
 
-      /* ---- Register header: eyebrow label + h2 + entrance back-link ---- */
+      /* ---- Register header: eyebrow label + h1 + entrance back-link ---- */
       const hdr = document.createElement('div');
       hdr.className = 'reg-header';
       const hdrLeft = document.createElement('div');
       hdrLeft.appendChild(Object.assign(document.createElement('p'),
         { className: 'label', textContent: 'DRAWING REGISTER' }));
-      hdrLeft.appendChild(Object.assign(document.createElement('h2'),
+      hdrLeft.appendChild(Object.assign(document.createElement('h1'),
         { className: 'index-title', textContent: 'All projects' }));
       const hdrRight = document.createElement('div');
       hdrRight.className = 'reg-header-right';
