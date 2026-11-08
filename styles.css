@@ -725,7 +725,20 @@ html.js .reveal.is-in {
    big number, name in caps, facts row and one "View project"
    link. Other projects follow as a quiet numbered list.
    Sheet codes (A-01…) and the fixed "1 / N" counter stay.        */
-.proj-featured { border-bottom: 1px solid var(--rule); }
+.proj-featured {
+  border-bottom: 1px solid var(--rule);
+  /* full-bleed hero (Task 04d): escape the centered .wrap so the
+     image touches both browser edges. Header stays above, register
+     and caption stay inside the measure below the image.          */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+/* Classic (non-overlay) scrollbars make 100vw a few px wider than
+   the client area; clip that sliver instead of allowing a
+   horizontal scrollbar. Strictly scoped to the register page.    */
+body.register,
+html:has(> body.register) { overflow-x: clip; }
 
 /* quiet note when the register is empty */
 .reg-empty { padding: 32px 0; color: var(--grey); font-size: 14px; }
@@ -741,23 +754,23 @@ html.js .reveal.is-in {
 .feat-media { display: block; position: relative; }
 .feat-media img {
   width: 100%;
-  height: clamp(70vh, 100svh, 120vh); /* responsive dominance; not blindly 100vh */
+  height: clamp(420px, 68vh, 780px);   /* controlled, consistent; not full-page (Task 04d) */
   object-fit: cover;
   object-position: center;
   transition: opacity var(--t-base) ease;
 }
 @supports (height: 100svh) {
-  .feat-media img { height: clamp(70svh, 100svh, 120svh); }
+  .feat-media img { height: clamp(420px, 68svh, 780px); }
 }
 /* the pending IMAGE TODO block spans the viewport too, quietly */
 .feat-media .ph {
-  height: clamp(70vh, 100svh, 120vh);
+  height: clamp(420px, 68vh, 780px);
   min-height: 0;
   border-left: 0;
   border-right: 0;
 }
 @supports (height: 100svh) {
-  .feat-media .ph { height: clamp(70svh, 100svh, 120svh); }
+  .feat-media .ph { height: clamp(420px, 68svh, 780px); }
 }
 /* a clean "paper edge" transition between image and caption */
 .feat-media::after {
@@ -895,12 +908,10 @@ html.js .reveal.is-in {
   color: var(--accent); /* subtle burgundy shift on row hover */
 }
 
-/* Scroll-snap, proximity only, and only once JS is on. Off under
-   reduced motion (the media query keeps it out entirely).        */
-@media (prefers-reduced-motion: no-preference) {
-  html.js { scroll-snap-type: y proximity; }
-  .proj-featured { scroll-snap-align: start; }
-}
+/* Scroll-snap removed (Task 04d): with the full-bleed hero, an
+   align-start snap on .proj-featured auto-snapped the hero to the
+   top on load, hiding the register header. The "1 / N" counter
+   works from the IntersectionObserver, not from snapping.        */
 
 /* Project detail — closing navigation row (Direction A) */
 .proj-nav-row {
