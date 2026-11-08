@@ -1005,22 +1005,24 @@ if (aboutRoot) {
         sp.appendChild(line);
       });
 
-      /* contact details: only the lines that are filled in */
-      const ct = sec('CONTACT');
-      ct.id = 'contact';   // door.html hall links to about.html#contact
-      const rows = [
-        ['EMAIL', d.contact.email, 'mailto:data'],
-        ['PHONE', d.contact.phone, null],
-        ['CITY', d.contact.city, null],
-        ['LINKEDIN', d.contact.linkedin, null],
-      ];
-      rows.forEach(([key, val]) => {
-        if (isTodo(val)) return;                 // TODO -> hide the line
-        const line = el('div', 'stage-row');
-        line.appendChild(el('p', 'label stage-label', key));
-        line.appendChild(el('p', 'stage-items', val));
-        ct.appendChild(line);
-      });
+      /* contact details: the section appears only when at least one
+         entry is real; TODO rows are hidden and never invented */
+      const contactRows = [
+        ['EMAIL', d.contact.email],
+        ['PHONE', d.contact.phone],
+        ['CITY', d.contact.city],
+        ['LINKEDIN', d.contact.linkedin],
+      ].filter(function (row) { return !isTodo(row[1]); });
+      if (contactRows.length) {
+        const ct = sec('CONTACT');
+        ct.id = 'contact';   // door.html hall links to about.html#contact
+        contactRows.forEach(function (row) {
+          const line = el('div', 'stage-row');
+          line.appendChild(el('p', 'label stage-label', row[0]));
+          line.appendChild(el('p', 'stage-items', row[1]));
+          ct.appendChild(line);
+        });
+      }
 
       /* portfolio PDF link, only once the url is real */
       if (!isTodo(d.pdf_url)) {
