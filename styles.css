@@ -1061,6 +1061,8 @@ html.js .reveal.is-in {
   color: var(--grey);
 }
 .section-header h2 {
+  font-family: var(--font-heading);
+  font-weight: normal;
   font-size: clamp(24px, 4vw, 32px);
   margin-bottom: 0;
 }
