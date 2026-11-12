@@ -1,0 +1,15 @@
+{
+  "projects": [
+    {
+      "slug": "library",
+      "title": "Proposed Library",
+      "category": "Architecture",
+      "projectType": "Public library",
+      "year": "2026–27",
+      "location": "Hubli, Karnataka",
+      "summary": "A two-storey public library proposal organized as three angled wings around a shared central space.",
+      "cover": "../images/library/renders/10-hero-exterior.webp",
+      "coverAlt": "Exterior view of the proposed Library in Hubli"
+    }
+  ]
+}

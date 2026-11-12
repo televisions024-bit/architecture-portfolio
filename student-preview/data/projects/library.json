@@ -1,0 +1,28 @@
+{
+  "slug": "library",
+  "title": "Proposed Library",
+  "category": "Academic proposal",
+  "year": "2026–27",
+  "cover": "../images/library/renders/10-hero-exterior.webp",
+  "coverAlt": "Exterior view of the proposed Library in Hubli",
+  "storyTitle": "Three wings around a shared centre",
+  "draft": true,
+  "facts": [
+    { "label": "Location", "value": "Hubli, Karnataka" },
+    { "label": "Program", "value": "Two-storey public library" },
+    { "label": "Study", "value": "Fifth-semester ADWD proposal" },
+    { "label": "Tools", "value": "AutoCAD · SketchUp · V-Ray · D5 Render" }
+  ],
+  "description": [
+    "This fifth-semester proposal for KLE C.I.M Polytechnic organizes the library as three angled wings around a central shared space.",
+    "The ground floor gathers public reading, the children’s section, canteen and administration around the entrance. The upper floor contains the digital library, study halls and auditorium. This concept text is a draft for student review."
+  ],
+  "drawings": [],
+  "gallery": [
+    { "src": "../images/library/renders/11-front-approach.webp", "alt": "Front approach to the proposed Library with entrance canopy and forecourt", "caption": "Front approach" },
+    { "src": "../images/library/renders/12-aerial-view.webp", "alt": "Aerial site render of the Library, showing forecourt, parking and open-air theatre", "caption": "Aerial site view" },
+    { "src": "../images/library/renders/13-aerial-cutaway.webp", "alt": "Aerial cutaway 3D render of the Library showing both floors", "caption": "Aerial cutaway · 3D render" },
+    { "src": "../images/library/renders/14-courtyard-view.webp", "alt": "Library courtyard with terraced seating at the open-air theatre", "caption": "Courtyard and open-air theatre" },
+    { "src": "../images/library/renders/15-meeting-room.webp", "alt": "Meeting room interior render in the proposed Library", "caption": "Meeting room" }
+  ]
+}
