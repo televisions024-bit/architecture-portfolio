@@ -285,11 +285,12 @@ function buildProjectPage(doc, data, slug, ixProjects) {
   const title = cleanValue(data.title) || capSlug;
   iw.appendChild(el('h1', '', title));
 
-  /* TASK 03 FIX 2: one facts line directly under the title —
-     Location · Year · Program (the keys the first screen needs).
-     Any TODO value is skipped, so the line never invents content. */
+  /* TASK 10.1: the first-screen line now carries only Program —
+     Location and Academic year live in the PROJECT FACTS table
+     below, so they are not printed twice. TODO values are skipped,
+     so the line never invents content. */
   if (Array.isArray(data.meta)) {
-    const FACT_KEYS = ['Location', 'Year', 'Program'];
+    const FACT_KEYS = ['Program'];
     const facts = [];
     data.meta.forEach(m => {
       const v = cleanValue(m && m.value);
@@ -309,6 +310,31 @@ function buildProjectPage(doc, data, slug, ixProjects) {
     const p = el('p', 'measure fade', briefTxt);
     p.style.cssText = 'max-width:62ch;';
     bw.appendChild(p);
+  }
+
+  /* ---- 2b — PROJECT FACTS (Task 10) — spec table from data.meta ----
+     The approved field order; "Project" comes from the title, every
+     other value from the project JSON. Missing/TODO values are skipped,
+     so the table never invents content.                              */
+  if (Array.isArray(data.meta)) {
+    const FACT_ORDER = ['Project', 'Location', 'Academic year', 'Type',
+                        'Site area', 'FSI', 'Built-up area', 'Software'];
+    const rows = [];
+    FACT_ORDER.forEach(key => {
+      const src = key === 'Project' ? { value: data.title }
+        : data.meta.find(m => m && m.key === key);
+      const v = cleanValue(src && src.value);
+      if (v) rows.push([key, v]);
+    });
+    if (rows.length) {
+      const fw = section('PROJECT FACTS', null, 'FACTS');
+      const dl = el('dl', 'proj-facts fade');
+      rows.forEach(r => {
+        dl.appendChild(el('dt', '', r[0]));
+        dl.appendChild(el('dd', '', r[1]));
+      });
+      fw.appendChild(dl);
+    }
   }
 
   /* ---- 3 — 02 CONCEPT: numbered block; each TODO paragraph

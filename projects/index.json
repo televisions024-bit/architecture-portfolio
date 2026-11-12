@@ -4,10 +4,10 @@
   "projects": [
     {
       "slug": "library",
-      "title": "TODO: Library Proposal — final title",
-      "year": "TODO",
-      "type": "TODO: e.g. Institutional proposal",
-      "thumbnail": "images/library/renders/01-hero-exterior.webp",
+      "title": "Proposed Library",
+      "year": "2026–27",
+      "type": "Academic proposal",
+      "thumbnail": "images/library/renders/10-hero-exterior.webp",
       "sheet": "A-01"
     }
   ]

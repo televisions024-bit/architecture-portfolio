@@ -1,73 +1,81 @@
 {
   "slug": "library",
-  "title": "TODO: Library Proposal — final title",
+  "title": "Proposed Library",
   "hero": {
-    "src": "images/library/renders/01-hero-exterior.webp",
-    "alt": "TODO: describe the hero exterior render in one line",
-    "lead": "TODO: one-line description of the project shown under the title",
-    "focus": "50% 40%"
+    "src": "images/library/renders/10-hero-exterior.webp",
+    "alt": "Elevated view of the proposed library entrance, forecourt and landscaped garden",
+    "lead": "A two-storey public library proposal in Hubli, Karnataka.",
+    "focus": "50% 45%"
   },
 
-  "_": "Fill every TODO below. Values starting with TODO are open; delete TODO: and write the real content. Add or remove images inside the lists following the same shape. Optional \"scale\": \"1:200\" on any drawing/render/diagram becomes the note on its caption row. Optional \"focus\": \"50% 40%\" inside this hero sets where the crop keeps its point (CSS object-position); omit it for the default \"50% 50%\".",
+  "_": "Content verified from the fifth-semester ADWD portfolio (Hubli proposal). Concept wording is a draft awaiting student review. Drawing references: ground floor p30, first floor p29, section p22, elevation p21. Do not add Dharwad case-study content here.",
 
   "meta": [
-    { "key": "Location", "value": "TODO: city / site" },
-    { "key": "Program",  "value": "Public library — TODO: floors, key spaces" },
-    { "key": "Year",     "value": "TODO" },
-    { "key": "Type",     "value": "TODO: e.g. Institutional / Academic proposal" },
-    { "key": "Tools",    "value": "D5 Render, AutoCAD, SketchUp, Photoshop" }
+    { "key": "Location",      "value": "Hubli, Karnataka" },
+    { "key": "Academic year", "value": "2026–27" },
+    { "key": "Program",       "value": "Two-storey public library — reading and periodicals, digital library, children’s section, girls’/boys’/group study halls, auditorium, canteen, administration" },
+    { "key": "Type",          "value": "Academic proposal — 5th semester ADWD" },
+    { "key": "Site area",     "value": "8,000 m²" },
+    { "key": "FSI",           "value": "0.294" },
+    { "key": "Built-up area", "value": "2,355.15 m²" },
+    { "key": "Software",      "value": "AutoCAD, SketchUp, V-Ray, D5 Render" }
   ],
 
-  "brief": "TODO: 2-3 short factual sentences about the project. No filler words.",
+  "brief": "Proposed Library is a two-storey public library in Hubli, prepared as a fifth-semester architectural design and working-drawing project at KLE’s C.I.M Polytechnic. The ground floor holds the public and support functions; the first floor is given to reading, group study and the auditorium. The building is planned as three angled wings around a central shared space.",
 
   "concept": {
     "paragraphs": [
-      "TODO: concept paragraph 1 (2-3 sentences).",
-      "TODO: concept paragraph 2 (2-3 sentences).",
-      "TODO: concept paragraph 3, only if truly needed."
-    ],
-    "diagrams": [
-      { "src": "images/library/diagrams/concept-diagram-01.svg",
-        "alt": "TODO: diagram 1 description", "caption": "TODO: caption for diagram 1" },
-      { "src": "images/library/diagrams/concept-diagram-02.svg",
-        "alt": "TODO: diagram 2 description", "caption": "TODO: caption for diagram 2" }
+      "DRAFT CONCEPT — awaiting student review.",
+      "The proposal is organised as three angled wings gathered around a central shared space. Rather than stacking every function along one corridor, each group of rooms has its own identifiable hall: public reading and periodicals, children’s activities, administration, and quiet/group study.",
+      "The ground floor forms the public layer — reception, the common reading and periodical hall, children’s section, canteen, offices and meeting room around the entrance and forecourt. The first floor forms the study layer — digital library, girls’, boys’ and group study halls, and the auditorium.",
+      "Externally, white and grey volumes with glazed end walls and a curved entrance canopy mark the approach. The landscaped garden, parking and open-air theatre occupy the remaining site, with the reading wings sitting between the forecourt and the garden."
     ]
   },
 
   "drawings": [
     { "src": "images/library/drawings/plan-level-01.svg",
-      "alt": "TODO", "label": "PLAN — LEVEL 01", "caption": "TODO: what this plan shows" },
+      "alt": "Ground-floor working drawing of the proposed library",
+      "label": "PLAN — LEVEL 01",
+      "caption": "Ground floor: reception, common reading and periodicals, children’s section, canteen and administration." },
     { "src": "images/library/drawings/plan-level-02.svg",
-      "alt": "TODO", "label": "PLAN — LEVEL 02", "caption": "TODO: what this plan shows" },
-    { "src": "images/library/drawings/section-a-a.svg",
-      "alt": "TODO", "label": "SECTION — A-A", "caption": "TODO: what this section shows" },
-    { "src": "images/library/drawings/section-b-b.svg",
-      "alt": "TODO", "label": "SECTION — B-B", "caption": "TODO: what this section shows" },
-    { "src": "images/library/drawings/elevation-north.svg",
-      "alt": "TODO", "label": "ELEVATION — NORTH", "caption": "TODO: what this elevation shows" },
-    { "src": "images/library/drawings/elevation-south.svg",
-      "alt": "TODO", "label": "ELEVATION — SOUTH", "caption": "TODO: what this elevation shows" }
+      "alt": "First-floor working drawing of the proposed library",
+      "label": "PLAN — LEVEL 02",
+      "caption": "First floor: digital library, girls’, boys’ and group study halls, and auditorium." },
+    { "src": "images/library/drawings/section.svg",
+      "alt": "Sectional elevation through the two-storey reading wings",
+      "label": "SECTION",
+      "caption": "Sectional elevation through the two-storey reading wings." },
+    { "src": "images/library/drawings/elevation.svg",
+      "alt": "Front elevation of the proposed library",
+      "label": "ELEVATION",
+      "caption": "Front elevation of the proposed library." }
   ],
 
   "gallery": [
-    { "src": "images/library/renders/02-entrance-approach.webp",
-      "alt": "TODO", "caption": "TODO: entrance / approach" },
-    { "src": "images/library/renders/03-reading-room.webp",
-      "alt": "TODO", "caption": "TODO: reading room interior" },
-    { "src": "images/library/renders/04-interior-2.webp",
-      "alt": "TODO", "caption": "TODO: second interior" },
+    { "src": "images/library/renders/11-front-approach.webp",
+      "alt": "Front approach to the proposed library, with the entrance canopy and forecourt",
+      "caption": "Front approach" },
+    { "src": "images/library/renders/12-aerial-view.webp",
+      "alt": "Aerial view of the proposed library site, showing the forecourt, parking and open-air theatre",
+      "caption": "Aerial view" },
+    { "src": "images/library/renders/13-aerial-cutaway.webp",
+      "alt": "Aerial cutaway of the proposed library showing the interior layout of both floors",
+      "caption": "Aerial cutaway" },
+    { "src": "images/library/renders/14-courtyard-view.webp",
+      "alt": "Landscaped courtyard with the terraced seating of the open-air theatre",
+      "caption": "Courtyard and open-air theatre" },
+    { "src": "images/library/renders/15-meeting-room.webp",
+      "alt": "Meeting room interior with a conference table and wall-mounted project displays",
+      "caption": "Meeting room" },
     { "src": "images/library/renders/05-section-cutaway.webp",
-      "alt": "TODO", "caption": "TODO: section / cutaway view" },
-    { "src": "images/library/renders/06-dusk-view.webp",
-      "alt": "TODO", "caption": "TODO: dusk view" },
-    { "src": "images/library/renders/07-detail.webp",
-      "alt": "TODO", "caption": "TODO: material or joint detail" }
+      "alt": "Sectional elevation through the reading wings",
+      "caption": "Sectional elevation" }
   ],
 
   "closing": {
-    "src": "images/library/renders/01-hero-exterior.webp",
-    "alt": "TODO",
-    "caption": "TODO: closing image caption",
+    "src": "images/library/renders/13-aerial-cutaway.webp",
+    "alt": "Aerial cutaway of the proposed library showing the interior layout of both floors",
+    "caption": "Aerial cutaway of the proposed library",
     "_": "'Next project' and 'Back to all projects' links are generated from projects/index.json — no need for a link here."
   }
 }

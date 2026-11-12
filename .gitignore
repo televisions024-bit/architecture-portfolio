@@ -5,3 +5,6 @@ node_modules/
 git-report.txt
 .DS_Store
 Thumbs.db
+# Raw video clips and extracted frames — never commit
+Clip */
+/renders/Clip*.mp4
